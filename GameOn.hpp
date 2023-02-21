@@ -184,14 +184,19 @@ class T : public GameOn{\
     public:\
 	T(){}\
 	virtual ~T(){}\
-	virtual cppObjectClass* getClass(){return Class<T>::classType;}\
+	virtual cppObjectClass* getClass(){return Class<T>::getClass();}\
 	virtual bool instanceof(cppObjectClass* cls){return cls == Class<T>::getClass() || GameOn::instanceof(cls);}\
 };\
 
 
 #define ComponentMacro(T)\
-	virtual cppObjectClass* getClass(){return Class<T>::classType;}\
+	virtual cppObjectClass* getClass(){return Class<T>::getClass();}\
 	virtual bool instanceof(cppObjectClass* cls){return cls == Class<T>::getClass() || GameOn::instanceof(cls);}\
+
+
+#define ComponentMacros(T,G)\
+	virtual cppObjectClass* getClass(){return Class<T>::getClass();}\
+	virtual bool instanceof(cppObjectClass* cls){return cls == Class<T>::getClass() || G::instanceof(cls);}\
 
 }//end ame namespace
 

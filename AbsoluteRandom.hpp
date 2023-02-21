@@ -1,35 +1,29 @@
 
-#include "ame_Enviroment.hpp"
-
-#if defined(DISABLE_AbsoluteRandom)
-	#define AbsoluteRandom_hpp
-#endif
-
 #ifndef AbsoluteRandom_hpp
 #define AbsoluteRandom_hpp
 #define AbsoluteRandom_AVAILABLE
-
-#ifndef ame_Enviroment_Defined
-
-#endif
-
-#ifdef ame_Windows
-
-#endif
-
-#ifdef ame_ArduinoIDE
-	#include "Arduino.h"
-#endif
 
 #include "Note.hpp"
 #include "Random.hpp"
 #include "RealRandom.hpp"
 
-#ifdef AbsoluteRandomLogApp
-	#include "Logger.hpp"
-	#define AbsoluteRandomLog(name,method,type,mns) Log(name,method,type,mns)
+#ifdef AbsoluteRandom_LogApp
+	#include "ame_Logger_config.hpp"
+	#include "ame_Logger.hpp"
+
+	#define AbsoluteRandomLog(location,method,type,mns) ame_Log(this,location,"AbsoluteRandom",method,type,mns)
+	#define const_AbsoluteRandomLog(location,method,type,mns)
 #else
-	#define AbsoluteRandomLog(name,method,type,mns) 
+	#ifdef AbsoluteRandom_LogDebugApp
+		#include "ame_Logger_config.hpp"
+		#include "ame_Logger.hpp"
+
+		#define AbsoluteRandomLog(location,method,type,mns) ame_LogDebug(this,location,"AbsoluteRandom",method,type)
+		#define const_AbsoluteRandomLog(location,method,type,mns)
+	#else
+		#define AbsoluteRandomLog(location,method,type,mns)
+		#define const_AbsoluteRandomLog(location,method,type,mns)
+	#endif
 #endif
 
 namespace ame{
@@ -87,15 +81,15 @@ class AbsoluteRandom : public Random{
 			float tdx = ((float)(time/dx));
 			float tx = (((float)(tdx))-((long)(tdx)));
 			float x = d*tx;
-			AbsoluteRandomLog("AbsoluteRandom", "getRandom", "println","");
-			AbsoluteRandomLog("AbsoluteRandom", "getRandom", "println","absoluterandom");
-			AbsoluteRandomLog("AbsoluteRandom", "getRandom", "print","time ");AbsoluteRandomLog("AbsoluteRandom", "getRandom", "println",Note(time));
-			AbsoluteRandomLog("AbsoluteRandom", "getRandom", "print","d ");AbsoluteRandomLog("AbsoluteRandom", "getRandom", "println",Note(d));
-			AbsoluteRandomLog("AbsoluteRandom", "getRandom", "print","dx ");AbsoluteRandomLog("AbsoluteRandom", "getRandom", "println",Note(dx));
-			AbsoluteRandomLog("AbsoluteRandom", "getRandom", "print","tdx ");AbsoluteRandomLog("AbsoluteRandom", "getRandom", "println",Note(tdx));
-			AbsoluteRandomLog("AbsoluteRandom", "getRandom", "print","tx ");AbsoluteRandomLog("AbsoluteRandom", "getRandom", "println",Note(tx));
-			AbsoluteRandomLog("AbsoluteRandom", "getRandom", "print","x ");AbsoluteRandomLog("AbsoluteRandom", "getRandom", "println",Note(x));
-			AbsoluteRandomLog("AbsoluteRandom", "getRandom", "println","");
+			AbsoluteRandomLog(ame_Log_Statement, "getRandom", "println","");
+			AbsoluteRandomLog(ame_Log_Statement, "getRandom", "println","absoluterandom");
+			AbsoluteRandomLog(ame_Log_Statement, "getRandom", "print","time ");AbsoluteRandomLog(ame_Log_Statement, "getRandom", "println",Note(time));
+			AbsoluteRandomLog(ame_Log_Statement, "getRandom", "print","d ");AbsoluteRandomLog(ame_Log_Statement, "getRandom", "println",Note(d));
+			AbsoluteRandomLog(ame_Log_Statement, "getRandom", "print","dx ");AbsoluteRandomLog(ame_Log_Statement, "getRandom", "println",Note(dx));
+			AbsoluteRandomLog(ame_Log_Statement, "getRandom", "print","tdx ");AbsoluteRandomLog(ame_Log_Statement, "getRandom", "println",Note(tdx));
+			AbsoluteRandomLog(ame_Log_Statement, "getRandom", "print","tx ");AbsoluteRandomLog(ame_Log_Statement, "getRandom", "println",Note(tx));
+			AbsoluteRandomLog(ame_Log_Statement, "getRandom", "print","x ");AbsoluteRandomLog(ame_Log_Statement, "getRandom", "println",Note(x));
+			AbsoluteRandomLog(ame_Log_Statement, "getRandom", "println","");
 			return x+getMin();
 		}
 		

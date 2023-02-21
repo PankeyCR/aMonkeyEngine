@@ -486,6 +486,11 @@ class PrimitiveRawPointerMap : virtual public RawPointerMap<K,V>{
 		virtual void expandLocal(int a_size){
 			PrimitiveRawPointerMapLog(ame_Log_StartMethod, "expandLocal", "println", "");
 			int i_size = this->getSize() + a_size;
+			PrimitiveRawPointerMapLog(ame_Log_Statement, "expandLocal", "println", Note("Expanding size: ") + Note(i_size));
+			if(i_size <= 1){
+				PrimitiveRawPointerMapLog(ame_Log_EndMethod, "expandLocal", "println", "i_size <= 1");
+				return;
+			}
 			K** nK;
 			V** nV;
 			nK = new K*[i_size];

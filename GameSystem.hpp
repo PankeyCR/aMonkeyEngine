@@ -1,27 +1,9 @@
 
-#include "ame_Enviroment.hpp"
-
-#if defined(DISABLE_GameSystem)
-	#define GameSystem_hpp
-#endif
-
 #ifndef GameSystem_hpp
 #define GameSystem_hpp
 #define GameSystem_AVAILABLE
 
-#ifndef ame_Enviroment_Defined
-
-#endif
-
-#ifdef ame_Windows
-
-#endif
-
-#ifdef ame_ArduinoIDE
-	#include "Arduino.h"
-#endif
-
-#include "AppState.hpp"
+#include "BaseAppState.hpp"
 #include "PrimitiveList.hpp"
 
 #ifdef GameSystem_LogApp
@@ -51,74 +33,91 @@
 
 namespace ame{
 	
-template<class T>
-class GameSystem : public AppState{
-public:
+template<class ENTITY, class COMPONENT, class SYSTEMCOMPONENT>
+class GameSystem : public BaseAppState{
+	public:
+		GameSystem(){}
 
-GameSystem(){}
+		GameSystem(cppObjectClass* c_class){
+			m_component_class = c_class;
+		}
 
-GameSystem(Note i){
-	this->setId(i);
-}
+		GameSystem(Note c_id){
+			this->setId(c_id);
+		}
 
-virtual ~GameSystem(){}
+		GameSystem(Note c_id, cppObjectClass* c_class){
+			this->setId(c_id);
+			m_component_class = c_class;
+		}
 
-virtual void initializeComponents(Application* app){
-	GameSystemLog(ame_Log_Statement, "initializeComponents",  "println", "");
-	manager = (GameManager*)app->getStateManager()->get(Class<GameManager>::classType);
-	if(manager == nullptr){
-		GameSystemLog(ame_Log_Statement, "initializeComponents",  "println", "manager == nullptr");
-		return;
-	}
-	GameSystemLog(ame_Log_Statement, "initializeComponents",  "println", Class<T>::classType->getName());
-	components = manager->getComponents(Class<T>::classType);
-}
+		virtual ~GameSystem(){}
 
-virtual void initialize(Application* app){
-	GameSystemLog(ame_Log_Statement, "initialize",  "println", "");
-	initializeComponents(app);
-	if(components == nullptr){
-		GameSystemLog(ame_Log_Statement, "initialize",  "println", "components == nullptr");
-		return;
-	}
-	initializeSystem(app);
-}
+		virtual cppObjectClass* getClass(){
+			return Class<GameSystem<ENTITY,COMPONENT,SYSTEMCOMPONENT>>::getClass();
+		}
 
-virtual cppObjectClass* getClass(){
-	return Class<GameSystem>::classType;
-}
+		virtual bool instanceof(cppObjectClass* cls){
+			return cls == Class<GameSystem<ENTITY,COMPONENT,SYSTEMCOMPONENT>>::getClass() || AppState::instanceof(cls);
+		}
 
-virtual bool instanceof(cppObjectClass* cls){
-	return cls == Class<GameSystem>::classType || AppState::instanceof(cls);
-}
+		virtual void initializeComponents(Application* app){
+			GameSystemLog(ame_Log_StartMethod, "initializeComponents",  "println", "");
+			m_manager = (GameManager<ENTITY,COMPONENT>*)app->getStateManager()->get(Class<GameManager<ENTITY,COMPONENT>>::getClass());
+			if(m_manager == nullptr){
+				GameSystemLog(ame_Log_EndMethod, "initializeComponents",  "println", "m_manager == nullptr");
+				return;
+			}
+			GameSystemLog(ame_Log_Statement, "initializeComponents",  "println", Note("ENTITY Class Type: ") + Note(Class<ENTITY>::getType()));
+			GameSystemLog(ame_Log_Statement, "initializeComponents",  "println", Note("COMPONENT Class Type: ") + Note(Class<COMPONENT>::getType()));
+			GameSystemLog(ame_Log_Statement, "initializeComponents",  "println", Note("SYSTEMCOMPONENT Class Type: ") + Note(Class<SYSTEMCOMPONENT>::getType()));
+			if(m_component_class == nullptr){
+				m_component_class = Class<SYSTEMCOMPONENT>::getClass();
+			}
+			m_components = m_manager->getComponentsByClass(m_component_class);
+			GameSystemLog(ame_Log_EndMethod, "initializeComponents",  "println", "");
+		}
 
-virtual void update(float tpc){
-	if(components == nullptr){
-		GameSystemLog(ame_Log_Statement, "update",  "println", "components == nullptr");
-		return;
-	}
-	for(int x = 0; x < components->getPosition(); x++){
-		GameSystemLog(ame_Log_Statement, "update",  "println", "iterating components");
-		T* c = (T*)components->getByPosition(x);
-		updateComponents(c, tpc);
-	}
-	updateSystem(tpc);
-}
+		virtual void initialize(Application* app){
+			GameSystemLog(ame_Log_StartMethod, "initialize",  "println", "");
+			BaseAppState::initialize(app);
+			initializeComponents(app);
+			if(m_components == nullptr){
+				GameSystemLog(ame_Log_EndMethod, "initialize",  "println", "components == nullptr");
+				return;
+			}
+			GameSystemLog(ame_Log_EndMethod, "initialize",  "println", "");
+		}
 
-virtual void updateComponents(T* component, float tpc){
-	GameSystemLog(ame_Log_Statement, "updateComponents",  "println", "");
-}
+		virtual void update(float tpc){
+			GameSystemLog(ame_Log_StartMethod, "update",  "println", "");
+			if(!m_enable){
+				GameSystemLog(ame_Log_EndMethod, "update",  "println", "!m_enable");
+				return;
+			}
+			if(m_components == nullptr){
+				GameSystemLog(ame_Log_Statement, "update",  "println", "components == nullptr");
+				return;
+			}
+			for(int x = 0; x < m_components->getPosition(); x++){
+				GameSystemLog(ame_Log_Statement, "update",  "println", "iterating components");
+				GameSystemLog(ame_Log_Statement, "initializeComponents",  "println", Note("iteration: ") + Note(x));
+				SYSTEMCOMPONENT* f_component = (SYSTEMCOMPONENT*)m_components->getByPosition(x);
+				updateComponents(f_component, tpc);
+			}
+			updateState(tpc);
+			GameSystemLog(ame_Log_EndMethod, "update",  "println", "");
+		}
 
-virtual void updateSystem(float tpc){
-}
+		virtual void updateComponents(SYSTEMCOMPONENT* component, float tpc){
+			GameSystemLog(ame_Log_StartMethod, "updateComponents",  "println", "");
+			GameSystemLog(ame_Log_EndMethod, "updateComponents",  "println", "");
+		}
 
-virtual void initializeSystem(Application* app){
-	GameSystemLog(ame_Log_Statement, "initializeSystem",  "println", "");
-}
-
-protected:
-PrimitiveList<GameOn>* components = nullptr;
-GameManager* manager = nullptr;
+	protected:
+		PrimitiveList<COMPONENT>* m_components = nullptr;
+		GameManager<ENTITY,COMPONENT>* m_manager = nullptr;
+		cppObjectClass* m_component_class = nullptr;
 };
 
 }

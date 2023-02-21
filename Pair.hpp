@@ -1,25 +1,7 @@
 
-#include "ame_Enviroment.hpp"
-
-#if defined(DISABLE_Pair)
-	#define Pair_hpp
-#endif
-
 #ifndef Pair_hpp
 #define Pair_hpp
 #define Pair_AVAILABLE
-
-#ifndef ame_Enviroment_Defined
-
-#endif
-
-#ifdef ame_Windows
-
-#endif
-
-#ifdef ame_ArduinoIDE
-	#include "Arduino.h"
-#endif
 
 namespace ame{
 
@@ -32,6 +14,11 @@ class Pair{
 		Pair(){}
 		Pair(bool own){
 			owner = own;
+		}
+		Pair(const Pair<X1,X2>& c_pair){
+			owner = c_pair.owner;
+			x1 = c_pair.x1;
+			x2 = c_pair.x2;
 		}
 		Pair(X1 c_x1, X2 c_x2){
 			x1 = new X1(c_x1);

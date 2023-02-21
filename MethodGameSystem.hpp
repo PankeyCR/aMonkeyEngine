@@ -1,25 +1,7 @@
 
-#include "ame_Enviroment.hpp"
-
-#if defined(DISABLE_MethodGameSystem)
-	#define MethodGameSystem_hpp
-#endif
-
 #ifndef MethodGameSystem_hpp
 #define MethodGameSystem_hpp
 #define MethodGameSystem_AVAILABLE
-
-#ifndef ame_Enviroment_Defined
-
-#endif
-
-#ifdef ame_Windows
-
-#endif
-
-#ifdef ame_ArduinoIDE
-	#include "Arduino.h"
-#endif
 
 #include "GameSystem.hpp"
 #include "Note.hpp"
@@ -52,36 +34,42 @@
 
 namespace ame{
 	
-template<class T>
-class MethodGameSystem : public GameSystem<T>{
-using m_Method = void (*)(T*,float);
-public:
+template<class ENTITY, class COMPONENT, class SYSTEMCOMPONENT = COMPONENT>
+class MethodGameSystem : public GameSystem<ENTITY,COMPONENT,SYSTEMCOMPONENT>{
+	public:
+		using m_Method = void (*)(SYSTEMCOMPONENT*,float);
 
-MethodGameSystem(){}
+		MethodGameSystem() : GameSystem<ENTITY,COMPONENT,SYSTEMCOMPONENT>(){}
 
-MethodGameSystem(Note i){
-	this->setId(i);
-}
+		MethodGameSystem(cppObjectClass* c_class) : GameSystem<ENTITY,COMPONENT,SYSTEMCOMPONENT>(c_class){}
 
-virtual ~MethodGameSystem(){}
+		MethodGameSystem(Note c_id) : GameSystem<ENTITY,COMPONENT,SYSTEMCOMPONENT>(c_id){}
 
-virtual cppObjectClass* getClass(){
-	return Class<MethodGameSystem>::classType;
-}
+		MethodGameSystem(Note c_id, cppObjectClass* c_class) : GameSystem<ENTITY,COMPONENT,SYSTEMCOMPONENT>(c_id, c_class){}
 
-virtual bool instanceof(cppObjectClass* cls){
-	return cls == Class<MethodGameSystem>::classType || GameSystem<T>::instanceof(cls);
-}
+		virtual ~MethodGameSystem(){}
 
-virtual void updateComponents(T* component, float tpc){
-	MethodGameSystemLog(ame_Log_Statement, "updateComponents",  "println", "");
-	for(int x = 0; x < m_method.getPosition(); x++){
-		(**m_method.getByPosition(x))(component,tpc);
-	}
-}
+		virtual cppObjectClass* getClass(){
+			return Class<MethodGameSystem<ENTITY,COMPONENT,SYSTEMCOMPONENT>>::getClass();
+		}
 
-protected:
-PrimitiveList<m_Method> m_method;
+		virtual bool instanceof(cppObjectClass* cls){
+			return cls == Class<MethodGameSystem<ENTITY,COMPONENT,SYSTEMCOMPONENT>>::getClass() || GameSystem<ENTITY,COMPONENT,SYSTEMCOMPONENT>::instanceof(cls);
+		}
+
+		virtual void updateComponents(SYSTEMCOMPONENT* component, float tpc){
+			MethodGameSystemLog(ame_Log_Statement, "updateComponents",  "println", "");
+			for(int x = 0; x < m_method.getPosition(); x++){
+				(**m_method.getByPosition(x))(component,tpc);
+			}
+		}
+
+		virtual void addSystem(m_Method a_method){
+			m_method.add(a_method);
+		}
+
+	protected:
+		PrimitiveList<m_Method> m_method;
 };
 
 }

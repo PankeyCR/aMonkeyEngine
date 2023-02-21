@@ -126,7 +126,7 @@ class GameManager IMPLEMENTATION_BaseAppState {
 			for(int x = 0; x < i_objChilds.getPosition(); x++){
 				COMPONENT* i_child = i_objChilds.getByPosition(x);
 				cppObjectClass* i_classT = i_child->getClass();
-				PrimitiveList<COMPONENT>* i_list = m_components.getByPointer(i_classT);
+				PrimitiveList<COMPONENT>* i_list = m_components.getValueByPointer(i_classT);
 				if(i_list == nullptr){
 					GameManagerLog(ame_Log_StartMethod, "deleteEntity",  "println", "list == nullptr");
 					continue;
@@ -150,7 +150,7 @@ class GameManager IMPLEMENTATION_BaseAppState {
 			for(int x = 0; x < i_objChilds.getPosition(); x++){
 				COMPONENT* i_child = i_objChilds.getByPosition(x);
 				cppObjectClass* i_cls = i_child->getClass();
-				PrimitiveList<COMPONENT>* i_list = m_components.getByPointer(i_cls);
+				PrimitiveList<COMPONENT>* i_list = m_components.getValueByPointer(i_cls);
 				if(i_list == nullptr){
 					GameManagerLog(ame_Log_StartMethod, "deleteGameObject",  "println", "list == nullptr");
 					continue;
@@ -167,7 +167,7 @@ class GameManager IMPLEMENTATION_BaseAppState {
 			GameManagerLog(ame_Log_StartMethod, "deleteAllEntities",  "println", "");
 			GameManagerLog(ame_Log_StartMethod, "deleteAllEntities",  "println", Note("total entities ") + Note(components.getPosition()));
 			for(int x = 0; x < m_components.getPosition(); x++){
-				List<COMPONENT>* i_childs = m_components.getByPosition(x);
+				List<COMPONENT>* i_childs = m_components.getValueByPosition(x);
 				i_childs->reset();
 			}
 			m_game_objects.resetDelete();
@@ -176,69 +176,69 @@ class GameManager IMPLEMENTATION_BaseAppState {
 		
 		
 		virtual void requestDeleteEntity(int a_entity){
-			GameManagerLog(ame_Log_StartMethod, "deleteEntityRequest",  "println", "adding entity to the delete request list");
-			GameManagerLog(ame_Log_StartMethod, "deleteEntityRequest",  "println", Note("id ") + Note(a_entity));
+			GameManagerLog(ame_Log_StartMethod, "requestDeleteEntity",  "println", "adding entity to the delete request list");
+			GameManagerLog(ame_Log_StartMethod, "requestDeleteEntity",  "println", Note("id ") + Note(a_entity));
 			ENTITY* i_obj = m_game_objects.getByPosition(a_entity);
 			if(i_obj == nullptr){
 				return;
 			}
 			m_deleteERequest.addPointer(i_obj);
-			GameManagerLog(ame_Log_EndMethod, "deleteEntity",  "println", "");
+			GameManagerLog(ame_Log_EndMethod, "requestDeleteEntity",  "println", "");
 		}
 		
-		virtual void deleteGameObjectRequest(ENTITY* a_obj){
-			GameManagerLog(ame_Log_StartMethod, "deleteGameObjectRequest",  "println", "");
+		virtual void requestDeleteGameObject(ENTITY* a_obj){
+			GameManagerLog(ame_Log_StartMethod, "requestDeleteGameObject",  "println", "");
 			if(!m_game_objects.containByPointer(a_obj)){
 				return;
 			}
 			m_deleteERequest.addPointer(a_obj);
-			GameManagerLog(ame_Log_EndMethod, "deleteEntity",  "println", "");
+			GameManagerLog(ame_Log_EndMethod, "requestDeleteGameObject",  "println", "");
 		}
 		
-		virtual void deleteAllEntitiesRequest(){
-			GameManagerLog(ame_Log_StartMethod, "deleteAllEntitiesRequest",  "println", "");
+		virtual void requestDeleteAllEntities(){
+			GameManagerLog(ame_Log_StartMethod, "requestDeleteAllEntities",  "println", "");
 			m_deleteAllE = true;
-			GameManagerLog(ame_Log_EndMethod, "deleteEntity",  "println", "");
+			GameManagerLog(ame_Log_EndMethod, "requestDeleteAllEntities",  "println", "");
 		}
 		
 		
-		virtual int getEntity(cppObjectClass* a_cls){
-			GameManagerLog(ame_Log_StartMethod, "getEntity",  "println", "");
+		virtual int getEntityByClass(cppObjectClass* a_cls){
+			GameManagerLog(ame_Log_StartMethod, "getEntityByClass",  "println", "");
 			for(int x = 0; x < m_game_objects.getPosition(); x++){
 				ENTITY* i_obj = m_game_objects.getByPosition(x);
 				if(i_obj->getClass() == a_cls){
-					GameManagerLog(ame_Log_EndMethod, "deleteEntity",  "println", "");
+					GameManagerLog(ame_Log_EndMethod, "getEntityByClass",  "println", "");
 					return i_obj->getId();
 				}
 			}
-			GameManagerLog(ame_Log_EndMethod, "deleteEntity",  "println", "");
+			GameManagerLog(ame_Log_EndMethod, "getEntityByClass",  "println", "");
 			return -1;
 		}
 		
-		virtual ENTITY* getGameObject(cppObjectClass* a_cls){
-			GameManagerLog(ame_Log_StartMethod, "getGameObject",  "println", "");
+		virtual ENTITY* getGameObjectByClass(cppObjectClass* a_cls){
+			GameManagerLog(ame_Log_StartMethod, "getGameObjectByClass",  "println", "");
 			for(int x = 0; x < m_game_objects.getPosition(); x++){
 				ENTITY* i_obj = m_game_objects.getByPosition(x);
 				if(i_obj->getClass() == a_cls){
-					GameManagerLog(ame_Log_EndMethod, "deleteEntity",  "println", "");
+					GameManagerLog(ame_Log_EndMethod, "getGameObjectByClass",  "println", "");
 					return i_obj;
 				}
 			}
-			GameManagerLog(ame_Log_EndMethod, "deleteEntity",  "println", "");
+			GameManagerLog(ame_Log_EndMethod, "getGameObjectByClass",  "println", "");
 			return nullptr;
 		}
 		
-		virtual int getEntity(ENTITY* a_obj){
-			GameManagerLog(ame_Log_StartMethod, "getEntity",  "println", Note(a_obj->getId()));
+		virtual int getEntityByPointer(ENTITY* a_obj){
+			GameManagerLog(ame_Log_StartMethod, "getEntityByPointer",  "println", Note(a_obj->getId()));
 			if(m_game_objects.containByPointer(a_obj)){
-				GameManagerLog(ame_Log_EndMethod, "getEntity",  "println", "");
+				GameManagerLog(ame_Log_EndMethod, "getEntityByPointer",  "println", "");
 				return a_obj->getId();
 			}
-			GameManagerLog(ame_Log_EndMethod, "getEntity",  "println", "");
+			GameManagerLog(ame_Log_EndMethod, "getEntityByPointer",  "println", "");
 			return -1;
 		}
 		
-		virtual ENTITY* getGameObject(int a_entity){
+		virtual ENTITY* getGameObjectByPosition(int a_entity){
 			GameManagerLog(ame_Log_StartMethod, "getGameObject",  "println", Note(a_entity));
 			GameManagerLog(ame_Log_EndMethod, "getGameObject",  "println", "");
 			return m_game_objects.getByPosition(a_entity);
@@ -299,11 +299,11 @@ class GameManager IMPLEMENTATION_BaseAppState {
 				GameManagerLog(ame_Log_StartMethod, "addEntityComponent",  "println", "no object with these entity id");
 				return;
 			}
-			PrimitiveList<COMPONENT>* i_list = m_components.getByPointer(a_component->getClass());
+			PrimitiveList<COMPONENT>* i_list = m_components.getValueByPointer(a_component->getClass());
 			if(i_list == nullptr){
 				GameManagerLog(ame_Log_StartMethod, "addEntityComponent",  "println", "creating list for the component class");
 				i_list = new PrimitiveList<COMPONENT>();
-				i_list.setOwner(false);
+				i_list->setOwner(false);
 				m_components.addPointers(a_component->getClass(), i_list);
 			}
 			if(!i_list->containByPointer(a_component)){
@@ -319,29 +319,29 @@ class GameManager IMPLEMENTATION_BaseAppState {
 		}
 		
 		virtual void addComponentToGameObject(ENTITY* a_obj, COMPONENT* a_component){
-			GameManagerLog(ame_Log_StartMethod, "addGameObjectComponent",  "println", "");
-			if(a_obj == nullptr){
-				GameManagerLog(ame_Log_EndMethod, "addGameObjectComponent",  "println", "");
+			GameManagerLog(ame_Log_StartMethod, "addComponentToGameObject",  "println", "");
+			if(a_obj == nullptr || a_component == nullptr){
+				GameManagerLog(ame_Log_EndMethod, "addComponentToGameObject",  "println", "a_obj == nullptr || a_component == nullptr");
 				return;
 			}
 			if(!m_game_objects.containByPointer(a_obj)){
-				GameManagerLog(ame_Log_EndMethod, "addGameObjectComponent",  "println", "");
+				GameManagerLog(ame_Log_EndMethod, "addComponentToGameObject",  "println", "");
 				return;
 			}
 			if(a_obj->getChilds().containByPointer(a_component)){
-				GameManagerLog(ame_Log_EndMethod, "addGameObjectComponent",  "println", "");
+				GameManagerLog(ame_Log_EndMethod, "addComponentToGameObject",  "println", "");
 				return;
 			}
 			a_obj->attach(a_component);
 			
-			PrimitiveList<COMPONENT>* i_list = m_components.getByPointer(a_component->getClass());
+			PrimitiveList<COMPONENT>* i_list = m_components.getValueByPointer(a_component->getClass());
 			if(i_list == nullptr){
 				i_list = new PrimitiveList<COMPONENT>();
 				i_list->setOwner(false);
 				m_components.addPointers(a_component->getClass(), i_list);
 			}
 			i_list->addPointer(a_component);
-			GameManagerLog(ame_Log_EndMethod, "addGameObjectComponent",  "println", "");
+			GameManagerLog(ame_Log_EndMethod, "addComponentToGameObject",  "println", "");
 		}
 		
 		
@@ -358,49 +358,53 @@ class GameManager IMPLEMENTATION_BaseAppState {
 		
 		virtual void requestAddComponentToGameObject(ENTITY* a_obj, COMPONENT* a_component){
 			GameManagerLog(ame_Log_StartMethod, "requestAddComponentToGameObject",  "println", "");
+			if(a_obj == nullptr || a_component == nullptr){
+				GameManagerLog(ame_Log_EndMethod, "containComponentByClass",  "println", "a_obj == nullptr || a_component == nullptr");
+				return;
+			}
 			if(!m_game_objects.containByPointer(a_obj)){
-				GameManagerLog(ame_Log_EndMethod, "requestAddComponentToGameObject",  "println", "");
+				GameManagerLog(ame_Log_EndMethod, "requestAddComponentToGameObject",  "println", "!m_game_objects.containByPointer(a_obj)");
 				return;
 			}
 			m_addRequest.addPointers(a_obj, a_component);
 			GameManagerLog(ame_Log_EndMethod, "requestAddComponentToGameObject",  "println", "");
 		}
 		
-		virtual bool containComponent(cppObjectClass* a_cls){
-			GameManagerLog(ame_Log_StartMethod, "containComponent",  "println", "");
+		virtual bool containComponentByClass(cppObjectClass* a_cls){
+			GameManagerLog(ame_Log_StartMethod, "containComponentByClass",  "println", "");
 			if(a_cls == nullptr){
-				GameManagerLog(ame_Log_EndMethod, "containComponent",  "println", "");
+				GameManagerLog(ame_Log_EndMethod, "containComponentByClass",  "println", "");
 				return false;
 			}
 			for(int x = 0; x < m_game_objects.getPosition(); x++){
 				ENTITY* f_obj = m_game_objects.getByPosition(x);
 				if(f_obj == nullptr){
-					GameManagerLog(ame_Log_EndMethod, "containComponent",  "println", "");
+					GameManagerLog(ame_Log_EndMethod, "containComponentByClass",  "println", "");
 					continue;
 				}
 				PrimitiveList<COMPONENT>& f_objChilds = f_obj->getChilds();
 				for(int y = 0; y < f_objChilds.getPosition(); y++){
 					COMPONENT* ff_child = f_objChilds.getByPosition(y);
 					if(ff_child == nullptr){
-						GameManagerLog(ame_Log_EndMethod, "containComponent",  "println", "");
+						GameManagerLog(ame_Log_EndMethod, "containComponentByClass",  "println", "");
 						continue;
 					}
 					if(ff_child->getClass() == a_cls){
-						GameManagerLog(ame_Log_EndMethod, "containComponent",  "println", "");
+						GameManagerLog(ame_Log_EndMethod, "containComponentByClass",  "println", "");
 						return true;
 					}
 				}
 			}
-			GameManagerLog(ame_Log_EndMethod, "containComponent",  "println", "");
+			GameManagerLog(ame_Log_EndMethod, "containComponentByClass",  "println", "");
 			return false;
 		}
 		
-		virtual bool containEntityComponent(int a_entity, cppObjectClass* a_cls){
-			GameManagerLog(ame_Log_StartMethod, "containEntityComponent",  "println", "");
+		virtual bool containEntityComponentByClass(int a_entity, cppObjectClass* a_cls){
+			GameManagerLog(ame_Log_StartMethod, "containEntityComponentByClass",  "println", "");
 			List<COMPONENT>* i_list = getAllComponentsFromEntity(a_entity);
 			
 			if(i_list == nullptr){
-				GameManagerLog(ame_Log_EndMethod, "containEntityComponent",  "println", "");
+				GameManagerLog(ame_Log_EndMethod, "containEntityComponentByClass",  "println", "");
 				return false;
 			}
 			
@@ -410,37 +414,37 @@ class GameManager IMPLEMENTATION_BaseAppState {
 					continue;
 				}
 				if(f_child->getClass() == a_cls){
-					GameManagerLog(ame_Log_EndMethod, "containEntityComponent",  "println", "");
+					GameManagerLog(ame_Log_EndMethod, "containEntityComponentByClass",  "println", "");
 					return true;
 				}
 			}
-			GameManagerLog(ame_Log_EndMethod, "containEntityComponent",  "println", "");
+			GameManagerLog(ame_Log_EndMethod, "containEntityComponentByClass",  "println", "");
 			return false;
 		}
 		
 		template<class... s>
-		bool containEntityComponents(int a_entity, s... componentClass){
+		bool containEntityComponentsByClass(int a_entity, s... componentClass){
 			PrimitiveList<Note> i_classNs;
 			i_classNs.addPack(componentClass...);
 			if(i_classNs.isEmpty()){
-				GameManagerLog(ame_Log_EndMethod, "containEntityComponents",  "println", "");
+				GameManagerLog(ame_Log_EndMethod, "containEntityComponentsByClass",  "println", "");
 				return false;
 			}
 			for(int x = 0; x < i_classNs.getPosition(); x++){
 				cppObjectClass* f_cls = i_classNs.getByPosition(x);
-				if(!this->containEntityComponent(a_entity, f_cls)){
-					GameManagerLog(ame_Log_EndMethod, "containEntityComponents",  "println", "");
+				if(!this->containEntityComponentByClass(a_entity, f_cls)){
+					GameManagerLog(ame_Log_EndMethod, "containEntityComponentsByClass",  "println", "");
 					return false;
 				}
 			}
-			GameManagerLog(ame_Log_EndMethod, "containEntityComponents",  "println", "");
+			GameManagerLog(ame_Log_EndMethod, "containEntityComponentsByClass",  "println", "");
 			return true;
 		}
 		
-		virtual bool containGameObjectComponent(ENTITY* a_obj, cppObjectClass* a_cls){
-			GameManagerLog(ame_Log_StartMethod, "containGameObjectComponent",  "println", "");
+		virtual bool containGameObjectComponentByClass(ENTITY* a_obj, cppObjectClass* a_cls){
+			GameManagerLog(ame_Log_StartMethod, "containGameObjectComponentByClass",  "println", "");
 			if(a_obj == nullptr){
-				GameManagerLog(ame_Log_EndMethod, "containGameObjectComponent",  "println", "");
+				GameManagerLog(ame_Log_EndMethod, "containGameObjectComponentByClass",  "println", "");
 				return false;
 			}
 			PrimitiveList<COMPONENT>& i_list = a_obj->getChilds();
@@ -448,11 +452,11 @@ class GameManager IMPLEMENTATION_BaseAppState {
 			for(int x = 0; x < i_list.getPosition(); x++){
 				COMPONENT* f_component = i_list.getByPosition(x);
 				if(f_component->getClass() == a_cls){
-					GameManagerLog(ame_Log_EndMethod, "containGameObjectComponent",  "println", "");
+					GameManagerLog(ame_Log_EndMethod, "containGameObjectComponentByClass",  "println", "");
 					return true;
 				}
 			}
-			GameManagerLog(ame_Log_EndMethod, "containGameObjectComponent",  "println", "");
+			GameManagerLog(ame_Log_EndMethod, "containGameObjectComponentByClass",  "println", "");
 			return false;
 		}
 		
@@ -463,24 +467,24 @@ class GameManager IMPLEMENTATION_BaseAppState {
 		}
 		
 		
-		virtual COMPONENT* getEntityComponent(int a_entity, int a_index){
-			GameManagerLog(ame_Log_StartMethod, "getEntityComponent",  "println", "");
+		virtual COMPONENT* getEntityComponentByPosition(int a_entity, int a_index){
+			GameManagerLog(ame_Log_StartMethod, "getEntityComponentByPosition",  "println", "");
 			ENTITY* i_obj = m_game_objects.getByPosition(a_entity);
 			if(i_obj == nullptr){
-				GameManagerLog(ame_Log_EndMethod, "deleteEntity",  "println", "");
+				GameManagerLog(ame_Log_EndMethod, "getEntityComponentByPosition",  "println", "");
 				return nullptr;
 			}
 			PrimitiveList<COMPONENT>& i_list = i_obj->getChilds();
-			GameManagerLog(ame_Log_EndMethod, "deleteEntity",  "println", "");
+			GameManagerLog(ame_Log_EndMethod, "getEntityComponentByPosition",  "println", "");
 			return i_list.getByPosition(a_index);
 		}
 		
-		virtual COMPONENT* getEntityComponent(int a_entity, cppObjectClass* a_cls){
-			GameManagerLog(ame_Log_StartMethod, "getEntityComponent",  "println", "");
+		virtual COMPONENT* getEntityComponentByClass(int a_entity, cppObjectClass* a_cls){
+			GameManagerLog(ame_Log_StartMethod, "getEntityComponentByClass",  "println", "");
 			List<COMPONENT>* i_list = this->getAllComponentsFromEntity(a_entity);
 			
 			if(i_list == nullptr){
-				GameManagerLog(ame_Log_EndMethod, "getEntityComponent",  "println", "");
+				GameManagerLog(ame_Log_EndMethod, "getEntityComponentByClass",  "println", "");
 				return nullptr;
 			}
 			
@@ -490,18 +494,18 @@ class GameManager IMPLEMENTATION_BaseAppState {
 					continue;
 				}
 				if(f_child->getClass() == a_cls){
-				GameManagerLog(ame_Log_EndMethod, "getEntityComponent",  "println", "");
+				GameManagerLog(ame_Log_EndMethod, "getEntityComponentByClass",  "println", "");
 					return f_child;
 				}
 			}
-			GameManagerLog(ame_Log_EndMethod, "getEntityComponent",  "println", "");
+			GameManagerLog(ame_Log_EndMethod, "getEntityComponentByClass",  "println", "");
 			return nullptr;
 		}
 		
-		virtual COMPONENT* getGameObjectComponent(ENTITY* a_obj, cppObjectClass* a_cls){
-			GameManagerLog(ame_Log_StartMethod, "getGameObjectComponent",  "println", "");
+		virtual COMPONENT* getGameObjectComponentByClass(ENTITY* a_obj, cppObjectClass* a_cls){
+			GameManagerLog(ame_Log_StartMethod, "getGameObjectComponentByClass",  "println", "");
 			if(a_obj == nullptr){
-				GameManagerLog(ame_Log_EndMethod, "getGameObjectComponent",  "println", "");
+				GameManagerLog(ame_Log_EndMethod, "getGameObjectComponentByClass",  "println", "");
 				return nullptr;
 			}
 			PrimitiveList<COMPONENT>& i_list = a_obj->getChilds();
@@ -512,17 +516,33 @@ class GameManager IMPLEMENTATION_BaseAppState {
 					continue;
 				}
 				if(f_child->getClass() == a_cls){
-					GameManagerLog(ame_Log_EndMethod, "getGameObjectComponent",  "println", "");
+					GameManagerLog(ame_Log_EndMethod, "getGameObjectComponentByClass",  "println", "");
 					return f_child;
 				}
 			}
-			GameManagerLog(ame_Log_EndMethod, "getGameObjectComponent",  "println", "");
+			GameManagerLog(ame_Log_EndMethod, "getGameObjectComponentByClass",  "println", "");
 			return nullptr;
+		}
+
+		virtual COMPONENT* getParentComponentByClass(COMPONENT* a_component, cppObjectClass* a_cls){
+			GameManagerLog(ame_Log_StartMethod, "getParentComponentByClass",  "println", "");
+			if(a_component == nullptr){
+				GameManagerLog(ame_Log_EndMethod, "getParentComponentByClass",  "println", "");
+				return nullptr;
+			}
+			ENTITY* i_obj = (ENTITY*)a_component->getParent();
+			if(i_obj == nullptr){
+				GameManagerLog(ame_Log_EndMethod, "getParentComponentByClass",  "println", "");
+				return nullptr;
+			}
+
+			GameManagerLog(ame_Log_EndMethod, "getParentComponentByClass",  "println", "");
+			return this->getGameObjectComponentByClass(i_obj, a_cls);
 		}
 		
 		//returns the first component founded on the gameobjects list searched by the componentClassName
-		virtual COMPONENT* getComponent(cppObjectClass* a_cls){
-			GameManagerLog(ame_Log_StartMethod, "getComponent",  "println", "");
+		virtual COMPONENT* getComponentByClass(cppObjectClass* a_cls){
+			GameManagerLog(ame_Log_StartMethod, "getComponentByClass",  "println", "");
 			for(int x = 0; x < m_game_objects.getPosition(); x++){
 				ENTITY* f_obj = m_game_objects.getByPosition(x);
 				if(f_obj == nullptr){
@@ -536,94 +556,94 @@ class GameManager IMPLEMENTATION_BaseAppState {
 					}
 					cppObjectClass* ff_objClass = ff_objGON->getClass();
 					if(ff_objClass == a_cls){
-						GameManagerLog(ame_Log_EndMethod, "getComponent",  "println", "");
+						GameManagerLog(ame_Log_EndMethod, "getComponentByClass",  "println", "");
 						return ff_objGON;
 					}
 				}
 			}
-			GameManagerLog(ame_Log_EndMethod, "getComponent",  "println", "");
+			GameManagerLog(ame_Log_EndMethod, "getComponentByClass",  "println", "");
 			return nullptr;
 		}
 		
 		//returns the first entity founded with the componentClassName 
-		virtual int getEntityByComponent(cppObjectClass* a_cls){
-			GameManagerLog(ame_Log_StartMethod, "getEntityByComponent",  "println", "");
+		virtual int getEntityByComponentClass(cppObjectClass* a_cls){
+			GameManagerLog(ame_Log_StartMethod, "getEntityByComponentClass",  "println", "");
 			for(int x = 0; x < m_game_objects.getPosition(); x++){
 				ENTITY* f_obj = m_game_objects.getByPosition(x);
 				if(f_obj == nullptr){
-					GameManagerLog(ame_Log_EndMethod, "getEntityByComponent",  "println", "");
+					GameManagerLog(ame_Log_EndMethod, "getEntityByComponentClass",  "println", "");
 					return -1;
 				}
 				PrimitiveList<COMPONENT>& i_list = f_obj->getChilds();
 				for(int y = 0; y < i_list.getPosition(); y++){
 					COMPONENT* ff_component = i_list.getByPosition(y);
 					if(ff_component == nullptr){
-						GameManagerLog(ame_Log_EndMethod, "getEntityByComponent",  "println", "");
+						GameManagerLog(ame_Log_EndMethod, "getEntityByComponentClass",  "println", "");
 						return -1;
 					}
 					if(ff_component->getClass() == a_cls){
-						GameManagerLog(ame_Log_EndMethod, "getEntityByComponent",  "println", "");
+						GameManagerLog(ame_Log_EndMethod, "getEntityByComponentClass",  "println", "");
 						return x;
 					}
 				}
 			}
-			GameManagerLog(ame_Log_EndMethod, "getEntityByComponent",  "println", "");
+			GameManagerLog(ame_Log_EndMethod, "getEntityByComponentClass",  "println", "");
 			return -1;
 		}
 		
-		virtual int getEntityByComponent(COMPONENT* a_component){
-			GameManagerLog(ame_Log_StartMethod, "getEntityByComponent",  "println", "");
+		virtual int getEntityByComponentPointer(COMPONENT* a_component){
+			GameManagerLog(ame_Log_StartMethod, "getEntityByComponentPointer",  "println", "");
 			for(int x = 0; x < m_game_objects.getPosition(); x++){
 				ENTITY* f_obj = m_game_objects.getByPosition(x);
 				if(f_obj == nullptr){
-					GameManagerLog(ame_Log_EndMethod, "getEntityByComponent",  "println", "");
+					GameManagerLog(ame_Log_EndMethod, "getEntityByComponentPointer",  "println", "");
 					return -1;
 				}
 				PrimitiveList<COMPONENT>& i_list = f_obj->getChilds();
 				for(int y = 0; y < i_list.getPosition(); y++){
 					COMPONENT* ff_component = i_list.getByPosition(y);
 					if(ff_component == nullptr){
-						GameManagerLog(ame_Log_EndMethod, "getEntityByComponent",  "println", "");
+						GameManagerLog(ame_Log_EndMethod, "getEntityByComponentPointer",  "println", "");
 						return -1;
 					}
 					if(ff_component == a_component){
-						GameManagerLog(ame_Log_EndMethod, "getEntityByComponent",  "println", "");
+						GameManagerLog(ame_Log_EndMethod, "getEntityByComponentPointer",  "println", "");
 						return x;
 					}
 				}
 			}
-			GameManagerLog(ame_Log_EndMethod, "getEntityByComponent",  "println", "");
+			GameManagerLog(ame_Log_EndMethod, "getEntityByComponentPointer",  "println", "");
 			return -1;
 		}
 
 		template<class... s>
-		int getEntityByComponents(s... a_componentClass){
-			GameManagerLog(ame_Log_StartMethod, "getEntityByComponents",  "println", "");
+		int getEntityByComponentsClass(s... a_componentClass){
+			GameManagerLog(ame_Log_StartMethod, "getEntityByComponentsClass",  "println", "");
 			PrimitiveList<cppObjectClass> i_classNs;
 			i_classNs.addPack(a_componentClass...);
 			if(i_classNs.isEmpty()){
-				GameManagerLog(ame_Log_EndMethod, "getEntityByComponents",  "println", "");
+				GameManagerLog(ame_Log_EndMethod, "getEntityByComponentsClass",  "println", "");
 				return -1;
 			}
 			int i_ec = -1;
 			for(int x = 0; x < i_classNs.getPosition(); x++){
 				cppObjectClass* f_cls = i_classNs.getByPosition(x);
-				i_ec = this->getEntityByComponent(f_cls);
+				i_ec = this->getEntityByComponentClass(f_cls);
 				if(i_ec == -1){
-					GameManagerLog(ame_Log_EndMethod, "getEntityByComponents",  "println", "");
+					GameManagerLog(ame_Log_EndMethod, "getEntityByComponentsClass",  "println", "");
 					return -1;
 				}
 			}
-			GameManagerLog(ame_Log_EndMethod, "getEntityByComponents",  "println", "");
+			GameManagerLog(ame_Log_EndMethod, "getEntityByComponentsClass",  "println", "");
 			return i_ec;
 		}
 		
-		virtual int getEntityComponentIndex(int a_entity, cppObjectClass* a_cls){
-			GameManagerLog(ame_Log_StartMethod, "getEntityComponentIndex",  "println", "");
+		virtual int getEntityComponentIndexByClass(int a_entity, cppObjectClass* a_cls){
+			GameManagerLog(ame_Log_StartMethod, "getEntityComponentIndexByClass",  "println", "");
 			List<COMPONENT>* i_list = getAllComponentsFromEntity(a_entity);
 			
 			if(i_list == nullptr){
-				GameManagerLog(ame_Log_EndMethod, "getEntityComponentIndex",  "println", "");
+				GameManagerLog(ame_Log_EndMethod, "getEntityComponentIndexByClass",  "println", "");
 				return -1;
 			}
 			
@@ -633,18 +653,18 @@ class GameManager IMPLEMENTATION_BaseAppState {
 					continue;
 				}
 				if(f_child->getClass() == a_cls){
-					GameManagerLog(ame_Log_EndMethod, "getEntityComponentIndex",  "println", "");
+					GameManagerLog(ame_Log_EndMethod, "getEntityComponentIndexByClass",  "println", "");
 					return x;
 				}
 			}
-			GameManagerLog(ame_Log_EndMethod, "getEntityComponentIndex",  "println", "");
+			GameManagerLog(ame_Log_EndMethod, "getEntityComponentIndexByClass",  "println", "");
 			return -1;
 		}
 		
-		virtual int getGameObjectComponentIndex(ENTITY* a_obj, cppObjectClass* a_cls){
-			GameManagerLog(ame_Log_StartMethod, "getGameObjectComponentIndex",  "println", "");
+		virtual int getGameObjectComponentIndexByClass(ENTITY* a_obj, cppObjectClass* a_cls){
+			GameManagerLog(ame_Log_StartMethod, "getGameObjectComponentIndexByClass",  "println", "");
 			if(a_obj == nullptr){
-				GameManagerLog(ame_Log_EndMethod, "getGameObjectComponentIndex",  "println", "");
+				GameManagerLog(ame_Log_EndMethod, "getGameObjectComponentIndexByClass",  "println", "");
 				return -1;
 			}
 			PrimitiveList<COMPONENT>& i_list = a_obj->getChilds();
@@ -655,17 +675,17 @@ class GameManager IMPLEMENTATION_BaseAppState {
 					continue;
 				}
 				if(f_component->getClass() == a_cls){
-					GameManagerLog(ame_Log_EndMethod, "getGameObjectComponentIndex",  "println", "");
+					GameManagerLog(ame_Log_EndMethod, "getGameObjectComponentIndexByClass",  "println", "");
 					return x;
 				}
 			}
-			GameManagerLog(ame_Log_EndMethod, "getGameObjectComponentIndex",  "println", "");
+			GameManagerLog(ame_Log_EndMethod, "getGameObjectComponentIndexByClass",  "println", "");
 			return -1;
 		}
 
 		//returns the position of the first component founded on the gameobjects list searched by the componentClassName
-		virtual int getComponentEntity(cppObjectClass* a_cls){
-			GameManagerLog(ame_Log_StartMethod, "getComponentEntity",  "println", "");
+		virtual int getComponentEntityByClass(cppObjectClass* a_cls){
+			GameManagerLog(ame_Log_StartMethod, "getComponentEntityByClass",  "println", "");
 			for(int x = 0; x < m_game_objects.getPosition(); x++){
 				ENTITY* f_obj = m_game_objects.getByPosition(x);
 				if(f_obj == nullptr){
@@ -678,12 +698,12 @@ class GameManager IMPLEMENTATION_BaseAppState {
 						continue;
 					}
 					if(ff_child->getClass() == a_cls){
-						GameManagerLog(ame_Log_EndMethod, "getComponentEntity",  "println", "");
+						GameManagerLog(ame_Log_EndMethod, "getComponentEntityByClass",  "println", "");
 						return y;
 					}
 				}
 			}
-			GameManagerLog(ame_Log_EndMethod, "getComponentEntity",  "println", "");
+			GameManagerLog(ame_Log_EndMethod, "getComponentEntityByClass",  "println", "");
 			return -1;
 		}
 		
@@ -708,30 +728,30 @@ class GameManager IMPLEMENTATION_BaseAppState {
 			return nullptr;
 		}
 		
-		virtual PrimitiveList<COMPONENT>* getComponents(cppObjectClass* a_cls){
-			GameManagerLog(ame_Log_StartMethod, "getComponents",  "println", "");
-			PrimitiveList<COMPONENT>* i_list = m_components.getByPointer(a_cls);
+		virtual PrimitiveList<COMPONENT>* getComponentsByClass(cppObjectClass* a_cls){
+			GameManagerLog(ame_Log_StartMethod, "getComponentsByClass",  "println", "");
+			PrimitiveList<COMPONENT>* i_list = m_components.getValueByPointer(a_cls);
 			if(i_list == nullptr){
 				i_list = new PrimitiveList<COMPONENT>(5, false, true);
 				m_components.addPointers(a_cls, i_list);
 			}
-			GameManagerLog(ame_Log_EndMethod, "getComponents",  "println", "");
+			GameManagerLog(ame_Log_EndMethod, "getComponentsByClass",  "println", "");
 			return i_list;
 		}
 		
-		virtual void deleteComponent(cppObjectClass* a_cls){
-			GameManagerLog(ame_Log_StartMethod, "deleteComponent",  "println", "");
+		virtual void deleteComponentByClass(cppObjectClass* a_cls){
+			GameManagerLog(ame_Log_StartMethod, "deleteComponentByClass",  "println", "");
 			for(int x= 0; x < m_game_objects.getPosition(); x++){
 				COMPONENT* f_component = nullptr;
 				ENTITY* f_obj = m_game_objects.getByPosition(x);
 				if(f_obj == nullptr){
 					continue;
 				}
-				f_component = f_obj->detach(a_cls);
+				f_component = f_obj->detachByClass(a_cls);
 				if(f_component == nullptr){
 					continue;
 				}
-				PrimitiveList<COMPONENT>* f_list = m_components.getByPointer(a_cls);
+				PrimitiveList<COMPONENT>* f_list = m_components.getValueByPointer(a_cls);
 				if(f_list == nullptr){
 					continue;
 				}
@@ -741,82 +761,84 @@ class GameManager IMPLEMENTATION_BaseAppState {
 				}
 				delete f_component;
 			}
-			GameManagerLog(ame_Log_EndMethod, "deleteComponent",  "println", "");
+			GameManagerLog(ame_Log_EndMethod, "deleteComponentByClass",  "println", "");
 		}
 		
 		/*
 		*	removes the component from the gameobject and the component class list
 		*/
-		virtual COMPONENT* removeComponentFromEntity(int a_entity, cppObjectClass* a_cls){
-			GameManagerLog(ame_Log_StartMethod, "removeComponentFromEntity",  "println", "");
+		virtual COMPONENT* removeComponentFromEntityByClass(int a_entity, cppObjectClass* a_cls){
+			GameManagerLog(ame_Log_StartMethod, "removeComponentFromEntityByClass",  "println", "");
 			COMPONENT* i_component = nullptr;
 			ENTITY* i_obj = m_game_objects.getByPosition(a_entity);
 			if(i_obj == nullptr){
-				GameManagerLog(ame_Log_EndMethod, "removeComponentFromEntity",  "println", "a_obj == nullptr");
+				GameManagerLog(ame_Log_EndMethod, "removeComponentFromEntityByClass",  "println", "a_obj == nullptr");
 				return nullptr;
 			}
 
-			i_component = i_obj->detach(a_cls);
-			PrimitiveList<COMPONENT>* i_list = m_components.getByPointer(a_cls);
+			i_component = i_obj->detachByClass(a_cls);
+			PrimitiveList<COMPONENT>* i_list = m_components.getValueByPointer(a_cls);
 			if(i_list != nullptr){
 				i_list->removeByPointer(i_component);
 			}
-			GameManagerLog(ame_Log_EndMethod, "removeComponentFromEntity",  "println", "");
+			GameManagerLog(ame_Log_EndMethod, "removeComponentFromEntityByClass",  "println", "");
 			return i_component;
 		}
 		
-		virtual COMPONENT* removeComponentFromGameObject(ENTITY* a_obj, cppObjectClass* a_cls){
-			GameManagerLog(ame_Log_StartMethod, "removeComponentFromGameObject",  "println", "");
+		virtual COMPONENT* removeComponentFromGameObjectByClass(ENTITY* a_obj, cppObjectClass* a_cls){
+			GameManagerLog(ame_Log_StartMethod, "removeComponentFromGameObjectByClass",  "println", "");
 			COMPONENT* i_component = nullptr;
 			if(a_obj == nullptr){
-				GameManagerLog(ame_Log_EndMethod, "removeComponentFromGameObject",  "println", "a_obj == nullptr");
+				GameManagerLog(ame_Log_EndMethod, "removeComponentFromGameObjectByClass",  "println", "a_obj == nullptr");
 				return nullptr;
 			}
 
-			i_component = a_obj->detach(a_cls);
-			PrimitiveList<COMPONENT>* i_list = m_components.getByPointer(a_cls);
+			i_component = a_obj->detachByClass(a_cls);
+			PrimitiveList<COMPONENT>* i_list = m_components.getValueByPointer(a_cls);
 			if(i_list != nullptr){
 				i_list->removeByPointer(i_component);
 			}
-			GameManagerLog(ame_Log_EndMethod, "removeComponentFromGameObject",  "println", "");
+			GameManagerLog(ame_Log_EndMethod, "removeComponentFromGameObjectByClass",  "println", "");
 			return i_component;
 		}
 		
-		virtual void deleteComponentFromEntity(int a_entity, cppObjectClass* a_cls){
-			GameManagerLog(ame_Log_StartMethod, "deleteComponentFromEntity",  "println", "");
+		virtual void deleteComponentFromEntityByClass(int a_entity, cppObjectClass* a_cls){
+			GameManagerLog(ame_Log_StartMethod, "deleteComponentFromEntityByClass",  "println", "");
 			ENTITY* i_obj = m_game_objects.getByPosition(a_entity);
 			if(i_obj == nullptr){
-				GameManagerLog(ame_Log_EndMethod, "deleteEntity",  "println", "");
+				GameManagerLog(ame_Log_EndMethod, "deleteComponentFromEntityByClass",  "println", "");
 				return;
 			}
 			
-			COMPONENT* i_component = i_obj->detach(a_cls);
-			PrimitiveList<COMPONENT>* i_list = m_components.getByPointer(a_cls);
+			COMPONENT* i_component = i_obj->detachByClass(a_cls);
+			PrimitiveList<COMPONENT>* i_list = m_components.getValueByPointer(a_cls);
 			if(i_list != nullptr){
 				i_list->removeByPointer(i_component);
 			}
 			if(i_component != nullptr){
 				delete i_component;
 			}
-			GameManagerLog(ame_Log_EndMethod, "deleteComponentFromEntity",  "println", "");
+			GameManagerLog(ame_Log_EndMethod, "deleteComponentFromEntityByClass",  "println", "");
 		}
 		
-		virtual void deleteComponentFromGameObject(ENTITY* a_obj, cppObjectClass* a_cls){
-			GameManagerLog(ame_Log_StartMethod, "deleteGameObjectComponent",  "println", "");
-			if(a_obj == nullptr){
-				GameManagerLog(ame_Log_EndMethod, "deleteGameObjectComponent",  "println", "");
+		virtual void deleteComponentFromGameObjectByClass(ENTITY* a_obj, cppObjectClass* a_cls){
+			GameManagerLog(ame_Log_StartMethod, "deleteComponentFromGameObjectByClass",  "println", "");
+			if(a_obj == nullptr || a_cls == nullptr){
+				GameManagerLog(ame_Log_EndMethod, "deleteComponentFromGameObjectByClass",  "println", "a_obj == nullptr || a_cls == nullptr");
 				return;
 			}
 			
-			COMPONENT* i_component = a_obj->detach(a_cls);
-			PrimitiveList<COMPONENT>* i_list = m_components.getByPointer(a_cls);
+			COMPONENT* i_component = a_obj->detachByClass(a_cls);
+			if(i_component == nullptr){
+				GameManagerLog(ame_Log_EndMethod, "deleteComponentFromGameObjectByClass",  "println", "i_component == nullptr");
+				return;
+			}
+			PrimitiveList<COMPONENT>* i_list = m_components.getValueByPointer(a_cls);
 			if(i_list != nullptr){
 				i_list->removeByPointer(i_component);
 			}
-			if(i_component != nullptr){
-				delete i_component;
-			}
-			GameManagerLog(ame_Log_EndMethod, "deleteGameObjectComponent",  "println", "");
+			delete i_component;
+			GameManagerLog(ame_Log_EndMethod, "deleteComponentFromGameObjectByClass",  "println", "");
 		}
 		
 		virtual void deleteAllComponentsFromEntity(int a_entity){
@@ -835,11 +857,11 @@ class GameManager IMPLEMENTATION_BaseAppState {
 			}
 			for(int x = 0; x < i_classT.getPosition(); x++){
 				cppObjectClass* f_cls = i_classT.getByPosition(x);
-				PrimitiveList<COMPONENT>* f_list2 = m_components.getByPointer(f_cls);
+				PrimitiveList<COMPONENT>* f_list2 = m_components.getValueByPointer(f_cls);
 				if(f_list2 == nullptr){
 					continue;
 				}
-				COMPONENT* f_component = i_obj->detach(f_cls);
+				COMPONENT* f_component = i_obj->detachByClass(f_cls);
 				if(f_component == nullptr){
 					continue;
 				}
@@ -864,11 +886,11 @@ class GameManager IMPLEMENTATION_BaseAppState {
 			}
 			for(int x = 0; x < i_classT.getPosition(); x++){
 				cppObjectClass* f_cls = i_classT.getByPosition(x);
-				PrimitiveList<COMPONENT>* f_list2 = m_components.getByPointer(f_cls);
+				PrimitiveList<COMPONENT>* f_list2 = m_components.getValueByPointer(f_cls);
 				if(f_list2 == nullptr){
 					continue;
 				}
-				COMPONENT* f_component = a_obj->detach(f_cls);
+				COMPONENT* f_component = a_obj->detachByClass(f_cls);
 				if(f_component == nullptr){
 					continue;
 				}
@@ -878,105 +900,109 @@ class GameManager IMPLEMENTATION_BaseAppState {
 			GameManagerLog(ame_Log_EndMethod, "deleteAllComponentsFromGameObject",  "println", "");
 		}
 		
-		virtual void requestDeleteComponentFromEntity(int a_entity, cppObjectClass* a_cls){
-			GameManagerLog(ame_Log_StartMethod, "requestDeleteComponentFromEntity",  "println", "");
+		virtual void requestDeleteComponentFromEntityByClass(int a_entity, cppObjectClass* a_cls){
+			GameManagerLog(ame_Log_StartMethod, "requestDeleteComponentFromEntityByClass",  "println", "");
 			ENTITY* i_obj = m_game_objects.getByPosition(a_entity);
 			if(i_obj == nullptr){
-				GameManagerLog(ame_Log_EndMethod, "requestDeleteComponentFromEntity",  "println", "");
+				GameManagerLog(ame_Log_EndMethod, "requestDeleteComponentFromEntityByClass",  "println", "");
 				return;
 			}
 			m_deleteRequest.addPointers(i_obj, a_cls);
-			GameManagerLog(ame_Log_EndMethod, "requestDeleteComponentFromEntity",  "println", "");
+			GameManagerLog(ame_Log_EndMethod, "requestDeleteComponentFromEntityByClass",  "println", "");
 		}
 		
-		void requestDeleteComponentFromGameObject(ENTITY* a_obj, cppObjectClass* a_cls){
-			GameManagerLog(ame_Log_StartMethod, "requestDeleteComponentFromGameObject",  "println", "");
+		void requestDeleteComponentFromGameObjectByClass(ENTITY* a_obj, cppObjectClass* a_cls){
+			GameManagerLog(ame_Log_StartMethod, "requestDeleteComponentFromGameObjectByClass",  "println", "");
+			if(a_obj == nullptr || a_cls == nullptr){
+				GameManagerLog(ame_Log_EndMethod, "requestDeleteComponentFromGameObjectByClass",  "println", "a_obj == nullptr || a_cls == nullptr");
+				return;
+			}
 			if(!m_game_objects.containByPointer(a_obj)){
-				GameManagerLog(ame_Log_EndMethod, "requestDeleteComponentFromGameObject",  "println", "");
+				GameManagerLog(ame_Log_EndMethod, "requestDeleteComponentFromGameObjectByClass",  "println", "");
 				return;
 			}
 			m_deleteRequest.addPointers(a_obj, a_cls);
-			GameManagerLog(ame_Log_EndMethod, "requestDeleteComponentFromGameObject",  "println", "");
+			GameManagerLog(ame_Log_EndMethod, "requestDeleteComponentFromGameObjectByClass",  "println", "");
 		}
 		
-		virtual void removeComponentFromEntity(int a_entity, COMPONENT* a_component){
-			GameManagerLog(ame_Log_StartMethod, "removeComponentFromEntity",  "println", "");
+		virtual void removeComponentFromEntityByPointer(int a_entity, COMPONENT* a_component){
+			GameManagerLog(ame_Log_StartMethod, "removeComponentFromEntityByPointer",  "println", "");
 			ENTITY* i_obj = m_game_objects.getByPosition(a_entity);
 			if(i_obj == nullptr){
-				GameManagerLog(ame_Log_EndMethod, "removeComponentFromEntity",  "println", "");
+				GameManagerLog(ame_Log_EndMethod, "removeComponentFromEntityByPointer",  "println", "");
 				return;
 			}
 			
-			i_obj->detach(a_component);
-			PrimitiveList<COMPONENT>* i_list = m_components.getByPointer(a_component->getClass());
+			i_obj->detachByPointer(a_component);
+			PrimitiveList<COMPONENT>* i_list = m_components.getValueByPointer(a_component->getClass());
 			if(i_list == nullptr){
-				GameManagerLog(ame_Log_EndMethod, "removeComponentFromEntity",  "println", "");
+				GameManagerLog(ame_Log_EndMethod, "removeComponentFromEntityByPointer",  "println", "");
 				return;
 			}
 
 			i_list->removeByPointer(a_component);
-			GameManagerLog(ame_Log_EndMethod, "removeComponentFromEntity",  "println", "");
+			GameManagerLog(ame_Log_EndMethod, "removeComponentFromEntityByPointer",  "println", "");
 		}
 		
-		virtual void removeComponentFromGameObject(ENTITY* a_obj, COMPONENT* a_component){
-			GameManagerLog(ame_Log_StartMethod, "removeComponentFromGameObject",  "println", "");
+		virtual void removeComponentFromGameObjectByPointer(ENTITY* a_obj, COMPONENT* a_component){
+			GameManagerLog(ame_Log_StartMethod, "removeComponentFromGameObjectByPointer",  "println", "");
 			if(a_obj == nullptr){
-				GameManagerLog(ame_Log_EndMethod, "removeComponentFromGameObject",  "println", "");
+				GameManagerLog(ame_Log_EndMethod, "removeComponentFromGameObjectByPointer",  "println", "");
 				return;
 			}
 			
-			a_obj->detach(a_component);
-			PrimitiveList<COMPONENT>* i_list = m_components.getByPointer(a_component->getClass());
+			a_obj->detachByPointer(a_component);
+			PrimitiveList<COMPONENT>* i_list = m_components.getValueByPointer(a_component->getClass());
 			if(i_list == nullptr){
-				GameManagerLog(ame_Log_EndMethod, "removeComponentFromGameObject",  "println", "");
+				GameManagerLog(ame_Log_EndMethod, "removeComponentFromGameObjectByPointer",  "println", "");
 				return;
 			}
 
 			i_list->removeByPointer(a_component);
-			GameManagerLog(ame_Log_EndMethod, "removeComponentFromGameObject",  "println", "");
+			GameManagerLog(ame_Log_EndMethod, "removeComponentFromGameObjectByPointer",  "println", "");
 		}
 		
-		virtual void deleteComponentFromEntity(int a_entity, COMPONENT* a_component){
-			GameManagerLog(ame_Log_StartMethod, "deleteComponentFromEntity",  "println", "");
+		virtual void deleteComponentFromEntityByPointer(int a_entity, COMPONENT* a_component){
+			GameManagerLog(ame_Log_StartMethod, "deleteComponentFromEntityByPointer",  "println", "");
 			if(a_component == nullptr){
 				return;
 			}
 			
 			ENTITY* i_obj = m_game_objects.getByPosition(a_entity);
 			if(i_obj == nullptr){
-				GameManagerLog(ame_Log_EndMethod, "deleteComponentFromEntity",  "println", "");
+				GameManagerLog(ame_Log_EndMethod, "deleteComponentFromEntityByPointer",  "println", "");
 				return;
 			}
-			i_obj->detach(a_component);
-			PrimitiveList<COMPONENT>* i_list = m_components.getByPointer(a_component->getClass());
+			i_obj->detachByPointer(a_component);
+			PrimitiveList<COMPONENT>* i_list = m_components.getValueByPointer(a_component->getClass());
 			if(i_list != nullptr){
 				i_list->removeByPointer(a_component);
 			}
 			delete a_component;
-			GameManagerLog(ame_Log_EndMethod, "deleteComponentFromEntity",  "println", "");
+			GameManagerLog(ame_Log_EndMethod, "deleteComponentFromEntityByPointer",  "println", "");
 		}
 		
-		virtual void deleteComponentFromGameObject(ENTITY* a_obj, COMPONENT* a_component){
-			GameManagerLog(ame_Log_StartMethod, "deleteGameObjectComponent",  "println", "");
+		virtual void deleteComponentFromGameObjectByPointer(ENTITY* a_obj, COMPONENT* a_component){
+			GameManagerLog(ame_Log_StartMethod, "deleteComponentFromGameObjectByPointer",  "println", "");
 			if(a_component == nullptr){
-				GameManagerLog(ame_Log_EndMethod, "deleteGameObjectComponent",  "println", "");
+				GameManagerLog(ame_Log_EndMethod, "deleteComponentFromGameObjectByPointer",  "println", "");
 				return;
 			}
 			if(a_obj == nullptr){
-				GameManagerLog(ame_Log_EndMethod, "deleteGameObjectComponent",  "println", "");
+				GameManagerLog(ame_Log_EndMethod, "deleteComponentFromGameObjectByPointer",  "println", "");
 				return;
 			}
 			if(!m_game_objects.containByPointer(a_obj)){
-				GameManagerLog(ame_Log_EndMethod, "deleteGameObjectComponent",  "println", "");
+				GameManagerLog(ame_Log_EndMethod, "deleteComponentFromGameObjectByPointer",  "println", "");
 				return;
 			}
-			a_obj->detach(a_component);
-			PrimitiveList<COMPONENT>* i_list = m_components.getByPointer(a_component->getClass());
+			a_obj->detachByPointer(a_component);
+			PrimitiveList<COMPONENT>* i_list = m_components.getValueByPointer(a_component->getClass());
 			if(i_list != nullptr){
 				i_list->removeByPointer(a_component);
 			}
 			delete a_component;
-			GameManagerLog(ame_Log_EndMethod, "deleteGameObjectComponent",  "println", "");
+			GameManagerLog(ame_Log_EndMethod, "deleteComponentFromGameObjectByPointer",  "println", "");
 		}
 		
 		//resets the list and it deletes the components from there entities
@@ -1016,19 +1042,15 @@ class GameManager IMPLEMENTATION_BaseAppState {
 			return m_game_objects.getPosition();
 		}
 		
-		virtual int getComponentSize(int a_entity){
-			GameManagerLog(ame_Log_StartMethod, "getComponentSize",  "println", "");
-			if(m_game_objects.getByPosition(a_entity)==nullptr){
-				GameManagerLog(ame_Log_EndMethod, "deleteEntity",  "println", "");
-				return -1;
-			}
+		virtual int getComponentSizeByPosition(int a_entity){
+			GameManagerLog(ame_Log_StartMethod, "getComponentSizeByPosition",  "println", "");
 			ENTITY* i_obj = m_game_objects.getByPosition(a_entity);
 			if(i_obj == nullptr){
-				GameManagerLog(ame_Log_EndMethod, "deleteEntity",  "println", "");
+				GameManagerLog(ame_Log_EndMethod, "getComponentSizeByPosition",  "println", "");
 				return -1;
 			}
 			PrimitiveList<COMPONENT>& i_list = i_obj->getChilds();
-			GameManagerLog(ame_Log_EndMethod, "deleteEntity",  "println", "");
+			GameManagerLog(ame_Log_EndMethod, "getComponentSizeByPosition",  "println", "");
 			return i_list.getPosition();
 		}
 		
@@ -1042,20 +1064,20 @@ class GameManager IMPLEMENTATION_BaseAppState {
 		}
 		
 		virtual cppObjectClass* getClass(){
-			return Class<GameManager>::classType;
+			return Class<GameManager>::getClass();
 		}
 		
 		virtual void updateState(float tpc){
 			// Serial.println("start GameManager update");
 			for(int txp = 0; txp < this->m_addRequest.getPosition(); txp++){
 				GameManagerLog(ame_Log_Statement, "update",  "println", "addRequest");
-				this->addComponentToGameObject(this->m_addRequest.getKeyByPosition(txp), this->m_addRequest.getByPosition(txp));
+				this->addComponentToGameObject(this->m_addRequest.getKeyByPosition(txp), this->m_addRequest.getValueByPosition(txp));
 			}
 			this->m_addRequest.reset();
 			
 			for(int txp = 0; txp < this->m_deleteRequest.getPosition(); txp++){
 				GameManagerLog(ame_Log_Statement, "update",  "println", "deleteRequest");
-				this->addComponentToGameObject(this->m_deleteRequest.getKeyByPosition(txp), this->m_deleteRequest.getByPosition(txp));
+				this->deleteComponentFromGameObjectByClass(this->m_deleteRequest.getKeyByPosition(txp), this->m_deleteRequest.getValueByPosition(txp));
 			}
 			this->m_deleteRequest.resetDeleteValue();
 			
@@ -1077,10 +1099,10 @@ class GameManager IMPLEMENTATION_BaseAppState {
 		bool m_deleteAllE = false;
 
 		PrimitiveList<ENTITY> m_deleteERequest = PrimitiveList<ENTITY>(5, false, true);
-		PrimitiveMap<ENTITY,COMPONENT> m_addRequest = PrimitiveMap<ENTITY,COMPONENT>(5, false, false, true);
-		PrimitiveMap<ENTITY,cppObjectClass> m_deleteRequest = PrimitiveMap<ENTITY,cppObjectClass>(5, false, false, true);
+		PrimitiveMap<ENTITY,COMPONENT> m_addRequest = (PrimitiveMap<ENTITY,COMPONENT>(5, false, false, true));
+		PrimitiveMap<ENTITY,cppObjectClass> m_deleteRequest = (PrimitiveMap<ENTITY,cppObjectClass>(5, false, false, true));
 
-		PrimitiveMap<cppObjectClass,PrimitiveList<COMPONENT>> m_components = PrimitiveMap<cppObjectClass,PrimitiveList<COMPONENT>>(5, false, true, true);
+		PrimitiveMap<cppObjectClass,PrimitiveList<COMPONENT>> m_components = (PrimitiveMap<cppObjectClass,PrimitiveList<COMPONENT>>(5, false, true, true));
 		PrimitiveList<ENTITY> m_game_objects = PrimitiveList<ENTITY>(5, true, true);
 };
 

@@ -352,6 +352,10 @@ class PrimitiveRawPointerList : virtual public RawPointerList<T>{
 			PrimitiveRawPointerListLog(ame_Log_Statement, "expandLocal", "println", a_size);
 			PrimitiveRawPointerListLog(ame_Log_Statement, "expandLocal", "println", "List new size:");
 			PrimitiveRawPointerListLog(ame_Log_Statement, "expandLocal", "println", i_size);
+			if(i_size <= 1){
+				PrimitiveRawPointerListLog(ame_Log_EndMethod, "expandLocal", "println", "new size is too small");
+				return;
+			}
 			T **nT;
 			nT = new T*[i_size];
 			for(int x = 0; x < this->getPosition(); x++){

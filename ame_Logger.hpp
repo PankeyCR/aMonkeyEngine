@@ -72,5 +72,10 @@
 	
 #endif
 
+#define ame_Loging(location,method) ame_Log(nullptr,location,"raw",method,"println","Loging Event") 
+#define ame_Loger(location,method,mns) ame_Log(nullptr,location,"raw",method,"println",mns) 
+
+#define ame_ClassLoging(location,name,method) ame_Log(nullptr,location,name,method,"println","Loging Event") 
+
 #endif 
 

@@ -58,6 +58,9 @@
 // #define ame_SystemFullLog
 //#define ame_Arduino_Log
 
+// #define GameSystem_LogApp
+// #define TimeEventGameSystem_LogApp
+
 // #define Lexer_LogApp
 
 // #define InputState_LogApp
@@ -83,7 +86,7 @@
 // #define LinkedRawPointerList_LogApp
 // #define LinkedRawList_LogApp
 // #define LinkedIterator_LogApp
-//#define PrimitiveRawPointerList_LogApp
+// #define PrimitiveRawPointerList_LogApp
 // #define PrimitiveRawList_LogApp
 // #define PrimitiveList_LogApp
 
@@ -153,8 +156,8 @@
 #define DISABLE_Chunk
 
 // #define DISABLE_cppObjectClass
-#define DISABLE_Annotation
-#define DISABLE_Method
+// #define DISABLE_Annotation
+// #define DISABLE_Method
 
 // #define DISABLE_cppObject
 
@@ -196,10 +199,10 @@
 //   addClassMethodToLog("toLong");
 
 
-// #ifndef ame_LogDebug
-// 	#include "ame_debug.hpp"
-// 	#define ame_LogDebug(pointer,location,name,method,type) debug(pointer,location,name,method,type)
-// #endif
+#ifndef ame_LogDebug
+	#include "ame_debug.hpp"
+	#define ame_LogDebug(pointer,location,name,method,type) debug(pointer,location,name,method,type)
+#endif
 
 // #ifndef ame_LogDebug
 // 	#include "ame_list_debug.hpp"
