@@ -75,10 +75,12 @@ class PrimitiveRawPointerList : virtual public RawPointerList<T>{
 		
 
 		virtual bool isEmpty()const{
+			PrimitiveRawPointerListLog(ame_Log_StartMethod, "isEmpty", "println", "");
 			PrimitiveRawPointerListLog(ame_Log_Statement, "isEmpty", "println", "List Position:");
 			PrimitiveRawPointerListLog(ame_Log_Statement, "isEmpty", "println", this->getPosition());
 			PrimitiveRawPointerListLog(ame_Log_Statement, "isEmpty", "println", "List Size:");
 			PrimitiveRawPointerListLog(ame_Log_Statement, "isEmpty", "println", this->getSize());
+			PrimitiveRawPointerListLog(ame_Log_EndMethod, "isEmpty", "println", "");
 			return this->getPosition() == 0 || this->m_values == nullptr;
 		}
 	
@@ -215,10 +217,14 @@ class PrimitiveRawPointerList : virtual public RawPointerList<T>{
 		virtual bool containByPointer(T* a_key){
 			PrimitiveRawPointerListLog(ame_Log_StartMethod, "containByPointer", "println", "");
 			if(this->isEmpty()){
+				PrimitiveRawPointerListLog(ame_Log_Statement, "containByPointer", "println", "this->isEmpty()");
+				PrimitiveRawPointerListLog(ame_Log_EndMethod, "containByPointer", "println", "return false");
 				return false;
 			}
 			for(int x = 0; x < this->getPosition(); x++){
 				if(a_key == this->m_values[x]){
+					PrimitiveRawPointerListLog(ame_Log_Statement, "containByPointer", "println", "a_key == this->m_values[x]");
+					PrimitiveRawPointerListLog(ame_Log_EndMethod, "containByPointer", "println", "return true");
 					return true;
 				}
 			}
@@ -267,6 +273,8 @@ class PrimitiveRawPointerList : virtual public RawPointerList<T>{
 		virtual T* removeByPointer(T* a_key){
 			PrimitiveRawPointerListLog(ame_Log_StartMethod, "removeByPointer", "println", "");
 			int i_position = this->getIndexByPointer(a_key);
+			PrimitiveRawPointerListLog(ame_Log_EndMethod, "removeByPointer", "println", "removed position: ");
+			PrimitiveRawPointerListLog(ame_Log_EndMethod, "removeByPointer", "println", i_position);
 			PrimitiveRawPointerListLog(ame_Log_EndMethod, "removeByPointer", "println", "");
 			return this->removeByPosition(i_position);
 		}

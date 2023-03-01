@@ -11,13 +11,19 @@ void setup() {
 }
 
 void loop() {
+  ame_Debuging(ame_Log_StartLoop, "loop");
+  
   Reflection reflection;
   reflection.addClass("Example");
-  reflection.addClassMethod("Example", "runEvent", runEvent);
+  reflection.addMethod("Example", "runEvent", runEvent);
 
   cppObject* obj = reflection.newInstance("Example");
 
   reflection.invoke(obj, "runEvent");
+
+  delete obj;
+  
+  ame_Debuging(ame_Log_EndLoop, "loop");
 }
 
 

@@ -93,6 +93,35 @@ class Reflection : public cppObject{
 			
 			MethodMap<Args...>::add(i_method->getClass(), a_method);
 		}
+	
+		cppObject* newInstance(Note a_class_name){
+			cppObjectClass* cls = this->m_classes.getValueByLValue(a_class_name);
+			if(cls == nullptr){
+				return new Object();
+			}
+			
+			return cls->newInstance();
+		}
+	
+		template<class... Args>
+		void invoke(cppObject* a_obj, Note a_method_name, Args... a_invoke){
+			ReflectionLog(ame_Log_StartMethod, "invokeMethod",  "println", "");
+			ReflectionLog(ame_Log_Statement, "invokeMethod",  "println", Note("Name: ") + a_method_name);
+			cppObjectClass* cls = a_obj->getClass();
+			if(cls == nullptr){
+				ReflectionLog(ame_Log_EndMethod, "invokeMethod",  "println", "");
+				return;
+			}
+
+			Method* i_method = cls->getMethodByName(a_method_name.pointer());
+			if(i_method == nullptr){
+				ReflectionLog(ame_Log_EndMethod, "invokeMethod",  "println", "");
+				return;
+			}
+
+			MethodMap<Args...>::invoke(i_method->getClass(), a_invoke...);
+			ReflectionLog(ame_Log_EndMethod, "invokeMethod",  "println", "");
+		}
 	/*
 	static RawMap<Note,cppObjectClass>* m_classes;
 	
@@ -146,12 +175,6 @@ class Reflection : public cppObject{
 		return ReturnMethodMap<R,Args...>::invoke(a_name,a_invoke...);
 	}
 	
-	template<class... Args> 
-	static void invokeRawMethod(Note a_name, Args... a_invoke){
-		ReflectionLog(ame_Log_Statement, "invokeMethod",  "println", Note("Name: ") + a_name);
-		MethodMap<Args...>::invoke(a_name,a_invoke...);
-	}
-	
 	template<class R = bool, class... Args> 
 	static R invokeReturnMethod(Note a_name, Args... a_invoke){
 		ReflectionLog(ame_Log_Statement, "invokeMethod",  "println", Note("Name: ") + a_name);
@@ -189,15 +212,6 @@ class Reflection : public cppObject{
 		// ClassMethodList<T>::add(i_method);
 		// ClassMethodMap<T,Args...>::add(a_method_name, a_method);
 		// ClassMethodReturnInvoker<T,R,Args...>::add(Class<T>::classType, a_method_name, a_method);
-	}
-	
-	static cppObject* newInstance(Note a_note){
-		cppObjectClass* cls = m_classes->getByLValue(a_note);
-		if(cls == nullptr){
-			return new Object();
-		}
-		
-		return new Object();
 	}
 	
 	static cppObject* invoke(Note a_note){

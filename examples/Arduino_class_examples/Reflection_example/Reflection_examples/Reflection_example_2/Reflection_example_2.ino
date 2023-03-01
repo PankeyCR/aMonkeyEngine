@@ -19,6 +19,8 @@ void setup() {
 }
 
 void loop() {
+  ame_Debuging(ame_Log_StartLoop, "loop");
+  
   Reflection reflection;
   reflection.addClass("Example", Class<Example>::getClass());
   reflection.addClassMethod("Example", "runClassEvent", Example::runClassEvent);
@@ -26,6 +28,10 @@ void loop() {
   cppObject* obj = reflection.newInstance("Example");
 
   reflection.invoke(obj, "runClassEvent");
+
+  delete obj;
+  
+  ame_Debuging(ame_Log_EndLoop, "loop");
 }
 
 

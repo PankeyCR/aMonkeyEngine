@@ -115,7 +115,7 @@ class GameManager IMPLEMENTATION_BaseAppState {
 		
 		
 		virtual void deleteEntity(int a_entity){
-			GameManagerLog(ame_Log_StartMethod, "deleteEntity",  "println", Note("id ") + Note(entity));
+			GameManagerLog(ame_Log_StartMethod, "deleteEntity",  "println", Note("id: ") + Note(a_entity));
 			ENTITY* i_obj = m_game_objects.getByPosition(a_entity);
 			if(i_obj == nullptr){
 				GameManagerLog(ame_Log_StartMethod, "deleteEntity",  "println", "i_obj == nullptr");
@@ -160,18 +160,18 @@ class GameManager IMPLEMENTATION_BaseAppState {
 			}
 			GameManagerLog(ame_Log_StartMethod, "deleteGameObject",  "println", "removing-deleting from the GameObjects list");
 			m_game_objects.removeDeleteByPointer(a_obj);
-			GameManagerLog(ame_Log_EndMethod, "deleteEntity",  "println", "");
+			GameManagerLog(ame_Log_EndMethod, "deleteGameObject",  "println", "");
 		}
 		
 		virtual void deleteAllEntities(){
 			GameManagerLog(ame_Log_StartMethod, "deleteAllEntities",  "println", "");
-			GameManagerLog(ame_Log_StartMethod, "deleteAllEntities",  "println", Note("total entities ") + Note(components.getPosition()));
+			GameManagerLog(ame_Log_StartMethod, "deleteAllEntities",  "println", Note("total entities ") + Note(m_components.getPosition()));
 			for(int x = 0; x < m_components.getPosition(); x++){
 				List<COMPONENT>* i_childs = m_components.getValueByPosition(x);
 				i_childs->reset();
 			}
 			m_game_objects.resetDelete();
-			GameManagerLog(ame_Log_EndMethod, "deleteEntity",  "println", "");
+			GameManagerLog(ame_Log_EndMethod, "deleteAllEntities",  "println", "");
 		}
 		
 		
@@ -180,6 +180,7 @@ class GameManager IMPLEMENTATION_BaseAppState {
 			GameManagerLog(ame_Log_StartMethod, "requestDeleteEntity",  "println", Note("id ") + Note(a_entity));
 			ENTITY* i_obj = m_game_objects.getByPosition(a_entity);
 			if(i_obj == nullptr){
+				GameManagerLog(ame_Log_EndMethod, "requestDeleteEntity",  "println", "i_obj == nullptr");
 				return;
 			}
 			m_deleteERequest.addPointer(i_obj);
@@ -189,6 +190,7 @@ class GameManager IMPLEMENTATION_BaseAppState {
 		virtual void requestDeleteGameObject(ENTITY* a_obj){
 			GameManagerLog(ame_Log_StartMethod, "requestDeleteGameObject",  "println", "");
 			if(!m_game_objects.containByPointer(a_obj)){
+				GameManagerLog(ame_Log_EndMethod, "requestDeleteGameObject",  "println", "!m_game_objects.containByPointer(a_obj)");
 				return;
 			}
 			m_deleteERequest.addPointer(a_obj);
@@ -336,6 +338,8 @@ class GameManager IMPLEMENTATION_BaseAppState {
 			
 			PrimitiveList<COMPONENT>* i_list = m_components.getValueByPointer(a_component->getClass());
 			if(i_list == nullptr){
+				GameManagerLog(ame_Log_Statement, "addComponentToGameObject",  "println", "i_list == nullptr");
+				GameManagerLog(ame_Log_Statement, "addComponentToGameObject",  "println", "adding new list");
 				i_list = new PrimitiveList<COMPONENT>();
 				i_list->setOwner(false);
 				m_components.addPointers(a_component->getClass(), i_list);
@@ -1038,7 +1042,7 @@ class GameManager IMPLEMENTATION_BaseAppState {
 		
 		virtual int getEntitySize(){
 			GameManagerLog(ame_Log_StartMethod, "getEntitySize",  "println", "");
-			GameManagerLog(ame_Log_EndMethod, "deleteEntity",  "println", "");
+			GameManagerLog(ame_Log_EndMethod, "getEntitySize",  "println", "");
 			return m_game_objects.getPosition();
 		}
 		
@@ -1060,7 +1064,7 @@ class GameManager IMPLEMENTATION_BaseAppState {
 				COMPONENT* f_game_object = m_game_objects.getByPosition(x);
 				f_game_object->setId(x);
 			}
-			GameManagerLog(ame_Log_EndMethod, "deleteEntity",  "println", "");
+			GameManagerLog(ame_Log_EndMethod, "rearrange",  "println", "");
 		}
 		
 		virtual cppObjectClass* getClass(){
@@ -1068,30 +1072,31 @@ class GameManager IMPLEMENTATION_BaseAppState {
 		}
 		
 		virtual void updateState(float tpc){
-			// Serial.println("start GameManager update");
+			GameManagerLog(ame_Log_StartMethod, "updateState",  "println", "");
 			for(int txp = 0; txp < this->m_addRequest.getPosition(); txp++){
-				GameManagerLog(ame_Log_Statement, "update",  "println", "addRequest");
+				GameManagerLog(ame_Log_Statement, "updateState",  "println", "addRequest");
 				this->addComponentToGameObject(this->m_addRequest.getKeyByPosition(txp), this->m_addRequest.getValueByPosition(txp));
 			}
 			this->m_addRequest.reset();
 			
 			for(int txp = 0; txp < this->m_deleteRequest.getPosition(); txp++){
-				GameManagerLog(ame_Log_Statement, "update",  "println", "deleteRequest");
+				GameManagerLog(ame_Log_Statement, "updateState",  "println", "deleteRequest");
 				this->deleteComponentFromGameObjectByClass(this->m_deleteRequest.getKeyByPosition(txp), this->m_deleteRequest.getValueByPosition(txp));
 			}
-			this->m_deleteRequest.resetDeleteValue();
+			this->m_deleteRequest.reset();
 			
 			for(int txp = 0; txp < this->m_deleteERequest.getPosition(); txp++){
-				GameManagerLog(ame_Log_Statement, "update",  "println", "deleteERequest");
+				GameManagerLog(ame_Log_Statement, "updateState",  "println", "deleteERequest");
 				this->deleteGameObject(this->m_deleteERequest.getByPosition(txp));
 			}
 			this->m_deleteERequest.reset();
 			
 			if(this->m_deleteAllE){
-				GameManagerLog(ame_Log_Statement, "update",  "println", "deleteAllE");
+				GameManagerLog(ame_Log_Statement, "updateState",  "println", "deleteAllE");
 				m_deleteAllE = false;
 				this->deleteAllEntities();
 			}
+			GameManagerLog(ame_Log_EndMethod, "updateState",  "println", "");
 		}
 		
 	protected:

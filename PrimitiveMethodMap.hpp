@@ -42,6 +42,15 @@ class PrimitiveMethodMap{
 			return true;
 		}
 
+		virtual bool invokeByPointer(K* a_key, Args... args){
+			EventMethodMap* i_event = m_method_map.getValueByPointer(a_key);
+			if(i_event == nullptr){
+				return false;
+			}
+			(**i_event)(args...);
+			return true;
+		}
+
 		virtual bool invokeByPosition(int a_position, Args... args){
 			EventMethodMap* i_event = m_method_map.getValueByPosition(a_position);
 			if(i_event == nullptr){

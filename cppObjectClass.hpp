@@ -25,6 +25,7 @@ namespace ame{
 class cppObjectClass{	
 	public:
 		cppObjectClass(){}
+		cppObjectClass(char* c_name){m_name = c_name;}
 		virtual ~cppObjectClass(){}
 		
 		virtual cppObjectClass* getClass(){return nullptr;}
@@ -49,6 +50,8 @@ class cppObjectClass{
 		virtual void* newPointer(){
 			return nullptr;
 		}
+
+		virtual cppObjectClass* clone(){return new cppObjectClass(m_name);}
 
 		#if defined(Annotation_AVAILABLE)
 		virtual Annotation* addAnnotation(Annotation* a_annotation){
@@ -82,6 +85,10 @@ class cppObjectClass{
 		}
 		
 		virtual Method* getMethod(cppObjectClass* cls){
+			return nullptr;
+		}
+		
+		virtual Method* getMethodByName(char* a_name){
 			return nullptr;
 		}
 		#endif

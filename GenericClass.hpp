@@ -43,6 +43,26 @@ class GenericClass : public cppObjectClass{
 			return nullptr;
 		}
 		
+		virtual Method* getMethodByName(char* a_name){
+			RawPointerList<Method>* i_methods = this->getMethods();
+			if(i_methods == nullptr){
+				return nullptr;
+			}
+			for(int x = 0; x < i_methods->getPosition(); x++){
+				Method* f_method = i_methods->getByPosition(x);
+				if(f_method == nullptr){
+					continue;
+				}
+				Note i_name_1 = a_name;
+				Note i_name_2 = f_method->getName();
+				if( i_name_1 == i_name_2 ){
+					return f_method;
+				}
+			}
+
+			return nullptr;
+		}
+		
 		virtual RawList<Annotation>* getAnnotations(){
 			return annotationList;
 		}

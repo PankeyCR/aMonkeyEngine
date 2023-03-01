@@ -46,7 +46,7 @@ struct MethodMap {
 		if(m_method_map == nullptr){
 			return false;
 		}
-		return m_method_map->invoke(a_cls, a_invoke...);
+		return m_method_map->invokeByPointer(a_cls, a_invoke...);
 	}
 	
 	static bool invokeAll(Args... a_invoke){

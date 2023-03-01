@@ -410,6 +410,7 @@ class DefaultStateManager IMPLEMENTATION_AppStateManager {
 		}
 
 		virtual void update(){
+			DefaultStateManagerLog(ame_Log_StartMethod, "update",  "println", "");
 			this->now = System::microSeconds();
 			
 			this->t = (float)(this->now - this->prev)/1000000;
@@ -427,12 +428,17 @@ class DefaultStateManager IMPLEMENTATION_AppStateManager {
 				initializeStates.reset();
 			}
 			for(int x = 0; x < appStateList.getPosition(); x++){
+				DefaultStateManagerLog(ame_Log_StartMethod, "update",  "println", "iterating through all states");
+				DefaultStateManagerLog(ame_Log_StartMethod, "update",  "println", "iteration: ");
+				DefaultStateManagerLog(ame_Log_StartMethod, "update",  "println", x);
 				AppState* m_state = appStateList.getByPosition(x);
 				if(m_state == nullptr){
+					DefaultStateManagerLog(ame_Log_StartMethod, "update",  "println", "m_state == nullptr");
 					continue;
 				}
 				m_state->update(this->t);
 			}
+			DefaultStateManagerLog(ame_Log_EndMethod, "update", "println", "");
 		}
 
 		virtual float tpc(){
