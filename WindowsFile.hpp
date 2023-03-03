@@ -71,6 +71,9 @@ class WindowsFile : public MonkeyFile{
 
 		#ifdef ame_Windows
 		WindowsFile(){}
+		WindowsFile(const Note& a_root_hdd){
+			this->m_root_hdd = a_root_hdd;
+		}
 		#endif
 
 		virtual ~WindowsFile(){}
@@ -78,242 +81,563 @@ class WindowsFile : public MonkeyFile{
 		virtual void initialize(){}
 
 		virtual bool fastCreateDir(Note a_path){
+			WindowsFileLog(ame_Log_StartMethod, "fastCreateDir",  "println", "");
 			Note i_path = fixPath(a_path);
 			WindowsFileLog(ame_Log_Statement, "fastCreateDir",  "println", Note(i_path));
             CreateDirectory (i_path.pointer(), NULL);
+			WindowsFileLog(ame_Log_EndMethod, "fastCreateDir",  "println", "");
 			return true;
 		}
 
 		virtual bool createDir(Note a_path){
-			Note i_path = fixPath(a_path);
+			WindowsFileLog(ame_Log_StartMethod, "createDir",  "println", "");
+			Note i_path = this->fixPath(a_path);
 			WindowsFileLog(ame_Log_Statement, "createDir",  "println", Note(i_path));
             CreateDirectory (i_path.pointer(), NULL);
+			WindowsFileLog(ame_Log_EndMethod, "createDir",  "println", "");
 			return true;
 		}
 
 		virtual bool createRootDir(Note a_path){
+			WindowsFileLog(ame_Log_StartMethod, "createRootDir",  "println", "");
 			Note i_path = this->fixRootPath(a_path);
-			WindowsFileLog(ame_Log_Statement, "createDir",  "println", Note(i_path));
+			WindowsFileLog(ame_Log_Statement, "createRootDir",  "println", Note(i_path));
             CreateDirectory (i_path.pointer(), NULL);
+			WindowsFileLog(ame_Log_EndMethod, "createRootDir",  "println", "");
 			return true;
 		}
 
 		virtual bool deleteDir(Note a_path){
+			WindowsFileLog(ame_Log_StartMethod, "deleteDir",  "println", "");
 			Note i_path = fixPath(a_path);
-			WindowsFileLog(ame_Log_Statement, "deleteDir",  "println", Note(i_path));
+			WindowsFileLog(ame_Log_Statement, "deleteDir",  "println", i_path);
 
-			return false;
+			WindowsFileLog(ame_Log_EndMethod, "deleteDir",  "println", "");
+			return RemoveDirectoryA( i_path.pointer() );
 		}
 
 		virtual bool deleteRootDir(Note path){
+			WindowsFileLog(ame_Log_StartMethod, "deleteRootDir",  "println", "");
 			Note i_path = this->fixRootPath(path);
 			WindowsFileLog(ame_Log_Statement, "deleteRootDir",  "println", i_path);
 
-			return true;
+			WindowsFileLog(ame_Log_EndMethod, "deleteRootDir",  "println", "");
+			return RemoveDirectoryA( i_path.pointer() );
 		}
 
 		virtual bool fastCreateFile(Note a_path){
+			WindowsFileLog(ame_Log_StartMethod, "fastCreateFile",  "println", "");
 			Note i_path = fixPath(a_path);
             fstream i_file;
             i_file.open(i_path.pointer(),ios::out);
             i_file.close();
+			WindowsFileLog(ame_Log_EndMethod, "fastCreateFile",  "println", "");
 			return true;
 		}
 
 		virtual bool createFile(Note a_path){
+			WindowsFileLog(ame_Log_StartMethod, "createFile",  "println", "");
 			Note i_path = fixPath(a_path);
             fstream file;
             file.open(i_path.pointer(),ios::out);
             file.close();
+			WindowsFileLog(ame_Log_EndMethod, "createFile",  "println", "");
 			return true;
 		}
 		virtual bool createRootFile(Note a_path){
+			WindowsFileLog(ame_Log_StartMethod, "createRootFile",  "println", "");
 			Note i_path = this->fixRootPath(a_path);
             fstream file;
             file.open(i_path.pointer(),ios::out);
             file.close();
+			WindowsFileLog(ame_Log_EndMethod, "createRootFile",  "println", "");
 			return true;
 		}
 
 		virtual bool deleteFile(Note a_path){
+			WindowsFileLog(ame_Log_StartMethod, "deleteFile",  "println", "");
 			Note i_path = fixPath(a_path);
 			WindowsFileLog(ame_Log_Statement, "deleteFile",  "println", i_path);
-			return false;
+			
+			WindowsFileLog(ame_Log_EndMethod, "deleteFile",  "println", "");
+			return DeleteFileA( i_path.pointer() );
 		}
 		virtual bool deleteRootFile(Note a_path){
+			WindowsFileLog(ame_Log_StartMethod, "deleteRootFile",  "println", "");
 			Note i_path = this->fixRootPath(a_path);
 			WindowsFileLog(ame_Log_Statement, "deleteRootFile",  "println", i_path);
+			
+			WindowsFileLog(ame_Log_EndMethod, "deleteRootFile",  "println", "");
 			return false;
 		}
 
 		virtual bool fastClearFile(Note a_path){
+			WindowsFileLog(ame_Log_StartMethod, "fastClearFile",  "println", "");
 			Note i_path = fixPath(a_path);
             fstream file;
             file.open(i_path.pointer(),ios::out);
             file.close();
+			WindowsFileLog(ame_Log_EndMethod, "fastClearFile",  "println", "");
 			return true;
 		}
 
 		virtual bool clearFile(Note a_path){
+			WindowsFileLog(ame_Log_StartMethod, "clearFile",  "println", "");
 			Note i_path = fixPath(a_path);
             fstream file;
             file.open(i_path.pointer(),ios::out);
             file.close();
+			WindowsFileLog(ame_Log_EndMethod, "clearFile",  "println", "");
 			return true;
 		}
 
 		virtual bool clearRootFile(Note a_path){
+			WindowsFileLog(ame_Log_StartMethod, "clearRootFile",  "println", "");
 			Note i_path = fixRootPath(a_path);
             fstream file;
             file.open(i_path.pointer(),ios::out);
             file.close();
+			WindowsFileLog(ame_Log_EndMethod, "clearRootFile",  "println", "");
 			return true;
 		}
 
 		virtual bool fastWriteText(Note a_text, Note a_path){
+			WindowsFileLog(ame_Log_StartMethod, "fastWriteText",  "println", "");
 			Note i_path = fixPath(a_path);
 			WindowsFileLog(ame_Log_Statement, "fastWriteText",  "println", i_path);
 			WindowsFileLog(ame_Log_Statement, "fastWriteText",  "println", a_text);
+			
             fstream outfile;
 
-            outfile.open(i_path.pointer(), std::ios_base::out);
+            outfile.open(i_path.pointer(), std::ios_base::app);
             if (!outfile.is_open()) {
                 outfile.close();
                 return false;
             }
             outfile.write(a_text.pointer(), a_text.getPosition());
             outfile.close();
+			WindowsFileLog(ame_Log_EndMethod, "fastWriteText",  "println", "");
 			return true;
 		}
 
 		virtual bool writeText(Note a_text, Note a_path){
+			WindowsFileLog(ame_Log_StartMethod, "writeText",  "println", "");
 			Note i_path = fixPath(a_path);
 			WindowsFileLog(ame_Log_Statement, "fastWriteText",  "println", i_path);
 			WindowsFileLog(ame_Log_Statement, "fastWriteText",  "println", a_text);
+			
             fstream outfile;
 
-            outfile.open(i_path.pointer(), std::ios_base::out);
+            outfile.open(i_path.pointer(), std::ios_base::app);
             if (!outfile.is_open()) {
                 outfile.close();
                 return false;
             }
             outfile.write(a_text.pointer(), a_text.getPosition());
             outfile.close();
+			WindowsFileLog(ame_Log_EndMethod, "writeText",  "println", "");
 			return true;
 		}
 
 		virtual bool writeRootText(Note a_text, Note a_path){
+			WindowsFileLog(ame_Log_StartMethod, "writeRootText",  "println", "");
 			Note i_path = this->fixRootPath(a_path);
 			WindowsFileLog(ame_Log_Statement, "fastWriteText",  "println", i_path);
 			WindowsFileLog(ame_Log_Statement, "fastWriteText",  "println", a_text);
             fstream outfile;
 
-            outfile.open(i_path.pointer(), std::ios_base::out);
+            outfile.open(i_path.pointer(), std::ios_base::app);
             if (!outfile.is_open()) {
                 outfile.close();
                 return false;
             }
             outfile.write(a_text.pointer(), a_text.getPosition());
             outfile.close();
+			WindowsFileLog(ame_Log_EndMethod, "writeRootText",  "println", "");
 			return true;
 		}
-
+/*
 		virtual Note fastReadText(Note a_path){
+			WindowsFileLog(ame_Log_StartMethod, "fastReadText",  "println", "");
 			Note i_path = fixPath(a_path);
-			WindowsFileLog(ame_Log_Statement, "readText",  "println", i_path);
+			WindowsFileLog(ame_Log_Statement, "fastReadText",  "println", i_path);
             std::string readLineFromInput;
 
             std::ifstream readFile(i_path.pointer());
             if (readFile)
                 std::getline(readFile, readLineFromInput);
+			WindowsFileLog(ame_Log_EndMethod, "fastReadText",  "println", "");
             return Note(readLineFromInput.c_str());
 		}
-
+*/
 		virtual Note readText(Note a_path){
-			Note i_path = fixPath(a_path);
+			WindowsFileLog(ame_Log_StartMethod, "readText",  "println", "");
+			Note i_path = this->fixPath(a_path);
 			WindowsFileLog(ame_Log_Statement, "readText",  "println", i_path);
-            std::string readLineFromInput;
+            Note i_text;
+            ifstream i_file;
 
-            std::ifstream readFile(i_path.pointer());
-            if (readFile)
-                std::getline(readFile, readLineFromInput);
-            return Note(readLineFromInput.c_str());
+            i_file.open(i_path.pointer());
+			if ( i_file.is_open() ) {
+				char i_char;
+				while ( i_file ) {
+					i_char = i_file.get();
+					if(i_char == '\0' || i_char == '\r'){
+						break;
+					}
+					i_text.addLocalValue(i_char);
+				}
+			}
+			WindowsFileLog(ame_Log_EndMethod, "readText",  "println", "");
+			return i_text;
 		}
 
 		virtual Note readRootText(Note a_path){
+			WindowsFileLog(ame_Log_StartMethod, "readRootText",  "println", "");
 			Note i_path = this->fixRootPath(a_path);
 			WindowsFileLog(ame_Log_Statement, "readRootText",  "println", i_path);
-            std::string readLineFromInput;
+            Note i_text;
+            ifstream i_file;
 
-            std::ifstream readFile(i_path.pointer());
-            if (readFile)
-                std::getline(readFile, readLineFromInput);
-            return Note(readLineFromInput.c_str());
+            i_file.open(i_path.pointer());
+			if ( i_file.is_open() ) {
+				char i_char;
+				while ( i_file ) {
+					i_char = i_file.get();
+					if(i_char == '\0' || i_char == '\r'){
+						continue;
+					}
+					i_text.addLocalValue(i_char);
+				}
+			}
+			WindowsFileLog(ame_Log_EndMethod, "readRootText",  "println", "");
+			return i_text;
 		}
 
+		virtual Note readSizedText(int a_size, Note a_file){
+			WindowsFileLog(ame_Log_StartMethod, "readSizedText",  "println", "");
+			Note i_path = this->fixPath(a_file);
+			WindowsFileLog(ame_Log_Statement, "readSizedText",  "println", i_path);
+            Note i_text;
+            ifstream i_file;
+
+            i_file.open(i_path.pointer());
+			if ( i_file.is_open() ) {
+				char i_char;
+				for(int x = 0; x < a_size; x++) {
+					i_char = i_file.get();
+					if(i_char == '\0' || i_char == '\r'){
+						break;
+					}
+					i_text.addLocalValue(i_char);
+				}
+			}
+			WindowsFileLog(ame_Log_EndMethod, "readSizedText",  "println", "");
+			return i_text;
+		}
+		virtual Note readRootSizedText(int a_size, Note a_file){
+			WindowsFileLog(ame_Log_StartMethod, "readRootSizedText",  "println", "");
+			Note i_path = this->fixRootPath(a_file);
+			WindowsFileLog(ame_Log_Statement, "readRootSizedText",  "println", i_path);
+            Note i_text;
+            ifstream i_file;
+
+            i_file.open(i_path.pointer());
+			if ( i_file.is_open() ) {
+				char i_char;
+				for(int x = 0; x < a_size; x++) {
+					i_char = i_file.get();
+					if(i_char == '\0' || i_char == '\r'){
+						break;
+					}
+					i_text.addLocalValue(i_char);
+				}
+			}
+			WindowsFileLog(ame_Log_EndMethod, "readRootSizedText",  "println", "");
+			return i_text;
+		}
+
+		virtual PrimitiveList<Note> readLines(Note a_file){
+			WindowsFileLog(ame_Log_StartMethod, "readLines",  "println", "");
+			Note i_path = this->fixPath(a_file);
+			WindowsFileLog(ame_Log_Statement, "readLines",  "println", i_path);
+			PrimitiveList<Note> i_list;
+            Note i_text;
+            ifstream i_file;
+
+            i_file.open(i_path.pointer());
+			if ( i_file.is_open() ) {
+				char i_char;
+				while ( i_file ) {
+					i_char = i_file.get();
+					if(i_char == '\n'){
+						i_list.add(i_text);
+						i_text.clear();
+						continue;
+					}
+					if(i_char == '\0' || i_char == '\r'){
+						break;
+					}
+					i_text.addLocalValue(i_char);
+				}
+			}
+			if(!i_text.isEmpty()){
+				i_list.add(i_text);
+				i_text.clear();
+			}
+			WindowsFileLog(ame_Log_EndMethod, "readLines",  "println", "");
+			return i_list;
+		}
+
+		virtual PrimitiveList<Note> readRootLines(Note a_file){
+			WindowsFileLog(ame_Log_StartMethod, "readRootLines",  "println", "");
+			Note i_path = this->fixRootPath(a_file);
+			WindowsFileLog(ame_Log_Statement, "readRootLines",  "println", i_path);
+			PrimitiveList<Note> i_list;
+            Note i_text;
+            ifstream i_file;
+
+            i_file.open(i_path.pointer());
+			if ( i_file.is_open() ) {
+				char i_char;
+				while ( i_file ) {
+					i_char = i_file.get();
+					if(i_char == '\n'){
+						i_list.add(i_text);
+						i_text.clear();
+						continue;
+					}
+					if(i_char == '\0' || i_char == '\r'){
+						break;
+					}
+					i_text.addLocalValue(i_char);
+				}
+			}
+			if(!i_text.isEmpty()){
+				i_list.add(i_text);
+				i_text.clear();
+			}
+			WindowsFileLog(ame_Log_EndMethod, "readRootLines",  "println", "");
+			return i_list;
+		}
+		
+		virtual PrimitiveList<Note> readSizedLines(int a_size, Note a_file){
+			WindowsFileLog(ame_Log_StartMethod, "readSizedLines",  "println", "");
+			Note i_path = this->fixPath(a_file);
+			WindowsFileLog(ame_Log_Statement, "readSizedLines",  "println", i_path);
+			PrimitiveList<Note> i_list;
+            Note i_text;
+            ifstream i_file;
+
+            i_file.open(i_path.pointer());
+			if ( i_file.is_open() ) {
+				char i_char;
+				for(int x = 0; x < a_size; x++) {
+					i_char = i_file.get();
+					if(i_char == '\n'){
+						i_list.add(i_text);
+						i_text.clear();
+						continue;
+					}
+					if(i_char == '\0' || i_char == '\r'){
+						break;
+					}
+					i_text.addLocalValue(i_char);
+				}
+			}
+			if(!i_text.isEmpty()){
+				i_list.add(i_text);
+				i_text.clear();
+			}
+			WindowsFileLog(ame_Log_EndMethod, "readSizedLines",  "println", "");
+			return i_list;
+		}
+
+		virtual PrimitiveList<Note> readRootSizedLines(int a_size, Note a_file){
+			WindowsFileLog(ame_Log_StartMethod, "readRootSizedLines",  "println", "");
+			Note i_path = this->fixRootPath(a_file);
+			WindowsFileLog(ame_Log_Statement, "readRootSizedLines",  "println", i_path);
+			PrimitiveList<Note> i_list;
+            Note i_text;
+            ifstream i_file;
+
+            i_file.open(i_path.pointer());
+			if ( i_file.is_open() ) {
+				char i_char;
+				for(int x = 0; x < a_size; x++) {
+					i_char = i_file.get();
+					if(i_char == '\n'){
+						i_list.add(i_text);
+						i_text.clear();
+						continue;
+					}
+					if(i_char == '\0' || i_char == '\r'){
+						break;
+					}
+					i_text.addLocalValue(i_char);
+				}
+			}
+			if(!i_text.isEmpty()){
+				i_list.add(i_text);
+				i_text.clear();
+			}
+			WindowsFileLog(ame_Log_EndMethod, "readRootSizedLines",  "println", "");
+			return i_list;
+		}
+		
+		virtual Note readLine(int a_line, Note a_file){
+			WindowsFileLog(ame_Log_StartMethod, "readLine",  "println", "");
+			Note i_path = this->fixPath(a_file);
+			WindowsFileLog(ame_Log_Statement, "readLine",  "println", i_path);
+            Note i_text;
+            ifstream i_file;
+			int i_line = 0;
+
+            i_file.open(i_path.pointer());
+			if ( i_file.is_open() ) {
+				char i_char;
+				while ( i_file ) {
+					i_char = i_file.get();
+					if(i_char == '\n'){
+						i_line++;
+						continue;
+					}
+					if(i_char == '\0' || i_char == '\r'){
+						break;
+					}
+					if(i_line == a_line){
+						i_text.addLocalValue(i_char);
+					}
+				}
+			}
+			WindowsFileLog(ame_Log_EndMethod, "readLine",  "println", "");
+			return i_text;
+		}
+
+		virtual Note readRootLine(int a_line, Note a_file){
+			WindowsFileLog(ame_Log_StartMethod, "readRootLine",  "println", "");
+			Note i_path = this->fixRootPath(a_file);
+			WindowsFileLog(ame_Log_Statement, "readRootLine",  "println", i_path);
+            Note i_text;
+            ifstream i_file;
+			int i_line = 0;
+
+            i_file.open(i_path.pointer());
+			if ( i_file.is_open() ) {
+				char i_char;
+				while ( i_file ) {
+					i_char = i_file.get();
+					if(i_char == '\n'){
+						i_line++;
+						continue;
+					}
+					if(i_char == '\0' || i_char == '\r'){
+						break;
+					}
+					if(i_line == a_line){
+						i_text.addLocalValue(i_char);
+					}
+				}
+			}
+			WindowsFileLog(ame_Log_EndMethod, "readRootLine",  "println", "");
+			return i_text;
+		}
+
+
 		virtual bool writeByteArray(ByteArray array, Note a_path){
+			WindowsFileLog(ame_Log_StartMethod, "writeByteArray",  "println", "");
 			Note i_path = fixPath(a_path);
 			WindowsFileLog(ame_Log_Statement, "writeByteArray",  "println", i_path);
 
+			WindowsFileLog(ame_Log_EndMethod, "writeByteArray",  "println", "");
 			return true;
 		}
 
 		virtual bool writeRootByteArray(ByteArray array, Note path){
+			WindowsFileLog(ame_Log_StartMethod, "writeRootByteArray",  "println", "");
 			Note rpath = this->fixRootPath(path);
 			WindowsFileLog(ame_Log_Statement, "writeRootByteArray",  "println", rpath);
 
+			WindowsFileLog(ame_Log_EndMethod, "writeRootByteArray",  "println", "");
 			return true;
 		}
 
 		virtual ByteArray readByteArray(Note p){
+			WindowsFileLog(ame_Log_StartMethod, "readByteArray",  "println", "");
 			Note path = fixPath(p);
 			WindowsFileLog(ame_Log_Statement, "readByteArray",  "println", path);
 
 			ByteArray array;
+			WindowsFileLog(ame_Log_EndMethod, "readByteArray",  "println", "");
 			return array;
 		}
 
 		virtual ByteArray readRootByteArray(Note path){
+			WindowsFileLog(ame_Log_StartMethod, "readRootByteArray",  "println", "");
 			Note rpath = this->fixRootPath(path);
 			WindowsFileLog(ame_Log_Statement, "readRootByteArray",  "println", rpath);
 
 			ByteArray array;
+			WindowsFileLog(ame_Log_EndMethod, "readRootByteArray",  "println", "");
 			return array;
 		}
 
-		virtual bool exist(Note p){
-			Note path = fixPath(p);
+		virtual bool exist(Note a_path){
+			WindowsFileLog(ame_Log_StartMethod, "exist",  "println", "");
+			Note i_path = this->fixPath(a_path);
 			WindowsFileLog(ame_Log_Statement, "exist",  "println", "");
-			WindowsFileLog(ame_Log_Statement, "path ",  "println", path);
-			return false;
+			WindowsFileLog(ame_Log_Statement, "exist ",  "println", i_path);
+			
+  			WIN32_FIND_DATAA FindFileData = {0};
+   			HANDLE handle = FindFirstFileA(i_path.pointer(), &FindFileData) ;
+			FindClose(handle);
+
+			WindowsFileLog(ame_Log_EndMethod, "exist",  "println", "");
+    		return handle != INVALID_HANDLE_VALUE;
 		}
-		virtual bool existRoot(Note path){
-			Note rpath = this->fixRootPath(path);
+		virtual bool existRoot(Note a_path){
+			WindowsFileLog(ame_Log_StartMethod, "existRoot",  "println", "");
+			Note i_path = this->fixRootPath(a_path);
 			WindowsFileLog(ame_Log_Statement, "existRoot",  "println", "");
-			WindowsFileLog(ame_Log_Statement, "path ",  "println", rpath);
-			return false;
+			WindowsFileLog(ame_Log_Statement, "existRoot ",  "println", i_path);
+			
+  			WIN32_FIND_DATAA FindFileData = {0};
+   			HANDLE handle = FindFirstFileA(i_path.pointer(), &FindFileData) ;
+			FindClose(handle);
+
+			WindowsFileLog(ame_Log_EndMethod, "existRoot",  "println", "");
+    		return handle != INVALID_HANDLE_VALUE;
 		}
 
 		virtual bool isOpen(){
+			WindowsFileLog(ame_Log_StartMethod, "isOpen",  "println", "");
+			WindowsFileLog(ame_Log_EndMethod, "isOpen",  "println", "");
 			return true;
 		}
 
 		virtual int getFileSize(Note path){
-			WindowsFileLog(ame_Log_Statement, "getDirectoriesSize",  "println", Note("path: ") + path);
+			WindowsFileLog(ame_Log_StartMethod, "getFileSize",  "println", "");
+			WindowsFileLog(ame_Log_Statement, "getFileSize",  "println", Note("path: ") + path);
 
+			WindowsFileLog(ame_Log_EndMethod, "getFileSize",  "println", "");
 			return 0;
 		}
 
 		virtual int getDirectoriesSize(Note path){
+			WindowsFileLog(ame_Log_StartMethod, "getDirectoriesSize",  "println", "");
 			WindowsFileLog(ame_Log_Statement, "getDirectoriesSize",  "println", Note("path: ") + path);
 
+			WindowsFileLog(ame_Log_EndMethod, "getDirectoriesSize",  "println", "");
 			return 0;
 		}
 
 		virtual PrimitiveMap<Note,Note> getDirectories(Note dirname, int levels){
+			WindowsFileLog(ame_Log_StartMethod, "getDirectories",  "println", "");
 			WindowsFileLog(ame_Log_Statement, "getDirectories",  "println", Note("Listing directory: ") + dirname);
 
 			PrimitiveMap<Note,Note> m_map;
+
+			WindowsFileLog(ame_Log_EndMethod, "getDirectories",  "println", "");
 			return m_map;
 		}
 

@@ -53,16 +53,16 @@
 
 //logger
 
-#define ame_LogApp
-#define ame_LogPrint
-#define ame_SystemFullLog
+// #define ame_LogApp
+// #define ame_LogPrint
+// #define ame_SystemFullLog
 //#define ame_Arduino_Log
 
-#define GameManager_LogApp
+// #define GameManager_LogApp
 
 // #define GameSystem_LogApp
-#define TimeEventGameSystem_LogApp
-#define MethodGameSystem_LogApp
+// #define TimeEventGameSystem_LogApp
+// #define MethodGameSystem_LogApp
 
 // #define Lexer_LogApp
 
@@ -83,17 +83,17 @@
 
 // #define SerialDelivery_LogApp
 
-#define DefaultApplication_LogApp
+// #define DefaultApplication_LogApp
 
-#define DefaultStateManager_LogApp
+// #define DefaultStateManager_LogApp
 
 // #define RawList_LogApp
 // #define LinkedRawPointerList_LogApp
 // #define LinkedRawList_LogApp
 // #define LinkedIterator_LogApp
-#define PrimitiveRawPointerList_LogApp
-#define PrimitiveRawList_LogApp
-#define PrimitiveList_LogApp
+// #define PrimitiveRawPointerList_LogApp
+// #define PrimitiveRawList_LogApp
+// #define PrimitiveList_LogApp
 
 // #define MapEntry_LogApp
 // #define RawPointerMap_LogApp

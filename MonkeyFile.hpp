@@ -34,6 +34,7 @@
 
 #include "Note.hpp"
 #include "ByteArray.hpp"
+#include "PrimitiveList.hpp"
 #include "PrimitiveMap.hpp"
 
 
@@ -65,8 +66,8 @@ namespace ame{
 class MonkeyFile IMPLEMENTATION_cppObject {
     public:
 		MonkeyFile(){}
-		MonkeyFile(const Note& a_root_folder){
-			this->setRootPathFile(a_root_folder);
+		MonkeyFile(const Note& a_root_hdd){
+			this->m_root_hdd = a_root_hdd;
 		}
 		virtual ~MonkeyFile(){}
 
@@ -76,55 +77,177 @@ class MonkeyFile IMPLEMENTATION_cppObject {
 			return m_open;
 		}
 
-		virtual void setRootPathFile(Note filepath){
+		template<class... Args>
+		void setRootPathFile(Args... a_paths){
 			MonkeyFileLog(ame_Log_Statement, "setRootPathFile",  "println", filepath);
-			this->rootPath = this->fixPath(filepath);
-			this->createDir(this->rootPath);
+			this->m_rootPath = this->m_root_hdd.addNote(this->fixPath(a_paths...));
+			this->createPath(a_paths...);
 		}
-		virtual Note getRootPathFile(){
-			return this->rootPath;
+		Note getRootPathFile(){
+			return this->m_rootPath;
 		}
 
-		virtual bool fastCreateDir(Note path){return false;}
-		virtual bool createDir(Note path){return false;}
-		virtual bool createRootDir(Note path){return false;}
+		virtual bool fastCreateDir(Note a_path){return this->createDir(a_path);}
+		virtual bool createDir(Note a_path){return false;}
+		virtual bool createRootDir(Note a_path){return false;}
 
-		virtual bool deleteDir(Note path){return false;}
-		virtual bool deleteRootDir(Note path){return false;}
+		virtual bool deleteDir(Note a_path){return false;}
+		virtual bool deleteRootDir(Note a_path){return false;}
 
-		virtual bool fastCreateFile(Note file){return false;}
-		virtual bool createFile(Note file){return false;}
-		virtual bool createRootFile(Note file){return false;}
+		template<class... Args>
+		bool createPath(Args... a_paths){
+			PrimitiveList<Note> i_list;
+			i_list.addPack(a_paths...);
+			Note i_path;
+			for(int x = 0; x < i_list.getPosition(); x++){
+				Note* f_path = i_list.getByPosition(x);
+				if(f_path == nullptr){
+					continue;
+				}
+				i_path = this->fixPath(i_path, *f_path);
+				if(!this->createDir(i_path)){
+					return false;
+				}
+			}
+			return true;
+		}
 
-		virtual bool deleteFile(Note file){return false;}
-		virtual bool deleteRootFile(Note file){return false;}
+		template<class... Args>
+		bool createRootPath(Args... a_paths){
+			PrimitiveList<Note> i_list;
+			i_list.addPack(a_paths...);
+			Note i_path = this->fixPath(this->m_rootPath);
+			for(int x = 0; x < i_list.getPosition(); x++){
+				Note* f_path = i_list.getByPosition(x);
+				if(f_path == nullptr){
+					continue;
+				}
+				i_path = this->fixPath(i_path, *f_path);
+				if(!this->createDir(i_path)){
+					return false;
+				}
+			}
+			return true;
+		}
 
-		virtual bool fastClearFile(Note file){return false;}
-		virtual bool clearFile(Note file){return false;}
-		virtual bool clearRootFile(Note file){return false;}
+		template<class... Args>
+		bool deletePath(Args... a_paths){
+			Note i_path = this->fixPaths(a_paths...);
+			return this->deleteDir(i_path);
+		}
+		
+		template<class... Args>
+		bool deleteRootPath(Args... a_paths){
+			Note i_path = this->fixRootPaths(a_paths...);
+			return this->deleteDir(i_path);
+		}
 
-		virtual bool fastWriteText(Note text, Note file){return false;}
-		virtual bool writeText(Note text, Note file){return false;}
-		virtual bool writeRootText(Note text, Note file){return false;}
+		virtual bool fastCreateFile(Note a_file){return this->createFile(a_file);}
+		virtual bool createFile(Note a_file){return false;}
+		virtual bool createRootFile(Note a_file){return false;}
 
-		virtual Note fastReadText(Note file){return "";}
-		virtual Note readText(Note file){return "";}
-		virtual Note readRootText(Note file){return "";}
+		virtual bool deleteFile(Note a_file){return false;}
+		virtual bool deleteRootFile(Note a_file){return false;}
 
-		virtual bool writeByteArray(ByteArray array, Note file){return false;}
-		virtual bool writeRootByteArray(ByteArray text, Note file){return false;}
+		virtual bool fastClearFile(Note a_file){return this->clearFile(a_file);}
+		virtual bool clearFile(Note a_file){return false;}
+		virtual bool clearRootFile(Note a_file){return false;}
 
-		virtual ByteArray readByteArray(Note file){return ByteArray();}
-		virtual ByteArray readRootByteArray(Note file){return ByteArray();}
+		virtual bool fastWriteText(Note a_text, Note a_file){return this->writeText(a_text, a_file);}
+		virtual bool writeText(Note a_text, Note a_file){return false;}
+		virtual bool writeRootText(Note a_text, Note a_file){return false;}
 
-		virtual bool exist(Note file){return false;}
-		virtual bool existRoot(Note file){return false;}
+		virtual bool fastWriteLine(Note a_text, Note a_file){return this->writeLine(a_text, a_file);}
+		virtual bool writeLine(Note a_text, Note a_file){
+			bool ir_text = this->writeText(a_text, a_file);
+			bool ir_enter = this->writeText("\n", a_file);
+			return ir_text && ir_enter;
+		}
+		virtual bool writeRootLine(Note a_text, Note a_file){
+			bool ir_text = this->writeRootText(a_text, a_file);
+			bool ir_enter = this->writeRootText("\n", a_file);
+			return ir_text && ir_enter;
+		}
 
-		virtual Note fixRootPath(Note p);//defined at the boton of the code, implemented to its specific location
+		virtual bool fastInsertLine(int a_line, Note a_text, Note a_file){return this->insertLine(a_line, a_text, a_file);}
+		virtual bool insertLine(int a_line, Note a_text, Note a_file){return false;}
+		virtual bool insertRootLine(int a_line, Note a_text, Note a_file){return false;}
 
-		virtual Note fixPath(Note p);
+		virtual Note fastReadText(Note a_file){return this->readText(a_file);}
+		virtual Note readText(Note a_file){return "";}
+		virtual Note readRootText(Note a_file){return "";}
 
-		virtual Note fixPath(Note p, Note f);
+		virtual Note fastReadSizedText(int a_size, Note a_file){return this->readSizedText(a_size, a_file);}
+		virtual Note readSizedText(int a_size, Note a_file){return "";}
+		virtual Note readRootSizedText(int a_size, Note a_file){return "";}
+
+		virtual PrimitiveList<Note> fastReadLines(Note a_file){return this->readLines(a_file);}
+		virtual PrimitiveList<Note> readLines(Note a_file){return PrimitiveList<Note>();}
+		virtual PrimitiveList<Note> readRootLines(Note a_file){return PrimitiveList<Note>();}
+
+		virtual PrimitiveList<Note> fastReadSizedLines(int a_size, Note a_file){return this->readLines(a_file);}
+		virtual PrimitiveList<Note> readSizedLines(int a_size, Note a_file){return PrimitiveList<Note>();}
+		virtual PrimitiveList<Note> readRootSizedLines(int a_size, Note a_file){return PrimitiveList<Note>();}
+
+		virtual Note fastReadLine(int a_line, Note a_file){return this->readLine(a_line, a_file);}
+		virtual Note readLine(int a_line, Note a_file){return "";}
+		virtual Note readRootLine(int a_line, Note a_file){return "";}
+
+		virtual bool writeByteArray(ByteArray array, Note a_file){return false;}
+		virtual bool writeRootByteArray(ByteArray text, Note a_file){return false;}
+
+		virtual ByteArray readByteArray(Note a_file){return ByteArray();}
+		virtual ByteArray readRootByteArray(Note a_file){return ByteArray();}
+
+		virtual bool exist(Note a_file){return false;}
+		virtual bool existRoot(Note a_file){return false;}
+
+		template<class... Args>
+		bool existPath(Args... a_paths){
+			Note i_path = this->fixPaths(a_paths...);
+			return this->exist(i_path);
+		}
+		
+		template<class... Args>
+		bool existRootPath(Args... a_paths){
+			Note i_path = this->fixRootPaths(a_paths...);
+			return this->exist(i_path);
+		}
+		
+		template<class... Args>
+		Note fixPaths(Args... a_paths){
+			PrimitiveList<Note> i_list;
+			i_list.addPack(a_paths...);
+			Note i_path;
+			for(int x = 0; x < i_list.getPosition(); x++){
+				Note* f_path = i_list.getByPosition(x);
+				if(f_path == nullptr){
+					continue;
+				}
+				i_path = this->fixPath(i_path, *f_path);
+			}
+			return i_path;
+		}
+
+		template<class... Args>
+		Note fixRootPaths(Args... a_paths){
+			PrimitiveList<Note> i_list;
+			i_list.addPack(a_paths...);
+			Note i_path = this->fixPath(this->m_rootPath);
+			for(int x = 0; x < i_list.getPosition(); x++){
+				Note* f_path = i_list.getByPosition(x);
+				if(f_path == nullptr){
+					continue;
+				}
+				i_path = this->fixPath(i_path, *f_path);
+			}
+			return i_path;
+		}
+		
+		virtual Note fixPath(Note a_path);
+		virtual Note fixPath(Note a_path_1, Note a_path_2);
+
+		virtual Note fixRootPath(Note a_path);
 
 		virtual int getFileSize(Note path){return 0;}
 		virtual int getDirectoriesSize(Note path){return 0;}
@@ -144,93 +267,117 @@ class MonkeyFile IMPLEMENTATION_cppObject {
 		#endif
 
 	protected:
-		Note rootPath;
+		Note m_root_hdd;
+		Note m_rootPath;
 		bool m_open = false;
 };
 
 Note MonkeyFile::fixRootPath(Note p){
-	if(this->rootPath.length() == 0){
+	MonkeyFileLog(ame_Log_StartMethod, "fixRootPath",  "println", "");
+	if(this->m_rootPath.length() == 0){
 		if(p.length() == 0){
+			MonkeyFileLog(ame_Log_EndMethod, "fixRootPath",  "println", "");
 			return "";
 		}
 		if(p[0] == '/'){
+			MonkeyFileLog(ame_Log_EndMethod, "fixRootPath",  "println", "");
 			return p;
 		}
 	}
-	if(this->rootPath[0] != '/'){
-		MonkeyFileLog(ame_Log_Statement, "fixRootPath",  "println", Note("this->rootPath[0] != '/'"));
-		this->rootPath = Note("/") + this->rootPath;
+	if(this->m_rootPath[0] != '/'){
+		MonkeyFileLog(ame_Log_Statement, "fixRootPath",  "println", Note("this->m_rootPath[0] != '/'"));
+		this->m_rootPath = Note("/") + this->m_rootPath;
 	}
-	int sizeRP = this->rootPath.length();
-	if(this->rootPath[sizeRP - 1] == '/' && p[0] == '/'){
-		MonkeyFileLog(ame_Log_Statement, "fixRootPath",  "println", Note("this->rootPath[sizeRP - 1] == '/' && p[0] == '/'"));
-		return this->rootPath + p.getArrayPart(1);
+	int sizeRP = this->m_rootPath.length();
+	if(this->m_rootPath[sizeRP - 1] == '/' && p[0] == '/'){
+		MonkeyFileLog(ame_Log_Statement, "fixRootPath",  "println", Note("this->m_rootPath[sizeRP - 1] == '/' && p[0] == '/'"));
+		MonkeyFileLog(ame_Log_EndMethod, "fixRootPath",  "println", "");
+		return this->m_rootPath + p.getArrayPart(1);
 	}
-	if(this->rootPath[sizeRP - 1] != '/' && p[0] == '/'){
-		MonkeyFileLog(ame_Log_Statement, "fixRootPath",  "println", Note("this->rootPath[sizeRP - 1] != '/' && p[0] == '/'"));
-		return this->rootPath + p;
+	if(this->m_rootPath[sizeRP - 1] != '/' && p[0] == '/'){
+		MonkeyFileLog(ame_Log_Statement, "fixRootPath",  "println", Note("this->m_rootPath[sizeRP - 1] != '/' && p[0] == '/'"));
+		MonkeyFileLog(ame_Log_EndMethod, "fixRootPath",  "println", "");
+		return this->m_rootPath + p;
 	}
-	if(this->rootPath[sizeRP - 1] == '/' && p[0] != '/'){
-		MonkeyFileLog(ame_Log_Statement, "fixRootPath",  "println", Note("this->rootPath[sizeRP - 1] == '/' && p[0] != '/'"));
-		return this->rootPath + p;
+	if(this->m_rootPath[sizeRP - 1] == '/' && p[0] != '/'){
+		MonkeyFileLog(ame_Log_Statement, "fixRootPath",  "println", Note("this->m_rootPath[sizeRP - 1] == '/' && p[0] != '/'"));
+		MonkeyFileLog(ame_Log_EndMethod, "fixRootPath",  "println", "");
+		return this->m_rootPath + p;
 	}
-	if(this->rootPath[sizeRP - 1] != '/' && p[0] != '/'){
-		MonkeyFileLog(ame_Log_Statement, "fixRootPath",  "println", Note("this->rootPath[sizeRP - 1] != '/' && p[0] != '/'"));
-		return this->rootPath + Note('/') + p;
+	if(this->m_rootPath[sizeRP - 1] != '/' && p[0] != '/'){
+		MonkeyFileLog(ame_Log_Statement, "fixRootPath",  "println", Note("this->m_rootPath[sizeRP - 1] != '/' && p[0] != '/'"));
+		MonkeyFileLog(ame_Log_EndMethod, "fixRootPath",  "println", "");
+		return this->m_rootPath + Note('/') + p;
 	}
-	return this->rootPath + p;
+	MonkeyFileLog(ame_Log_EndMethod, "fixRootPath",  "println", "");
+	return this->m_rootPath + p;
 }
 
-Note MonkeyFile::fixPath(Note p){
-	if(p.length() == 0){
+Note MonkeyFile::fixPath(Note a_path){
+	MonkeyFileLog(ame_Log_StartMethod, "fixPath",  "println", "");
+	if(a_path.length() == 0){
+		MonkeyFileLog(ame_Log_EndMethod, "fixPath",  "println", "");
 		return "";
 	}
-	if(p[0] == '/'){
-		return p;
+	if(a_path[0] == '/'){
+		MonkeyFileLog(ame_Log_EndMethod, "fixPath",  "println", "");
+		return a_path;
 	}
-	return Note("/") + p;
+	MonkeyFileLog(ame_Log_EndMethod, "fixPath",  "println", "");
+	return Note("/") + a_path;
 }
 
-Note MonkeyFile::fixPath(Note p, Note f){
-	if(p.length() == 0){
-		if(f.length() == 0){
+Note MonkeyFile::fixPath(Note a_path_1, Note a_path_2){
+	MonkeyFileLog(ame_Log_StartMethod, "fixPath",  "println", "");
+	if(a_path_1.length() == 0){
+		if(a_path_2.length() == 0){
+			MonkeyFileLog(ame_Log_EndMethod, "fixPath",  "println", "");
 			return "";
 		}
-		if(f[0] == '/'){
-			return f;
+		if(a_path_2[0] == '/'){
+			MonkeyFileLog(ame_Log_EndMethod, "fixPath",  "println", "");
+			return a_path_2;
 		}else{
-			return Note("/") + f;
+			MonkeyFileLog(ame_Log_EndMethod, "fixPath",  "println", "");
+			return Note("/") + a_path_2;
 		}
 	}
-	if(f.length() == 0){
-		if(p[0] == '/'){
-			return p;
+	if(a_path_2.length() == 0){
+		if(a_path_1[0] == '/'){
+			MonkeyFileLog(ame_Log_EndMethod, "fixPath",  "println", "");
+			return a_path_1;
 		}else{
-			return Note("/") + p;
+			MonkeyFileLog(ame_Log_EndMethod, "fixPath",  "println", "");
+			return Note("/") + a_path_1;
 		}
 	}
-	if(p[0] != '/'){
-		MonkeyFileLog(ame_Log_Statement, "fixPath",  "println", Note("p[0] != '/'"));
-		p = Note("/") + p;
+	if(a_path_1[0] != '/'){
+		MonkeyFileLog(ame_Log_Statement, "fixPath",  "println", Note("a_path_1[0] != '/'"));
+		a_path_1 = Note("/") + a_path_1;
 	}
-	int sizeRP = p.length();
-	if(p[sizeRP - 1] == '/' && f[0] == '/'){
-		MonkeyFileLog(ame_Log_Statement, "fixPath",  "println", "p[sizeRP - 1] == '/' && f[0] == '/'");
-		return p + f.getArrayPart(1);
+	int sizeRP = a_path_1.length();
+	if(a_path_1[sizeRP - 1] == '/' && a_path_2[0] == '/'){
+		MonkeyFileLog(ame_Log_Statement, "fixPath",  "println", "a_path_1[sizeRP - 1] == '/' && a_path_2[0] == '/'");
+		MonkeyFileLog(ame_Log_EndMethod, "fixPath",  "println", "");
+		return a_path_1 + a_path_2.getArrayPart(1);
 	}
-	if(p[sizeRP - 1] != '/' && f[0] == '/'){
-		MonkeyFileLog(ame_Log_Statement, "fixPath",  "println", "p[sizeRP - 1] != '/' && f[0] == '/'");
-		return p + f;
+	if(a_path_1[sizeRP - 1] != '/' && a_path_2[0] == '/'){
+		MonkeyFileLog(ame_Log_Statement, "fixPath",  "println", "a_path_1[sizeRP - 1] != '/' && a_path_2[0] == '/'");
+		MonkeyFileLog(ame_Log_EndMethod, "fixPath",  "println", "");
+		return a_path_1 + a_path_2;
 	}
-	if(p[sizeRP - 1] == '/' && f[0] != '/'){
-		MonkeyFileLog(ame_Log_Statement, "fixPath",  "println", "p[sizeRP - 1] == '/' && f[0] != '/'");
-		return p + f;
+	if(a_path_1[sizeRP - 1] == '/' && a_path_2[0] != '/'){
+		MonkeyFileLog(ame_Log_Statement, "fixPath",  "println", "a_path_1[sizeRP - 1] == '/' && a_path_2[0] != '/'");
+		MonkeyFileLog(ame_Log_EndMethod, "fixPath",  "println", "");
+		return a_path_1 + a_path_2;
 	}
-	if(p[sizeRP - 1] != '/' && f[0] != '/'){
-		MonkeyFileLog(ame_Log_Statement, "fixPath",  "println", "p[sizeRP - 1] != '/' && f[0] != '/'");
-		return p + Note('/') + f;
+	if(a_path_1[sizeRP - 1] != '/' && a_path_2[0] != '/'){
+		MonkeyFileLog(ame_Log_Statement, "fixPath",  "println", "a_path_1[sizeRP - 1] != '/' && a_path_2[0] != '/'");
+		MonkeyFileLog(ame_Log_EndMethod, "fixPath",  "println", "");
+		return a_path_1 + Note('/') + a_path_2;
 	}
-	return p + f;
+	MonkeyFileLog(ame_Log_EndMethod, "fixPath",  "println", "");
+	return a_path_1 + a_path_2;
 }
 
 }

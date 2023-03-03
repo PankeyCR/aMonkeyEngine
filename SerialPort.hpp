@@ -31,7 +31,7 @@
 #include "ByteArray.hpp"
 
 #ifdef ame_Windows
-	#include "ame_Stream.h"
+	#include "ame_Stream.hpp"
 #endif
 
 #ifdef ame_ArduinoIDE

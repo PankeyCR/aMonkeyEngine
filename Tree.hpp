@@ -4,12 +4,11 @@
 #define Tree_AVAILABLE
 
 #include "cppObject.hpp"
-#include "RawTree.hpp"
 
 namespace ame{
 
 template<class T>
-class Tree : public LinkedList<Tree<T>> IMPLEMENTING_cppObject {
+class Tree IMPLEMENTATION_cppObject {
 	public:
 		Tree(){}
 

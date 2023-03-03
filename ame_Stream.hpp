@@ -2,7 +2,7 @@
 #ifndef ame_Stream_hpp
 #define ame_Stream_hpp
 
-#include "ame_Streamable.hpp"
+//#include "ame_Streamable.hpp"
 #include "ame_String.hpp"
 
 #ifdef ame_Windows

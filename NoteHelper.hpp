@@ -15,6 +15,8 @@
 #endif
 
 namespace ame{
+	#if defined(ame_ArduinoIDE)
+
 	#if defined(Note_AVAILABLE)
 	
 	IPAddress toIPAddress(const Note& a_note){
@@ -130,6 +132,8 @@ namespace ame{
 		}
 		return i_list;
 	}
+		
+	#endif
 		
 	#endif
 }
