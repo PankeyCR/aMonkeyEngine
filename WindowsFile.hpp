@@ -82,7 +82,7 @@ class WindowsFile : public MonkeyFile{
 
 		virtual bool fastCreateDir(Note a_path){
 			WindowsFileLog(ame_Log_StartMethod, "fastCreateDir",  "println", "");
-			Note i_path = fixPath(a_path);
+			Note i_path = this->m_root_hdd.addNote(this->fixPath(a_path));
 			WindowsFileLog(ame_Log_Statement, "fastCreateDir",  "println", Note(i_path));
             CreateDirectory (i_path.pointer(), NULL);
 			WindowsFileLog(ame_Log_EndMethod, "fastCreateDir",  "println", "");
@@ -91,7 +91,7 @@ class WindowsFile : public MonkeyFile{
 
 		virtual bool createDir(Note a_path){
 			WindowsFileLog(ame_Log_StartMethod, "createDir",  "println", "");
-			Note i_path = this->fixPath(a_path);
+			Note i_path = this->m_root_hdd.addNote(this->fixPath(a_path));
 			WindowsFileLog(ame_Log_Statement, "createDir",  "println", Note(i_path));
             CreateDirectory (i_path.pointer(), NULL);
 			WindowsFileLog(ame_Log_EndMethod, "createDir",  "println", "");
@@ -100,7 +100,7 @@ class WindowsFile : public MonkeyFile{
 
 		virtual bool createRootDir(Note a_path){
 			WindowsFileLog(ame_Log_StartMethod, "createRootDir",  "println", "");
-			Note i_path = this->fixRootPath(a_path);
+			Note i_path = this->m_root_hdd.addNote(this->fixRootPath(a_path));
 			WindowsFileLog(ame_Log_Statement, "createRootDir",  "println", Note(i_path));
             CreateDirectory (i_path.pointer(), NULL);
 			WindowsFileLog(ame_Log_EndMethod, "createRootDir",  "println", "");
@@ -109,16 +109,16 @@ class WindowsFile : public MonkeyFile{
 
 		virtual bool deleteDir(Note a_path){
 			WindowsFileLog(ame_Log_StartMethod, "deleteDir",  "println", "");
-			Note i_path = fixPath(a_path);
+			Note i_path = this->m_root_hdd.addNote(this->fixPath(a_path));
 			WindowsFileLog(ame_Log_Statement, "deleteDir",  "println", i_path);
 
 			WindowsFileLog(ame_Log_EndMethod, "deleteDir",  "println", "");
 			return RemoveDirectoryA( i_path.pointer() );
 		}
 
-		virtual bool deleteRootDir(Note path){
+		virtual bool deleteRootDir(Note a_path){
 			WindowsFileLog(ame_Log_StartMethod, "deleteRootDir",  "println", "");
-			Note i_path = this->fixRootPath(path);
+			Note i_path = this->m_root_hdd.addNote(this->fixRootPath(a_path));
 			WindowsFileLog(ame_Log_Statement, "deleteRootDir",  "println", i_path);
 
 			WindowsFileLog(ame_Log_EndMethod, "deleteRootDir",  "println", "");
@@ -127,7 +127,7 @@ class WindowsFile : public MonkeyFile{
 
 		virtual bool fastCreateFile(Note a_path){
 			WindowsFileLog(ame_Log_StartMethod, "fastCreateFile",  "println", "");
-			Note i_path = fixPath(a_path);
+			Note i_path = this->m_root_hdd.addNote(this->fixPath(a_path));
             fstream i_file;
             i_file.open(i_path.pointer(),ios::out);
             i_file.close();
@@ -137,7 +137,7 @@ class WindowsFile : public MonkeyFile{
 
 		virtual bool createFile(Note a_path){
 			WindowsFileLog(ame_Log_StartMethod, "createFile",  "println", "");
-			Note i_path = fixPath(a_path);
+			Note i_path = this->m_root_hdd.addNote(this->fixPath(a_path));
             fstream file;
             file.open(i_path.pointer(),ios::out);
             file.close();
@@ -146,7 +146,7 @@ class WindowsFile : public MonkeyFile{
 		}
 		virtual bool createRootFile(Note a_path){
 			WindowsFileLog(ame_Log_StartMethod, "createRootFile",  "println", "");
-			Note i_path = this->fixRootPath(a_path);
+			Note i_path = this->m_root_hdd.addNote(this->fixRootPath(a_path));
             fstream file;
             file.open(i_path.pointer(),ios::out);
             file.close();
@@ -156,7 +156,7 @@ class WindowsFile : public MonkeyFile{
 
 		virtual bool deleteFile(Note a_path){
 			WindowsFileLog(ame_Log_StartMethod, "deleteFile",  "println", "");
-			Note i_path = fixPath(a_path);
+			Note i_path = this->m_root_hdd.addNote(this->fixPath(a_path));
 			WindowsFileLog(ame_Log_Statement, "deleteFile",  "println", i_path);
 			
 			WindowsFileLog(ame_Log_EndMethod, "deleteFile",  "println", "");
@@ -164,7 +164,7 @@ class WindowsFile : public MonkeyFile{
 		}
 		virtual bool deleteRootFile(Note a_path){
 			WindowsFileLog(ame_Log_StartMethod, "deleteRootFile",  "println", "");
-			Note i_path = this->fixRootPath(a_path);
+			Note i_path = this->m_root_hdd.addNote(this->fixRootPath(a_path));
 			WindowsFileLog(ame_Log_Statement, "deleteRootFile",  "println", i_path);
 			
 			WindowsFileLog(ame_Log_EndMethod, "deleteRootFile",  "println", "");
@@ -173,7 +173,7 @@ class WindowsFile : public MonkeyFile{
 
 		virtual bool fastClearFile(Note a_path){
 			WindowsFileLog(ame_Log_StartMethod, "fastClearFile",  "println", "");
-			Note i_path = fixPath(a_path);
+			Note i_path = this->m_root_hdd.addNote(this->fixPath(a_path));
             fstream file;
             file.open(i_path.pointer(),ios::out);
             file.close();
@@ -183,7 +183,7 @@ class WindowsFile : public MonkeyFile{
 
 		virtual bool clearFile(Note a_path){
 			WindowsFileLog(ame_Log_StartMethod, "clearFile",  "println", "");
-			Note i_path = fixPath(a_path);
+			Note i_path = this->m_root_hdd.addNote(this->fixPath(a_path));
             fstream file;
             file.open(i_path.pointer(),ios::out);
             file.close();
@@ -193,7 +193,7 @@ class WindowsFile : public MonkeyFile{
 
 		virtual bool clearRootFile(Note a_path){
 			WindowsFileLog(ame_Log_StartMethod, "clearRootFile",  "println", "");
-			Note i_path = fixRootPath(a_path);
+			Note i_path = this->m_root_hdd.addNote(this->fixRootPath(a_path));
             fstream file;
             file.open(i_path.pointer(),ios::out);
             file.close();
@@ -203,7 +203,7 @@ class WindowsFile : public MonkeyFile{
 
 		virtual bool fastWriteText(Note a_text, Note a_path){
 			WindowsFileLog(ame_Log_StartMethod, "fastWriteText",  "println", "");
-			Note i_path = fixPath(a_path);
+			Note i_path = this->m_root_hdd.addNote(this->fixPath(a_path));
 			WindowsFileLog(ame_Log_Statement, "fastWriteText",  "println", i_path);
 			WindowsFileLog(ame_Log_Statement, "fastWriteText",  "println", a_text);
 			
@@ -222,7 +222,7 @@ class WindowsFile : public MonkeyFile{
 
 		virtual bool writeText(Note a_text, Note a_path){
 			WindowsFileLog(ame_Log_StartMethod, "writeText",  "println", "");
-			Note i_path = fixPath(a_path);
+			Note i_path = this->m_root_hdd.addNote(this->fixPath(a_path));
 			WindowsFileLog(ame_Log_Statement, "fastWriteText",  "println", i_path);
 			WindowsFileLog(ame_Log_Statement, "fastWriteText",  "println", a_text);
 			
@@ -241,7 +241,7 @@ class WindowsFile : public MonkeyFile{
 
 		virtual bool writeRootText(Note a_text, Note a_path){
 			WindowsFileLog(ame_Log_StartMethod, "writeRootText",  "println", "");
-			Note i_path = this->fixRootPath(a_path);
+			Note i_path = this->m_root_hdd.addNote(this->fixRootPath(a_path));
 			WindowsFileLog(ame_Log_Statement, "fastWriteText",  "println", i_path);
 			WindowsFileLog(ame_Log_Statement, "fastWriteText",  "println", a_text);
             fstream outfile;
@@ -259,7 +259,7 @@ class WindowsFile : public MonkeyFile{
 /*
 		virtual Note fastReadText(Note a_path){
 			WindowsFileLog(ame_Log_StartMethod, "fastReadText",  "println", "");
-			Note i_path = fixPath(a_path);
+			Note i_path = this->m_root_hdd.addNote(this->fixPath(a_path));
 			WindowsFileLog(ame_Log_Statement, "fastReadText",  "println", i_path);
             std::string readLineFromInput;
 
@@ -272,7 +272,7 @@ class WindowsFile : public MonkeyFile{
 */
 		virtual Note readText(Note a_path){
 			WindowsFileLog(ame_Log_StartMethod, "readText",  "println", "");
-			Note i_path = this->fixPath(a_path);
+			Note i_path = this->m_root_hdd.addNote(this->fixPath(a_path));
 			WindowsFileLog(ame_Log_Statement, "readText",  "println", i_path);
             Note i_text;
             ifstream i_file;
@@ -294,7 +294,7 @@ class WindowsFile : public MonkeyFile{
 
 		virtual Note readRootText(Note a_path){
 			WindowsFileLog(ame_Log_StartMethod, "readRootText",  "println", "");
-			Note i_path = this->fixRootPath(a_path);
+			Note i_path = this->m_root_hdd.addNote(this->fixRootPath(a_path));
 			WindowsFileLog(ame_Log_Statement, "readRootText",  "println", i_path);
             Note i_text;
             ifstream i_file;
@@ -314,9 +314,9 @@ class WindowsFile : public MonkeyFile{
 			return i_text;
 		}
 
-		virtual Note readSizedText(int a_size, Note a_file){
+		virtual Note readSizedText(int a_size, Note a_path){
 			WindowsFileLog(ame_Log_StartMethod, "readSizedText",  "println", "");
-			Note i_path = this->fixPath(a_file);
+			Note i_path = this->m_root_hdd.addNote(this->fixPath(a_path));
 			WindowsFileLog(ame_Log_Statement, "readSizedText",  "println", i_path);
             Note i_text;
             ifstream i_file;
@@ -335,9 +335,9 @@ class WindowsFile : public MonkeyFile{
 			WindowsFileLog(ame_Log_EndMethod, "readSizedText",  "println", "");
 			return i_text;
 		}
-		virtual Note readRootSizedText(int a_size, Note a_file){
+		virtual Note readRootSizedText(int a_size, Note a_path){
 			WindowsFileLog(ame_Log_StartMethod, "readRootSizedText",  "println", "");
-			Note i_path = this->fixRootPath(a_file);
+			Note i_path = this->m_root_hdd.addNote(this->fixRootPath(a_path));
 			WindowsFileLog(ame_Log_Statement, "readRootSizedText",  "println", i_path);
             Note i_text;
             ifstream i_file;
@@ -357,9 +357,9 @@ class WindowsFile : public MonkeyFile{
 			return i_text;
 		}
 
-		virtual PrimitiveList<Note> readLines(Note a_file){
+		virtual PrimitiveList<Note> readLines(Note a_path){
 			WindowsFileLog(ame_Log_StartMethod, "readLines",  "println", "");
-			Note i_path = this->fixPath(a_file);
+			Note i_path = this->m_root_hdd.addNote(this->fixPath(a_path));
 			WindowsFileLog(ame_Log_Statement, "readLines",  "println", i_path);
 			PrimitiveList<Note> i_list;
             Note i_text;
@@ -389,9 +389,9 @@ class WindowsFile : public MonkeyFile{
 			return i_list;
 		}
 
-		virtual PrimitiveList<Note> readRootLines(Note a_file){
+		virtual PrimitiveList<Note> readRootLines(Note a_path){
 			WindowsFileLog(ame_Log_StartMethod, "readRootLines",  "println", "");
-			Note i_path = this->fixRootPath(a_file);
+			Note i_path = this->m_root_hdd.addNote(this->fixRootPath(a_path));
 			WindowsFileLog(ame_Log_Statement, "readRootLines",  "println", i_path);
 			PrimitiveList<Note> i_list;
             Note i_text;
@@ -421,9 +421,9 @@ class WindowsFile : public MonkeyFile{
 			return i_list;
 		}
 		
-		virtual PrimitiveList<Note> readSizedLines(int a_size, Note a_file){
+		virtual PrimitiveList<Note> readSizedLines(int a_size, Note a_path){
 			WindowsFileLog(ame_Log_StartMethod, "readSizedLines",  "println", "");
-			Note i_path = this->fixPath(a_file);
+			Note i_path = this->m_root_hdd.addNote(this->fixPath(a_path));
 			WindowsFileLog(ame_Log_Statement, "readSizedLines",  "println", i_path);
 			PrimitiveList<Note> i_list;
             Note i_text;
@@ -453,9 +453,9 @@ class WindowsFile : public MonkeyFile{
 			return i_list;
 		}
 
-		virtual PrimitiveList<Note> readRootSizedLines(int a_size, Note a_file){
+		virtual PrimitiveList<Note> readRootSizedLines(int a_size, Note a_path){
 			WindowsFileLog(ame_Log_StartMethod, "readRootSizedLines",  "println", "");
-			Note i_path = this->fixRootPath(a_file);
+			Note i_path = this->m_root_hdd.addNote(this->fixRootPath(a_path));
 			WindowsFileLog(ame_Log_Statement, "readRootSizedLines",  "println", i_path);
 			PrimitiveList<Note> i_list;
             Note i_text;
@@ -485,9 +485,9 @@ class WindowsFile : public MonkeyFile{
 			return i_list;
 		}
 		
-		virtual Note readLine(int a_line, Note a_file){
+		virtual Note readLine(int a_line, Note a_path){
 			WindowsFileLog(ame_Log_StartMethod, "readLine",  "println", "");
-			Note i_path = this->fixPath(a_file);
+			Note i_path = this->m_root_hdd.addNote(this->fixPath(a_path));
 			WindowsFileLog(ame_Log_Statement, "readLine",  "println", i_path);
             Note i_text;
             ifstream i_file;
@@ -514,9 +514,9 @@ class WindowsFile : public MonkeyFile{
 			return i_text;
 		}
 
-		virtual Note readRootLine(int a_line, Note a_file){
+		virtual Note readRootLine(int a_line, Note a_path){
 			WindowsFileLog(ame_Log_StartMethod, "readRootLine",  "println", "");
-			Note i_path = this->fixRootPath(a_file);
+			Note i_path = this->m_root_hdd.addNote(this->fixRootPath(a_path));
 			WindowsFileLog(ame_Log_Statement, "readRootLine",  "println", i_path);
             Note i_text;
             ifstream i_file;
@@ -546,36 +546,36 @@ class WindowsFile : public MonkeyFile{
 
 		virtual bool writeByteArray(ByteArray array, Note a_path){
 			WindowsFileLog(ame_Log_StartMethod, "writeByteArray",  "println", "");
-			Note i_path = fixPath(a_path);
+			Note i_path = this->m_root_hdd.addNote(this->fixPath(a_path));
 			WindowsFileLog(ame_Log_Statement, "writeByteArray",  "println", i_path);
 
 			WindowsFileLog(ame_Log_EndMethod, "writeByteArray",  "println", "");
 			return true;
 		}
 
-		virtual bool writeRootByteArray(ByteArray array, Note path){
+		virtual bool writeRootByteArray(ByteArray array, Note a_path){
 			WindowsFileLog(ame_Log_StartMethod, "writeRootByteArray",  "println", "");
-			Note rpath = this->fixRootPath(path);
-			WindowsFileLog(ame_Log_Statement, "writeRootByteArray",  "println", rpath);
+			Note i_path = this->m_root_hdd.addNote(this->fixRootPath(a_path));
+			WindowsFileLog(ame_Log_Statement, "writeRootByteArray",  "println", i_path);
 
 			WindowsFileLog(ame_Log_EndMethod, "writeRootByteArray",  "println", "");
 			return true;
 		}
 
-		virtual ByteArray readByteArray(Note p){
+		virtual ByteArray readByteArray(Note a_path){
 			WindowsFileLog(ame_Log_StartMethod, "readByteArray",  "println", "");
-			Note path = fixPath(p);
-			WindowsFileLog(ame_Log_Statement, "readByteArray",  "println", path);
+			Note i_path = this->m_root_hdd.addNote(this->fixPath(a_path));
+			WindowsFileLog(ame_Log_Statement, "readByteArray",  "println", i_path);
 
 			ByteArray array;
 			WindowsFileLog(ame_Log_EndMethod, "readByteArray",  "println", "");
 			return array;
 		}
 
-		virtual ByteArray readRootByteArray(Note path){
+		virtual ByteArray readRootByteArray(Note a_path){
 			WindowsFileLog(ame_Log_StartMethod, "readRootByteArray",  "println", "");
-			Note rpath = this->fixRootPath(path);
-			WindowsFileLog(ame_Log_Statement, "readRootByteArray",  "println", rpath);
+			Note i_path = this->m_root_hdd.addNote(this->fixRootPath(a_path));
+			WindowsFileLog(ame_Log_Statement, "readRootByteArray",  "println", i_path);
 
 			ByteArray array;
 			WindowsFileLog(ame_Log_EndMethod, "readRootByteArray",  "println", "");
@@ -584,7 +584,7 @@ class WindowsFile : public MonkeyFile{
 
 		virtual bool exist(Note a_path){
 			WindowsFileLog(ame_Log_StartMethod, "exist",  "println", "");
-			Note i_path = this->fixPath(a_path);
+			Note i_path = this->m_root_hdd.addNote(this->fixPath(a_path));
 			WindowsFileLog(ame_Log_Statement, "exist",  "println", "");
 			WindowsFileLog(ame_Log_Statement, "exist ",  "println", i_path);
 			
@@ -597,7 +597,7 @@ class WindowsFile : public MonkeyFile{
 		}
 		virtual bool existRoot(Note a_path){
 			WindowsFileLog(ame_Log_StartMethod, "existRoot",  "println", "");
-			Note i_path = this->fixRootPath(a_path);
+			Note i_path = this->m_root_hdd.addNote(this->fixRootPath(a_path));
 			WindowsFileLog(ame_Log_Statement, "existRoot",  "println", "");
 			WindowsFileLog(ame_Log_Statement, "existRoot ",  "println", i_path);
 			

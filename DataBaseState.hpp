@@ -16,65 +16,64 @@
  *
  */
 
-#include "ame_Enviroment.hpp"
-
-#if defined(DISABLE_DataBaseState)
-	#define DataBaseState_hpp
-#endif
-
 #ifndef DataBaseState_hpp
 #define DataBaseState_hpp
 #define DataBaseState_AVAILABLE
 
-#ifndef ame_Enviroment_Defined
-
-#endif
+#include "ame_Enviroment.hpp"
 
 #ifdef ame_Windows
-
+	#include "WindowsFile.hpp"
 #endif
 
 #ifdef ame_ArduinoIDE
-	#include "Arduino.h"
+	#include "ArduinoSDFile.hpp"
 #endif
 
-#include "SerialListener.hpp"
-#include "ObjectDataBaseConfig.hpp"
+#include "Command.hpp"
+#include "DataBase.hpp"
 #include "ElementId.hpp"
-#include "AppState.hpp"
-#include "DefaultMonkeyFile.hpp"
-#include "SerialMessageState.hpp"
+#include "BaseAppState.hpp"
 #include "MonkeyExporter.hpp"
 #include "MonkeyImporter.hpp"
 #include "TextExporter.hpp"
 #include "TextImporter.hpp"
 #include "PrimitiveList.hpp"
-#include "AlwaysConnected.hpp"
-#include "MemoryRam.h"
-
-#include "ame_Logger_config.hpp"
-#include "ame_Logger.hpp"
 
 #ifdef DataBaseState_LogApp
-	#define DataBaseStateLog(location,method,type,mns) ame_Log(this,location,"Note",method,type,mns)
-	#define const_DataBaseStateLog(location,method,type,mns) 
-	#define StaticDataBaseStateLog(pointer,location,method,type,mns) ame_Log(pointer,location,"Note",method,type,mns)
+	#include "ame_Logger_config.hpp"
+	#include "ame_Logger.hpp"
+
+	#define DataBaseStateLog(location,method,type,mns) ame_Log(this,location,"DataBaseState",method,type,mns)
 #else
-	#define DataBaseStateLog(location,method,type,mns) ame_LogDebug(this,location,"Note",method,type)
-	#define const_NoteLog(location,method,type,mns) 
-	#define StaticNoteLog(pointer,location,method,type,mns) ame_LogDebug(pointer,location,"Note",method,type)
+	#ifdef DataBaseState_LogDebugApp
+		#include "ame_Logger_config.hpp"
+		#include "ame_Logger.hpp"
+
+		#define DataBaseStateLog(location,method,type,mns) ame_LogDebug((void*)this,location,"DataBaseState",method,type)
+	#else
+		#define DataBaseStateLog(location,method,type,mns)
+	#endif
 #endif
 
 namespace ame{
 
-class DataBaseState : public AppState , public SerialListener{
+class DataBaseState : public BaseAppState{
     public:
 		DataBaseState(){
 			DataBaseStateLog(ame_Log_Statement, "Constructor",  "println", "");
-			owner = true;
-			exporter = new TextExporter();
-			importer = new TextImporter();
-			file = new DefaultMonkeyFile<SDFileSystemClass>(SD);
+			m_owner = true;
+			m_exporter = new TextExporter();
+			m_importer = new TextImporter();
+
+			#ifdef ame_Windows
+				m_file = new WindowsFile();
+			#endif
+
+			#ifdef ame_ArduinoIDE
+				m_file = new ArduinoSDFile<SDFileSystemClass>(SD);
+			#endif
+			
 		}
 		DataBaseState(MonkeyFile* f){
 			DataBaseStateLog(ame_Log_Statement, "Constructor",  "println", "");
@@ -128,7 +127,6 @@ class DataBaseState : public AppState , public SerialListener{
 				DataBaseConfig* c = configuration.getByPosition(x);
 				c->initialize(exporter, importer, file, serialState);
 			}
-			init = true;
 			DataBaseStateLog(ame_Log_Statement, "initialize",  "println", "end");
 			if(file == nullptr){
 				return;
@@ -215,18 +213,14 @@ class DataBaseState : public AppState , public SerialListener{
 			return c;
 		}
 	protected:
-		MonkeyExporter* exporter = nullptr;
-		MonkeyImporter* importer = nullptr;
+		MonkeyExporter* m_exporter = nullptr;
+		MonkeyImporter* m_importer = nullptr;
 		
-		SerialMessageState* serialState = nullptr;
-		AlwaysConnected* alwaysConnectedState = nullptr;
+		MonkeyFile* m_file = nullptr;
 		
-		MonkeyFile* file = nullptr;
+		PrimitiveMap<Note,DataBase> m_database_map;
 		
-		PrimitiveMap<Note,DataBaseConfig> configuration;
-		
-		bool init = false;
-		bool owner = false;
+		bool m_owner = false;
 };
 
 }
