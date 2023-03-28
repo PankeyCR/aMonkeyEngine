@@ -48,26 +48,35 @@ namespace ame{
 template<class T>
 class DefaultServerProtocol : public ServerProtocol{	
     public:
-		DefaultServerProtocol(){}
-		virtual ~DefaultServerProtocol(){}
+		DefaultServerProtocol(){
+			DefaultServerProtocolLog(ame_Log_StartMethod, "Constructor",  "println", "");
+			DefaultServerProtocolLog(ame_Log_EndMethod, "Constructor",  "println", "");
+		}
+		virtual ~DefaultServerProtocol(){
+			DefaultServerProtocolLog(ame_Log_StartMethod, "Destructor",  "println", "");
+			DefaultServerProtocolLog(ame_Log_EndMethod, "Destructor",  "println", "");
+		}
 		
 		virtual SerialPort* getUpdateSerialPort(SerialServer* server){
+			DefaultServerProtocolLog(ame_Log_StartMethod, "getUpdateSerialPort",  "println", "");
 			if(this->serialState == nullptr){
-				DefaultServerProtocolLog(ame_Log_Statement, "getUpdateSerialPort",  "println", "this->serialState == nullptr");
+				DefaultServerProtocolLog(ame_Log_EndMethod, "getUpdateSerialPort",  "println", "this->serialState == nullptr");
 				return nullptr;
 			}
 			SerialPort* port = nullptr;
 			port = server->accept();
 			if(port == nullptr){
+				DefaultServerProtocolLog(ame_Log_EndMethod, "getUpdateSerialPort",  "println", "port == nullptr");
 				return nullptr;
 			}
-			DefaultServerProtocolLog(ame_Log_Statement, "getUpdateSerialPort",  "println", port->getName());
+			DefaultServerProtocolLog(ame_Log_EndMethod, "getUpdateSerialPort",  "println", port->getName());
 			return port;
 		}
 		
 		virtual void UpdateSerialPort(SerialPort* port){
+			DefaultServerProtocolLog(ame_Log_StartMethod, "UpdateSerialPort",  "println", "");
 			if(this->serialState == nullptr){
-				DefaultServerProtocolLog(ame_Log_Statement, "UpdateSerialPort",  "println", "this->serialState == nullptr");
+				DefaultServerProtocolLog(ame_Log_EndMethod, "UpdateSerialPort",  "println", "this->serialState == nullptr");
 				return;
 			}
 			if(!this->serialState->containSerialPort(port)){
@@ -77,6 +86,7 @@ class DefaultServerProtocol : public ServerProtocol{
 				this->serialState->addSerialPort(port, t_protocol);
 				t_protocol->initialize(this->serialState);
 			}
+			DefaultServerProtocolLog(ame_Log_EndMethod, "UpdateSerialPort",  "println", "this->serialState == nullptr");
 		}
 		
 		virtual void initialMessage(SerialPort* port, T* t){}

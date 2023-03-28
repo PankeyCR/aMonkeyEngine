@@ -464,11 +464,13 @@ class ArrayList : public List<T>{
 		
 		////////////////////////////////////////////cppObject part///////////////////////////////////////////////
 
+		#if defined(cppObject_AVAILABLE) && defined(cppObjectClass_AVAILABLE) && defined(Class_AVAILABLE)
 		virtual cppObjectClass* getClass(){
 			ArrayListLog(ame_Log_StartMethod, "replace", "println", "");
 			ArrayListLog(ame_Log_EndMethod, "Constructor", "println", "");
 			return Class<ArrayList<T,t_size>>::classType;
 		}
+		#endif
 
 		virtual List<T>* clone(){
 			ArrayListLog(ame_Log_StartMethod, "replace", "println", "");

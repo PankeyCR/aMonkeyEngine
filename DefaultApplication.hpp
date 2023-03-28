@@ -84,13 +84,15 @@ class DefaultApplication IMPLEMENTATION_Application {
 			DefaultApplicationLog(ame_Log_EndMethod, "Destructor", "println", "");
 		}
 
-		virtual void update(){
+		virtual float update(){
 			DefaultApplicationLog(ame_Log_StartMethod, "update", "println", "");
+
+			m_tpc = this->generateTpc();
 
 			#if defined(AppStateManager_AVAILABLE)
 			AppStateManager* u_states = this->getStateManager();
 			if(u_states == nullptr){
-				return;
+				return m_tpc;
 			}
 			#endif
 
@@ -98,7 +100,7 @@ class DefaultApplication IMPLEMENTATION_Application {
 			MemoryPool* u_pool = this->getMemoryPool();
 			if(u_pool != nullptr){
 				DefaultApplicationLog(ame_Log_Statement, "update", "println", "MemoryPool update");
-				u_pool->update(u_states->tpc());
+				u_pool->update(m_tpc);
 			}
 			#endif
 			
@@ -106,22 +108,21 @@ class DefaultApplication IMPLEMENTATION_Application {
 			RenderManager* u_render = this->getRenderManager();
 			if(u_render != nullptr){
 				DefaultApplicationLog(ame_Log_Statement, "update", "println", "RenderManager update");
-				u_render->update(u_states->tpc());
+				u_render->update(m_tpc);
 			}
 			#endif
 
 			#if defined(AppStateManager_AVAILABLE)
-			u_states->update();
+			u_states->update(m_tpc);
 			#endif
 
 			DefaultApplicationLog(ame_Log_EndMethod, "update", "println", "");
+			return m_tpc;
 		}
 
 		#if defined(cppObject_AVAILABLE) && defined(cppObjectClass_AVAILABLE) && defined(Class_AVAILABLE)
-		virtual cppObjectClass* getClass(){
-			return Class<DefaultApplication>::getClass();
-		}
-
+		virtual cppObjectClass* getClass(){return Class<DefaultApplication>::getClass();}
+		
 		virtual bool instanceof(cppObjectClass* cls){
 			return cls == Class<DefaultApplication>::getClass() || Application::instanceof(cls);
 		}

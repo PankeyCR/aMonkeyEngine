@@ -1,157 +1,68 @@
 
-#include "ame_Enviroment.hpp"
-
-#if defined(DISABLE_NoRepiteRandom)
-	#define NoRepiteRandom_hpp
-#endif
-
 #ifndef NoRepiteRandom_hpp
 #define NoRepiteRandom_hpp
 #define NoRepiteRandom_AVAILABLE
 
-#ifndef ame_Enviroment_Defined
-
-#endif
-
-#ifdef ame_Windows
-
-#endif
-
-#ifdef ame_ArduinoIDE
-	#include "Arduino.h"
-#endif
-
-#include "Random.hpp"
+#include "Function.hpp"
 #include "RealRandom.hpp"
 
-#ifdef NoRepiteRandomLogApp
-	#include "Logger.hpp"
-	#define NoRepiteRandomLog(name,method,type,mns) Log(name,method,type,mns)
+#ifdef NoRepiteRandom_LogApp
+	#include "ame_Logger_config.hpp"
+	#include "ame_Logger.hpp"
+
+	#define NoRepiteRandomLog(location,method,type,mns) ame_Log(this,location,"NoRepiteRandom",method,type,mns)
 #else
-	#define NoRepiteRandomLog(name,method,type,mns) 
+	#ifdef NoRepiteRandom_LogDebugApp
+		#include "ame_Logger_config.hpp"
+		#include "ame_Logger.hpp"
+
+		#define NoRepiteRandomLog(location,method,type,mns) ame_LogDebug(this,location,"NoRepiteRandom",method,type)
+	#else
+		#define NoRepiteRandomLog(location,method,type,mns)
+	#endif
 #endif
 
 namespace ame{
 
-#ifdef ame_Windows
-class NoRepiteRandom : public Random{
+class NoRepiteRandom : public Function<float,float,float,float>{
 	protected:
-		RealRandom *realRandom = nullptr;
-		float limitMax;
-		float relation = 0;
+		RealRandom *m_realRandom = nullptr;
 		
     public:
 		NoRepiteRandom(){
-			this->realRandom = new RealRandom();
-			this->realRandom->setSeed(78545l);
-			this->realRandom->setMax(78545l);
-			setMax(100);
-			setMin(0);
-			limitMax = ((float)2147483646/1000000.0f);
-		}
-		NoRepiteRandom(const NoRepiteRandom& r){
-			this->realRandom = new RealRandom();
-			this->realRandom->setSeed(r.getSeed());
-			this->realRandom->setMax(78545l);
-			setMax(100);
-			setMin(0);
-			limitMax = ((float)2147483646/1000000.0f);
-		}
-		NoRepiteRandom(float seed){
-			this->realRandom = new RealRandom();
-			this->realRandom->setSeed(seed);
-			this->realRandom->setMax(seed);
-			setMax(100);
-			setMin(0);
-			limitMax = ((float)2147483646/1000000.0f);
-		}
-		NoRepiteRandom(float max, float min, float seed){
-			this->realRandom = new RealRandom();
-			this->realRandom->setSeed(seed);
-			this->realRandom->setMax(seed);
-			setMax(max);
-			setMin(min);
-			limitMax = ((float)2147483646/1000000.0f);
+			this->m_realRandom = new RealRandom();
+			float limitMax = ((float)2147483646/1000000.0f);
+			this->initializeConstantes(4,0);
+			this->setConstante(0,limitMax);
+			this->setConstante(1,100000.0f);
+			this->setConstante(2,0.0f);
+			this->setConstante(3,1.0f);
 		}
 		virtual ~NoRepiteRandom(){
-			delete this->realRandom;
+			delete this->m_realRandom;
 		}
-		virtual float getRandom(){
-			return 0;
-		}
-		
-};
-#endif
-
-#ifdef ame_ArduinoIDE
-class NoRepiteRandom : public Random{
-	protected:
-		RealRandom *realRandom = nullptr;
-		float limitMax;
-		float relation = 0;
-		
-    public:
-		NoRepiteRandom(){
-			this->realRandom = new RealRandom();
-			this->realRandom->setSeed(78545l);
-			this->realRandom->setMax(78545l);
-			setMax(100);
-			setMin(0);
-			limitMax = ((float)2147483646/1000000.0f);
-		}
-		NoRepiteRandom(const NoRepiteRandom& r){
-			this->realRandom = new RealRandom();
-			this->realRandom->setSeed(r.getSeed());
-			this->realRandom->setMax(78545l);
-			setMax(100);
-			setMin(0);
-			limitMax = ((float)2147483646/1000000.0f);
-		}
-		NoRepiteRandom(float seed){
-			this->realRandom = new RealRandom();
-			this->realRandom->setSeed(seed);
-			this->realRandom->setMax(seed);
-			setMax(100);
-			setMin(0);
-			limitMax = ((float)2147483646/1000000.0f);
-		}
-		NoRepiteRandom(float max, float min, float seed){
-			this->realRandom = new RealRandom();
-			this->realRandom->setSeed(seed);
-			this->realRandom->setMax(seed);
-			setMax(max);
-			setMin(min);
-			limitMax = ((float)2147483646/1000000.0f);
-		}
-		virtual ~NoRepiteRandom(){
-			delete this->realRandom;
-		}
-		virtual float getRandom(){
-			float eseed = this->realRandom->getRandom();
-			if(eseed!=0){
-				this->seed = eseed;
-			}
+		virtual float f(float a_max, float a_min, float a_seed){
+			float i_seed = this->m_realRandom->f(this->getConstante(1), this->getConstante(2), a_seed);
 			float time = ((float)micros()/1000000.0f);
-			float d = getMax()-getMin();
-			float dx = (limitMax/(this->seed*relation));
+			float d = a_max - a_min;
+			float dx = (this->getConstante(0) / (i_seed * this->getConstante(3)));
 			float tdx = ((float)(time/dx));
 			float tx = (((float)(tdx))-((long)(tdx)));
 			float x = d*tx;
-			NoRepiteRandomLog("NoRepiteRandom", "getRandom", "println","");
-			NoRepiteRandomLog("NoRepiteRandom", "getRandom", "println","NoRepiteRandom");
-			NoRepiteRandomLog("NoRepiteRandom", "getRandom", "print","time ");NoRepiteRandomLog("NoRepiteRandom", "getRandom", "println",Note(time));
-			NoRepiteRandomLog("NoRepiteRandom", "getRandom", "print","d ");NoRepiteRandomLog("NoRepiteRandom", "getRandom", "println",Note(d));
-			NoRepiteRandomLog("NoRepiteRandom", "getRandom", "print","dx ");NoRepiteRandomLog("NoRepiteRandom", "getRandom", "println",Note(dx));
-			NoRepiteRandomLog("NoRepiteRandom", "getRandom", "print","tdx ");NoRepiteRandomLog("NoRepiteRandom", "getRandom", "println",Note(tdx));
-			NoRepiteRandomLog("NoRepiteRandom", "getRandom", "print","tx ");NoRepiteRandomLog("NoRepiteRandom", "getRandom", "println",Note(tx));
-			NoRepiteRandomLog("NoRepiteRandom", "getRandom", "print","x ");NoRepiteRandomLog("NoRepiteRandom", "getRandom", "println",Note(x));
-			NoRepiteRandomLog("NoRepiteRandom", "getRandom", "println","");
-			relation =  1.0f / (x+getMin()+ 0.1f);
-			return x+getMin();
+			NoRepiteRandomLog(ame_Log_Statement, "getRandom", "println","");
+			NoRepiteRandomLog(ame_Log_Statement, "getRandom", "println","NoRepiteRandom");
+			NoRepiteRandomLog(ame_Log_Statement, "getRandom", "print","time ");NoRepiteRandomLog(ame_Log_Statement, "getRandom", "println",Note(time));
+			NoRepiteRandomLog(ame_Log_Statement, "getRandom", "print","d ");NoRepiteRandomLog(ame_Log_Statement, "getRandom", "println",Note(d));
+			NoRepiteRandomLog(ame_Log_Statement, "getRandom", "print","dx ");NoRepiteRandomLog(ame_Log_Statement, "getRandom", "println",Note(dx));
+			NoRepiteRandomLog(ame_Log_Statement, "getRandom", "print","tdx ");NoRepiteRandomLog(ame_Log_Statement, "getRandom", "println",Note(tdx));
+			NoRepiteRandomLog(ame_Log_Statement, "getRandom", "print","tx ");NoRepiteRandomLog(ame_Log_Statement, "getRandom", "println",Note(tx));
+			NoRepiteRandomLog(ame_Log_Statement, "getRandom", "print","x ");NoRepiteRandomLog(ame_Log_Statement, "getRandom", "println",Note(x));
+			NoRepiteRandomLog(ame_Log_Statement, "getRandom", "println","");
+			this->setConstante(3, 1.0f / (x + a_min + 0.1f));
+			return x + a_min;
 		}
 		
 };
-#endif
 
 }
 

@@ -409,12 +409,9 @@ class DefaultStateManager IMPLEMENTATION_AppStateManager {
 			DefaultStateManagerLog(ame_Log_EndMethod, "removeDeleteAll", "println", "");
 		}
 
-		virtual void update(){
+		virtual void update(float a_tpc){
 			DefaultStateManagerLog(ame_Log_StartMethod, "update",  "println", "");
-			this->now = System::microSeconds();
 			
-			this->t = (float)(this->now - this->prev)/1000000;
-			this->prev = this->now;
 			if(!initializeStates.isEmpty()){
 				for(int x = 0; x < initializeStates.getPosition();x++){
 					AppState* m_state = initializeStates.getByPosition(x);
@@ -436,13 +433,9 @@ class DefaultStateManager IMPLEMENTATION_AppStateManager {
 					DefaultStateManagerLog(ame_Log_StartMethod, "update",  "println", "m_state == nullptr");
 					continue;
 				}
-				m_state->update(this->t);
+				m_state->update(a_tpc);
 			}
 			DefaultStateManagerLog(ame_Log_EndMethod, "update", "println", "");
-		}
-
-		virtual float tpc(){
-			return t;
 		}
 
 		#if defined(cppObject_AVAILABLE) && defined(cppObjectClass_AVAILABLE) && defined(Class_AVAILABLE)
@@ -458,9 +451,6 @@ class DefaultStateManager IMPLEMENTATION_AppStateManager {
 	protected:
 		PrimitiveList<AppState> appStateList;
 		PrimitiveList<AppState> initializeStates;
-		long now = 0;
-		long prev = 0;
-		float t = 0;
 };
 
 }

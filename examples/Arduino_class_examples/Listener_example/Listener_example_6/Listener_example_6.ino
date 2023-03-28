@@ -24,7 +24,7 @@ void setup() {
   Serial.println("Listener example 6");
   
   app = new DefaultApplication();
-  listener = app->setListener(new Listener());
+  listener = app->getStateManager()->addState(new Listener());
   
   listener->createDebounceLoopInterrupt<1>(0.1f, 2);//debounce time, pin
   listener->createDebounceLoopInterrupt<2>(0.1f, 3, true);//debounce time, pin, inverted

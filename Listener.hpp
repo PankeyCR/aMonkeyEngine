@@ -1,10 +1,4 @@
 
-#include "ame_Enviroment.hpp"
-
-#if defined(DISABLE_Listener)
-	#define Listener_hpp
-#endif
-
 #ifndef Listener_hpp
 #define Listener_hpp
 #define Listener_AVAILABLE
@@ -32,6 +26,8 @@
 #define ListenerAnalogOutput 20
 #define ListenerAnalogOutputController 21
 
+#include "ame_Enviroment.hpp"
+
 #ifndef ame_Enviroment_Defined
 
 #endif
@@ -45,6 +41,7 @@
 #endif
 
 #include "cppObject.hpp"
+#include "BaseAppState.hpp"
 #include "ListenerEvent.hpp"
 #include "ListenerAnalogEvent.hpp"
 #include "PrimitiveList.hpp"
@@ -933,7 +930,7 @@ void Interrupt(bool state){
 }
 #endif
 
-class Listener : public cppObject{
+class Listener IMPLEMENTATION_BaseAppState {
     public:
 		using EventMethod = void (*)(int,long,bool);
 		typedef void (*Method)();
@@ -964,15 +961,10 @@ class Listener : public cppObject{
 			ListenerLog(ame_Log_EndMethod, "Destructor",  "println", "");
 		}
 		
-		virtual void attach(Application* a){
-			ListenerLog(ame_Log_StartMethod, "attach",  "println", "");
-			app = a;
-			ListenerLog(ame_Log_EndMethod, "attach",  "println", "");
-		}
-		virtual cppObjectClass* getClass(){return Class<Listener>::classType;}
-		virtual bool instanceof(cppObjectClass* cls){
-			return cls == Class<Listener>::classType || cppObject::instanceof(cls);
-		}
+		#if defined(cppObject_AVAILABLE) && defined(cppObjectClass_AVAILABLE) && defined(Class_AVAILABLE)
+		virtual cppObjectClass* getClass(){return Class<Listener>::getClass();}
+		virtual bool instanceof(cppObjectClass* cls){return cls == Class<Listener>::getClass();}
+		#endif
 		
 #ifdef ame_ArduinoIDE
 		template<int interrupt>
@@ -988,7 +980,7 @@ class Listener : public cppObject{
 			IO_Vars<interrupt>::m_safe = false;
 			ListenerLog(ame_Log_EndMethod, "UnSecure",  "println", "");
 		}
-		virtual void InterruptEvent(float tpc){
+		virtual void updateState(float tpc){
 			for(int x = 0; x < LoopMap_m->getPosition(); x++){
 				(*LoopMap_m->getByPosition(x))(tpc);
 			}
@@ -1066,10 +1058,10 @@ class Listener : public cppObject{
 			IO_Vars<interrupt>::m_inverted = inv;
 			IO_Long_Times<interrupt>::m_timelimit = l;
 			if(IO_Event<interrupt>::m_events == nullptr){
-				IO_Event<interrupt>::m_events = new PrimitiveList<EventMethod>(owner);
+				IO_Event<interrupt>::m_events = new PrimitiveList<EventMethod>(5, owner, true);
 			}
 			if(IO_ClassEvent<interrupt>::m_events == nullptr){
-				IO_ClassEvent<interrupt>::m_events = new PrimitiveList<ListenerEvent>(owner);
+				IO_ClassEvent<interrupt>::m_events = new PrimitiveList<ListenerEvent>(5, owner, true);
 			}
 			pinMode(pin,INPUT_PULLUP);
 			attachInterrupt(digitalPinToInterrupt(pin), DebounceInterrupt<interrupt>, CHANGE);
@@ -1099,7 +1091,7 @@ class Listener : public cppObject{
 			IO_Vars<interrupt>::m_inverted = inv;
 			IO_Long_Times<interrupt>::m_timelimit = l;
 			if(IO_Event<interrupt>::m_events == nullptr){
-				IO_Event<interrupt>::m_events = new PrimitiveList<EventMethod>(owner);
+				IO_Event<interrupt>::m_events = new PrimitiveList<EventMethod>(5, owner, true);
 			}
 			pinMode(pin,INPUT_PULLUP);
 			attachInterrupt(digitalPinToInterrupt(pin), DebounceInterrupt_Event<interrupt>, CHANGE);
@@ -1129,7 +1121,7 @@ class Listener : public cppObject{
 			IO_Vars<interrupt>::m_inverted = inv;
 			IO_Long_Times<interrupt>::m_timelimit = l;
 			if(IO_ClassEvent<interrupt>::m_events == nullptr){
-				IO_ClassEvent<interrupt>::m_events = new PrimitiveList<ListenerEvent>(owner);
+				IO_ClassEvent<interrupt>::m_events = new PrimitiveList<ListenerEvent>(5, owner, true);
 			}
 			pinMode(pin,INPUT_PULLUP);
 			attachInterrupt(digitalPinToInterrupt(pin), DebounceInterrupt_ClassEvent<interrupt>, CHANGE);
@@ -1169,10 +1161,10 @@ class Listener : public cppObject{
 				IO_Float_Times<interrupt>::m_timelimit = l;
 			}
 			if(IO_Event<interrupt>::m_events == nullptr){
-				IO_Event<interrupt>::m_events = new PrimitiveList<EventMethod>(owner);
+				IO_Event<interrupt>::m_events = new PrimitiveList<EventMethod>(5, owner, true);
 			}
 			if(IO_ClassEvent<interrupt>::m_events == nullptr){
-				IO_ClassEvent<interrupt>::m_events = new PrimitiveList<ListenerEvent>(owner);
+				IO_ClassEvent<interrupt>::m_events = new PrimitiveList<ListenerEvent>(5, owner, true);
 			}
 			pinMode(IO_Pin<interrupt>::m_pin,INPUT);
 			LoopMap_m->addLValue(&DebounceLoopInterrupt<interrupt>);
@@ -1228,10 +1220,10 @@ class Listener : public cppObject{
 			IO_Vars<interrupt>::m_inverted = inv;
 			IO_Float_Times<interrupt>::m_timelimit = l;
 			if(IO_Event<interrupt>::m_events == nullptr){
-				IO_Event<interrupt>::m_events = new PrimitiveList<EventMethod>(owner);
+				IO_Event<interrupt>::m_events = new PrimitiveList<EventMethod>(5, owner, true);
 			}
 			if(IO_ClassEvent<interrupt>::m_events == nullptr){
-				IO_ClassEvent<interrupt>::m_events = new PrimitiveList<ListenerEvent>(owner);
+				IO_ClassEvent<interrupt>::m_events = new PrimitiveList<ListenerEvent>(5, owner, true);
 			}
 			pinMode(pin,INPUT);
 			LoopMap_m->addLValue(&DebounceLoopInterrupt<interrupt>);
@@ -1268,16 +1260,16 @@ class Listener : public cppObject{
 			IO_Multi_State<multiInterrupt>::m_state = state;
 			IO_Long_Times<interrupt>::m_timelimit = l;
 			if(IO_Event<interrupt>::m_events == nullptr){
-				IO_Event<interrupt>::m_events = new PrimitiveList<EventMethod>(owner);
+				IO_Event<interrupt>::m_events = new PrimitiveList<EventMethod>(5, owner, true);
 			}
 			if(IO_ClassEvent<interrupt>::m_events == nullptr){
-				IO_ClassEvent<interrupt>::m_events = new PrimitiveList<ListenerEvent>(owner);
+				IO_ClassEvent<interrupt>::m_events = new PrimitiveList<ListenerEvent>(5, owner, true);
 			}
 			if(IO_Multi_Event<interrupt>::m_events == nullptr){
-				IO_Multi_Event<interrupt>::m_events = new PrimitiveList<EventMethod>(owner);
+				IO_Multi_Event<interrupt>::m_events = new PrimitiveList<EventMethod>(5, owner, true);
 			}
 			if(IO_Multi_ClassEvent<interrupt>::m_events == nullptr){
-				IO_Multi_ClassEvent<interrupt>::m_events = new PrimitiveList<ListenerEvent>(owner);
+				IO_Multi_ClassEvent<interrupt>::m_events = new PrimitiveList<ListenerEvent>(5, owner, true);
 			}
 			pinMode(pin,INPUT_PULLUP);
 			attachInterrupt(digitalPinToInterrupt(pin), DebounceMultiInterrupt<interrupt,multiInterrupt,interrupts...>, CHANGE);
@@ -1333,10 +1325,10 @@ class Listener : public cppObject{
 			IO_Vars<interrupt>::m_state = state;
 			IO_Vars<interrupt>::m_safe = safe;
 			if(IO_Event<interrupt>::m_events == nullptr){
-				IO_Event<interrupt>::m_events = new PrimitiveList<EventMethod>(owner);
+				IO_Event<interrupt>::m_events = new PrimitiveList<EventMethod>(5, owner, true);
 			}
 			if(IO_ClassEvent<interrupt>::m_events == nullptr){
-				IO_ClassEvent<interrupt>::m_events = new PrimitiveList<ListenerEvent>(owner);
+				IO_ClassEvent<interrupt>::m_events = new PrimitiveList<ListenerEvent>(5, owner, true);
 			}
 			pinMode(pin,INPUT_PULLUP);
 			attachInterrupt(digitalPinToInterrupt(pin), Interrupt<interrupt>, CHANGE);
@@ -1359,10 +1351,10 @@ class Listener : public cppObject{
 			IO_Vars<interrupt>::m_state = state;
 			IO_Vars<interrupt>::m_safe = true;
 			if(IO_Event<interrupt>::m_events == nullptr){
-				IO_Event<interrupt>::m_events = new PrimitiveList<EventMethod>(owner);
+				IO_Event<interrupt>::m_events = new PrimitiveList<EventMethod>(5, owner, true);
 			}
 			if(IO_ClassEvent<interrupt>::m_events == nullptr){
-				IO_ClassEvent<interrupt>::m_events = new PrimitiveList<ListenerEvent>(owner);
+				IO_ClassEvent<interrupt>::m_events = new PrimitiveList<ListenerEvent>(5, owner, true);
 			}
 			pinMode(pin,INPUT);
 			attachInterrupt(digitalPinToInterrupt(pin), ThreadInterrupt<interrupt>, CHANGE);
@@ -1405,10 +1397,10 @@ class Listener : public cppObject{
 				IO_Vars<interrupt>::m_inverted = inv;
 			}
 			if(IO_Event<interrupt>::m_events == nullptr){
-				IO_Event<interrupt>::m_events = new PrimitiveList<EventMethod>(owner);
+				IO_Event<interrupt>::m_events = new PrimitiveList<EventMethod>(5, owner, true);
 			}
 			if(IO_ClassEvent<interrupt>::m_events == nullptr){
-				IO_ClassEvent<interrupt>::m_events = new PrimitiveList<ListenerEvent>(owner);
+				IO_ClassEvent<interrupt>::m_events = new PrimitiveList<ListenerEvent>(5, owner, true);
 			}
 			pinMode(IO_Pin<interrupt>::m_pin,OUTPUT);
 			digitalWrite(IO_Pin<interrupt>::m_pin, IO_Vars<interrupt>::m_state);
@@ -1462,10 +1454,10 @@ class Listener : public cppObject{
 			IO_Vars<interrupt>::m_safe = true;
 			IO_Vars<interrupt>::m_inverted = inv;
 			if(IO_Event<interrupt>::m_events == nullptr){
-				IO_Event<interrupt>::m_events = new PrimitiveList<EventMethod>(owner);
+				IO_Event<interrupt>::m_events = new PrimitiveList<EventMethod>(5, owner, true);
 			}
 			if(IO_ClassEvent<interrupt>::m_events == nullptr){
-				IO_ClassEvent<interrupt>::m_events = new PrimitiveList<ListenerEvent>(owner);
+				IO_ClassEvent<interrupt>::m_events = new PrimitiveList<ListenerEvent>(5, owner, true);
 			}
 			pinMode(pin,OUTPUT);
 			digitalWrite(pin, state);
@@ -1557,7 +1549,7 @@ class Listener : public cppObject{
 				return;
 			}
 			IO_Output_Value<interrupt_2>::m_output_values->setLValues(name, state);
-			bool* statePointer = IO_Output_Value<interrupt_2>::m_output_values->getByLValue(name);
+			bool* statePointer = IO_Output_Value<interrupt_2>::m_output_values->getValueByLValue(name);
 			if(statePointer == nullptr){
 				return;
 			}
@@ -1606,7 +1598,7 @@ class Listener : public cppObject{
 			if(IO_Output_Value<interrupt_2>::m_output_values == nullptr){
 				return;
 			}
-			bool* state = IO_Output_Value<interrupt_2>::m_output_values->getByLValue(name);
+			bool* state = IO_Output_Value<interrupt_2>::m_output_values->getValueByLValue(name);
 			IO_Output_State<interrupt>::m_name = name;
 			IO_Output_State<interrupt>::m_state = state;
 			IO_Consume<interrupt>::m_consume = true;
@@ -1618,7 +1610,7 @@ class Listener : public cppObject{
 			if(IO_Output_Value<interrupt_2>::m_output_values == nullptr){
 				return;
 			}
-			bool* state = IO_Output_Value<interrupt_2>::m_output_values->getByLValue(name);
+			bool* state = IO_Output_Value<interrupt_2>::m_output_values->getValueByLValue(name);
 			if(state == nullptr){
 				return;
 			}
@@ -1652,10 +1644,10 @@ class Listener : public cppObject{
 			IO_Vars<interrupt>::m_state = state;
 			IO_Vars<interrupt>::m_safe = true;
 			if(IO_Event<interrupt>::m_events == nullptr){
-				IO_Event<interrupt>::m_events = new PrimitiveList<EventMethod>(owner);
+				IO_Event<interrupt>::m_events = new PrimitiveList<EventMethod>(5, owner, true);
 			}
 			if(IO_ClassEvent<interrupt>::m_events == nullptr){
-				IO_ClassEvent<interrupt>::m_events = new PrimitiveList<ListenerEvent>(owner);
+				IO_ClassEvent<interrupt>::m_events = new PrimitiveList<ListenerEvent>(5, owner, true);
 			}
 			pinMode(pin,OUTPUT);
 		}
@@ -1670,10 +1662,10 @@ class Listener : public cppObject{
 			IO_Pin<interrupt>::m_pin = pin;
 			Analog_Vars<interrupt>::m_type = ListenerAnalogInput;
 			if(IO_AnalogEvent<interrupt>::m_events == nullptr){
-				IO_AnalogEvent<interrupt>::m_events = new PrimitiveList<AnalogInputMethod>(owner);
+				IO_AnalogEvent<interrupt>::m_events = new PrimitiveList<AnalogInputMethod>(5, owner, true);
 			}
 			if(IO_AnalogClassEvent<interrupt>::m_events == nullptr){
-				IO_AnalogClassEvent<interrupt>::m_events = new PrimitiveList<ListenerAnalogEvent>(owner);
+				IO_AnalogClassEvent<interrupt>::m_events = new PrimitiveList<ListenerAnalogEvent>(5, owner, true);
 			}
 			pinMode(pin,INPUT);
 			LoopMap_m->addLValue(&AnalogInput<interrupt>);
@@ -2110,7 +2102,7 @@ class Listener : public cppObject{
 		template<int interrupt_1, int interrupt_2>
 		void linkEvent(Note a_name){
 			if(IO_Map_Event<interrupt_2>::m_events != nullptr){
-				EventMethod* event = IO_Map_Event<interrupt_2>::m_events->getByLValue(a_name);
+				EventMethod* event = IO_Map_Event<interrupt_2>::m_events->getValueByLValue(a_name);
 				if(event != nullptr){
 					if(!IO_Event<interrupt_1>::m_events->containByPointer(event)){
 						IO_Event<interrupt_1>::m_events->addPointer(event);
@@ -2118,7 +2110,7 @@ class Listener : public cppObject{
 				}
 			}
 			if(IO_Map_ClassEvent<interrupt_2>::m_events != nullptr && IO_ClassEvent<interrupt_2>::m_events != nullptr){
-				ListenerEvent* event = IO_Map_ClassEvent<interrupt_2>::m_events->getByLValue(a_name);
+				ListenerEvent* event = IO_Map_ClassEvent<interrupt_2>::m_events->getValueByLValue(a_name);
 				if(event != nullptr){
 					if(!IO_ClassEvent<interrupt_1>::m_events->containByPointer(event)){
 						IO_ClassEvent<interrupt_1>::m_events->addPointer(event);
@@ -2210,7 +2202,7 @@ class Listener : public cppObject{
 		template<int interrupt>
 		void addEvent(EventMethod e, bool owner){
 			if(IO_Event<interrupt>::m_events == nullptr){
-				IO_Event<interrupt>::m_events = new PrimitiveList<EventMethod>(owner);
+				IO_Event<interrupt>::m_events = new PrimitiveList<EventMethod>(5, owner, true);
 			}
 			IO_Event<interrupt>::m_events->addLValue(e);
 		}
@@ -2270,7 +2262,7 @@ class Listener : public cppObject{
 		template<int interrupt>
 		void addEvent(ListenerEvent* e, bool owner){
 			if(IO_ClassEvent<interrupt>::m_events == nullptr){
-				IO_ClassEvent<interrupt>::m_events = new PrimitiveList<ListenerEvent>(owner);
+				IO_ClassEvent<interrupt>::m_events = new PrimitiveList<ListenerEvent>(5, owner, true);
 			}
 			IO_ClassEvent<interrupt>::m_events->addPointer(e);
 		}
@@ -2351,7 +2343,7 @@ class Listener : public cppObject{
 		template<int interrupt>
 		void addEvent(AnalogInputMethod e, bool owner){
 			if(IO_AnalogEvent<interrupt>::m_events == nullptr){
-				IO_AnalogEvent<interrupt>::m_events = new PrimitiveList<AnalogInputMethod>(owner);
+				IO_AnalogEvent<interrupt>::m_events = new PrimitiveList<AnalogInputMethod>(5, owner, true);
 			}
 			IO_AnalogEvent<interrupt>::m_events->addLValue(e);
 		}
@@ -2393,7 +2385,7 @@ class Listener : public cppObject{
 		template<int interrupt>
 		void addEvent(ListenerAnalogEvent* e, bool owner){
 			if(IO_AnalogClassEvent<interrupt>::m_events == nullptr){
-				IO_AnalogClassEvent<interrupt>::m_events = new PrimitiveList<ListenerAnalogEvent>(owner);
+				IO_AnalogClassEvent<interrupt>::m_events = new PrimitiveList<ListenerAnalogEvent>(5, owner, true);
 			}
 			IO_AnalogClassEvent<interrupt>::m_events->addPointer(e);
 		}

@@ -53,9 +53,9 @@
 
 //logger
 
-// #define ame_LogApp
-// #define ame_LogPrint
-// #define ame_SystemFullLog
+#define ame_LogApp
+#define ame_LogPrint
+#define ame_SystemFullLog
 //#define ame_Arduino_Log
 
 // #define GameManager_LogApp
@@ -77,11 +77,6 @@
 // #define ame_WIFI_LogApp
 // #define ame_ETHERNET_LogApp
 // #define ame_LoRa_LogApp
-
-// #define SerialNetwork_LogApp
-// #define SerialState_LogApp
-
-// #define SerialDelivery_LogApp
 
 // #define DefaultApplication_LogApp
 
@@ -113,11 +108,14 @@
 
 // #define BaseAppState_LogApp
 
-// #define SerialController_LogApp
-
 // #define SerialPost_LogApp
 // #define SerialNetwork_LogApp
 // #define SerialState_LogApp
+// #define SerialStateController_LogApp
+#define SerialDelivery_LogApp
+
+#define UDPNetwork_LogApp
+
 // #define DefaultSerialPort_LogApp
 // #define DefaultPortProtocol_LogApp
 // #define ListenerDelivery_LogApp
@@ -134,7 +132,7 @@
 //#define Listener_LogApp
 //#define DefaultPortProtocol_LogApp
 //#define StartEndPortProtocol_LogApp
-//#define DefaultServerProtocol_LogApp
+// #define DefaultServerProtocol_LogApp
 //#define IOPortProtocol_LogApp
 //#define IOServerProtocol_LogApp
 
@@ -160,25 +158,25 @@
 #define DISABLE_MemoryChunk
 #define DISABLE_Chunk
 
-// #define DISABLE_cppObjectClass
-// #define DISABLE_Annotation
-// #define DISABLE_Method
+#define DISABLE_cppObjectClass
+#define DISABLE_Annotation
+#define DISABLE_Method
 
-// #define DISABLE_cppObject
+#define DISABLE_cppObject
 
-// #define DISABLE_AbstractClass
-// #define DISABLE_Class
+#define DISABLE_AbstractClass
+#define DISABLE_Class
 
 // #define DISABLE_Application
 // #define DISABLE_DefaultApplication
 
 #define DISABLE_RenderManager
-// #define DISABLE_AppSettings
-// #define DISABLE_TimeControl
+#define DISABLE_AppSettings
+#define DISABLE_TimeControl
 // #define DISABLE_AppStateManager
 
-// #define DISABLE_DefaultSettings
-// #define DISABLE_SimpleTimer
+#define DISABLE_DefaultSettings
+#define DISABLE_SimpleTimer
 // #define DISABLE_DefaultStateManager
 
 // #define DISABLE_AppState
@@ -204,10 +202,10 @@
 //   addClassMethodToLog("toLong");
 
 
-#ifndef ame_LogDebug
-	#include "ame_debug.hpp"
-	#define ame_LogDebug(pointer,location,name,method,type) debug(pointer,location,name,method,type)
-#endif
+// #ifndef ame_LogDebug
+// 	#include "ame_debug.hpp"
+// 	#define ame_LogDebug(pointer,location,name,method,type) debug(pointer,location,name,method,type)
+// #endif
 
 // #ifndef ame_LogDebug
 // 	#include "ame_list_debug.hpp"

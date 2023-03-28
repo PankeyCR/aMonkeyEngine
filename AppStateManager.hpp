@@ -159,9 +159,7 @@ class AppStateManager IMPLEMENTATION_cppObject {
 		virtual void removeAll()=0;
 		virtual void removeDeleteAll()=0;
 		
-		virtual void update()=0;
-		
-		virtual float tpc()=0;
+		virtual void update(float a_tpc)=0;
 		
 		#if defined(cppObject_AVAILABLE) && defined(cppObjectClass_AVAILABLE) && defined(AbstractClass_AVAILABLE)
 		virtual cppObjectClass* getClass(){

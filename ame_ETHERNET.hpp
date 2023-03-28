@@ -17,6 +17,8 @@
 	#include "Arduino.h"
 #endif
 
+#include "NoteHelper.hpp"
+
 #ifdef ame_ETHERNET_LogApp
 	#include "ame_Logger_config.hpp"
 	#include "ame_Logger.hpp"

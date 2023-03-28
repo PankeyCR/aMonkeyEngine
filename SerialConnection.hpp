@@ -74,7 +74,7 @@ class SerialConnection {
 			while(port->available()){
 				char inputChar = (char)port->read();
 				if(isValidChar(inputChar)){
-					mns.concat(inputChar);
+					mns.addLocalValue(inputChar);
 				}
 			}
 			port->flush();
@@ -93,7 +93,7 @@ class SerialConnection {
 					break;
 				}
 				if(isValidChar(inputChar)){
-					mns.concat(inputChar);
+					mns.addLocalValue(inputChar);
 				}
 			}
 			port->flush();
@@ -112,7 +112,7 @@ class SerialConnection {
 					break;
 				}
 				if(isValidChar(inputChar)){
-					mns.concat(inputChar);
+					mns.addLocalValue(inputChar);
 				}
 			}
 			port->flush();
@@ -135,7 +135,7 @@ class SerialConnection {
 					break;
 				}
 				if(isValidChar(inputChar) && start){
-					mns.concat(inputChar);
+					mns.addLocalValue(inputChar);
 				}
 			}
 			port->flush();
@@ -160,7 +160,7 @@ class SerialConnection {
 				return mns;
 			}
 			if(isValidChar(read)){
-				message.concat(read);
+				message.addLocalValue(read);
 			}
 			return mns;
 		}
@@ -183,7 +183,7 @@ class SerialConnection {
 				return mns;
 			}
 			if(isValidChar(read)){
-				message.concat(read);
+				message.addLocalValue(read);
 			}
 			return mns;
 		}
@@ -206,7 +206,7 @@ class SerialConnection {
 				receive=false;
 			}
 			if(receive && isValidChar(read)){
-				message.concat(read);
+				message.addLocalValue(read);
 			}
 			if(start == read){
 				message = "";
@@ -230,14 +230,14 @@ class SerialConnection {
 				receive=false;
 				if(list->containByLValue(mns)){
 					Note sendingSafeResponce = "";
-					sendingSafeResponce.concat(start);
-					sendingSafeResponce.concat(responce);
-					sendingSafeResponce.concat(end);
+					sendingSafeResponce.addLocalValue(start);
+					sendingSafeResponce.addLocalNote(responce);
+					sendingSafeResponce.addLocalValue(end);
 					print(sendingSafeResponce);
 				}
 			}
 			if(receive && isValidChar(read)){
-				message.concat(read);
+				message.addLocalValue(read);
 			}
 			if(start == read){
 				message = "";
@@ -274,11 +274,8 @@ class SerialConnection {
 			port->write(s);
 		}
 	
-		virtual void writeln(Note s){
-			int sendd_len = s.length() + 1; 
-			char sendd_array[sendd_len];
-			s.toCharArray(sendd_array, sendd_len);
-			port->write(sendd_array);
+		virtual void writeln(Note a_send){
+			port->write(a_send.pointer());
 			port->write('\r');
 			port->write('\n');
 		}
@@ -293,15 +290,13 @@ class SerialConnection {
 			SerialConnectionLog("SerialConnection", "Split",  "println", "");   
 			Note return_1="";     
 			int delimiter=0;  
-			int respuesta_len = divide.length() + 1; 
-			char respuesta_array[respuesta_len];
-			divide.toCharArray(respuesta_array, respuesta_len);
-			for(int i=0; i < respuesta_len; i++){
-				if(respuesta_array[i] == limiter){                   
+			for(int i=0; i < divide.getPosition(); i++){
+				char f_char = divide.get(i);
+				if(f_char == limiter){                   
 					delimiter++;  
 				}
-				if((parte == delimiter) && (respuesta_array[i] != limiter)){
-					return_1=return_1+respuesta_array[i];
+				if((parte == delimiter) && (f_char != limiter)){
+					return_1.addLocalValue(f_char);
 				}
 			}
 			return return_1;
@@ -311,11 +306,9 @@ class SerialConnection {
 			SerialConnectionLog("SerialConnection", "SplitLenght",  "println", "");
 			Note return_1="";     
 			int delimiter=0;  
-			int respuesta_len = divide.length() + 1; 
-			char respuesta_array[respuesta_len];
-			divide.toCharArray(respuesta_array, respuesta_len);
-			for(int i=0; i < respuesta_len; i++){
-				if(respuesta_array[i] == limiter){                   
+			for(int i=0; i < divide.getPosition(); i++){
+				char f_char = divide.get(i);
+				if(f_char == limiter){                   
 					delimiter++;  
 				}
 			}
@@ -326,18 +319,16 @@ class SerialConnection {
 			SerialConnectionLog("SerialConnection", "Split",  "println", "");
 			Note return_1="";     
 			int delimiter=0;  
-			int respuesta_len = divide.length() + 1; 
-			char respuesta_array[respuesta_len];
-			divide.toCharArray(respuesta_array, respuesta_len);
-			for(int i=0; i < respuesta_len; i++){
-				if(respuesta_array[i] == limiter){                   
+			for(int i=0; i < divide.getPosition(); i++){
+				char f_char = divide.get(i);
+				if(f_char == limiter){                   
 					delimiter++;  
 				}
-				if((parte == delimiter) && (respuesta_array[i] == fin)){                   
+				if((parte == delimiter) && (f_char == fin)){                   
 					delimiter++;  
 				}
-				if((parte == delimiter) && (respuesta_array[i] != limiter)){
-					return_1=return_1+respuesta_array[i];
+				if((parte == delimiter) && (f_char != limiter)){
+					return_1.addLocalValue(f_char);
 				}
 			}
 			return return_1;

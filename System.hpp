@@ -58,6 +58,25 @@ class System{
 		#endif
 		}
 
+		static void startEngine(){
+			bool i_halt = true;
+
+			#ifdef ame_Enviroment_Name
+			System::console.println(ame_Enviroment_Name);
+			i_halt = false;
+			#endif
+
+			while(i_halt){
+				System::console.println("No Engine detected");
+				
+				#ifndef ame_Enviroment_Name
+				System::console.println("No Enviroment detected");
+				#endif
+
+				System::sleep(1000);
+			}
+		}
+
 	protected:
 
 		System(){}

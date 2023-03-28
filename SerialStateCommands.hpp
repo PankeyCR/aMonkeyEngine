@@ -32,14 +32,14 @@ void setSerialState(SerialState* a_state){
 	g_serialState = a_state;
 }
 
-void SerialStateCommands(Note* message){
-	if(message == nullptr || g_serialState == nullptr) {
+void SerialStateCommands(const Note& message){
+	if(g_serialState == nullptr) {
 		System::console.println("message == nullptr || g_serialState == nullptr");
 		return;
 	}
 	System::console.println("SerialStateCommands");
 	
-	PrimitiveList<Note> commands = splitNote(*message, ' ');
+	PrimitiveList<Note> commands = splitNote(message, ' ');
 
 	if(commands.getPosition() == 1){
 		Note command_0 = commands[0];

@@ -1,144 +1,129 @@
 
-#include "ame_Enviroment.hpp"
-
-#if defined(DISABLE_FunctionMetric)
-	#define FunctionMetric_hpp
-#endif
-
 #ifndef FunctionMetric_hpp
 #define FunctionMetric_hpp
 #define FunctionMetric_AVAILABLE
 
-#ifndef ame_Enviroment_Defined
-
-#endif
-
-#ifdef ame_Windows
-
-#endif
-
-#ifdef ame_ArduinoIDE
-	#include "Arduino.h"
-#endif
-
+#include "cppObject.hpp"
 #include "Random.hpp"
 #include "AbsoluteRandom.hpp"
 #include "Function.hpp"
-#include "LinkedList.hpp"
-#include "cppObject.hpp"
-
-#ifdef FunctionMetricLogApp
-	#include "Logger.hpp"
-	#define FunctionMetricLog(name,method,type,mns) Log(name,method,type,mns)
-#else
-	#define FunctionMetricLog(name,method,type,mns)
-#endif
+#include "PrimitiveList.hpp"
 
 namespace ame{
 
-template<class type,class... args>
-class FunctionMetric : public cppObject{
+template<class T>
+class FunctionMetric IMPLEMENTATION_cppObject {
 	public:
 		FunctionMetric(){}
-		FunctionMetric(const FunctionMetric& metric){
-			this->m_random = metric.m_random;
-			this->m_inputs = metric.m_inputs;
-			this->m_output = metric.m_output;
-			this->m_epochs = metric.m_epochs;
-			this->m_error = metric.m_error;
+		FunctionMetric(const FunctionMetric<T>& c_metric){
+			this->m_random = c_metric.m_random;
+			this->m_inputs = c_metric.m_inputs;
+			this->m_output = c_metric.m_output;
+			this->m_epochs = c_metric.m_epochs;
+			this->m_error = c_metric.m_error;
 		}
 		virtual ~FunctionMetric(){} 
 		
-		void random(Random* r){
-			if(m_random == nullptr){
-				m_random = r;
-				return;
-			}
-			if(m_random != r){
-				delete m_random;
-				m_random = r;
-			}
+		void random(const Random& a_random){
+			m_random = a_random;
 		}
 		
-		void random(float max,float min,float s){
-			if(m_random == nullptr){
-				m_random = new AbsoluteRandom(s);
-			}else{
-				delete m_random;
-				m_random = new AbsoluteRandom(s);
-			}
-			m_random->setMax(max);
-			m_random->setMin(min);
-			m_random->setSeed(s);
+		void random(float a_max,float a_min,float a_seed){
+			m_random.setMax(a_max);
+			m_random.setMin(a_min);
+			m_random.setSeed(a_seed);
 		}
-		virtual void minimalerror(type e){
-			m_error = e;
+		virtual void minimalerror(T a_error){
+			m_error = a_error;
 		}
 		
-		void input(args... i){
+		template<class... Args>
+		void inputs(Args... a_inputs){
 			m_inputs.resetDelete();
-			m_inputs.addPack(i...);
+			m_inputs.addPack(a_inputs...);
 		}
-		void output(type o){
-			m_output = o;
+
+		void output(T a_output){
+			m_output = a_output;
 		}
-		void epochs(long e){
-			m_epochs = e;
+
+		void epochs(long a_epochs){
+			m_epochs = a_epochs;
 		}
 		
 		float getRandom(){
-			if(m_random == nullptr){
-				return -1.0f;
-			}
-			return m_random->getRandom();
+			return m_random.getRandom();
 		}
 		int getInputSize(){
 			return m_inputs.getPosition();
 		}
-		type getInput(){
-			if(m_inputs.getByPosition(0) == nullptr){
-				return -1;
+		T getInput(){
+			T* i_input = m_inputs.getByPosition(0);
+			if(i_input == nullptr){
+				return T();
 			}
-			return m_inputs.getByPosition(0);
+			return *i_input;
 		}
-		type getInput(int x){
-			if(m_inputs.getByPosition(x) == nullptr){
-				return -1;
+
+		T getInput(int x){
+			T* i_input = m_inputs.getByPosition(x);
+			if(i_input == nullptr){
+				return T();
 			}
-			return *m_inputs.getByPosition(x);
+			return *i_input;
 		}
-		type getOutput(){
+
+		PrimitiveList<T> getInputs(){
+			return m_inputs;
+		}
+
+		T getOutput(){
 			return m_output;
 		}
+
 		long getEpochs(){
 			return m_epochs;
 		}
-		type getError(){
+
+		T getError(){
 			return m_error;
 		}
-		virtual bool instanceof(cppObjectClass* cls){
-			return cls == Class<FunctionMetric>::classType || cppObject::instanceof(cls);
+
+		#if defined(cppObject_AVAILABLE) && defined(cppObjectClass_AVAILABLE) && defined(Class_AVAILABLE)
+		virtual cppObjectClass* getClass(){return Class<FunctionMetric<T>>::getClass();}
+		virtual bool instanceof(cppObjectClass* cls){return cls == Class<FunctionMetric<T>>::getClass();}
+		#endif
+
+		virtual void operator=(const FunctionMetric<T>>& a_metric){
+			this->m_random = a_metric.m_random;
+			this->m_inputs = a_metric.m_inputs;
+			this->m_output = a_metric.m_output;
+			this->m_epochs = a_metric.m_epochs;
+			this->m_error = a_metric.m_error;
 		}
-		virtual void operator=(const FunctionMetric& metric){
-			this->m_random = metric.m_random;
-			this->m_inputs = metric.m_inputs;
-			this->m_output = metric.m_output;
-			this->m_epochs = metric.m_epochs;
-			this->m_error = metric.m_error;
+
+		virtual bool operator==(const FunctionMetric<T>>& a_metric){
+			this->m_random == a_metric.m_random &&
+			this->m_inputs == a_metric.m_inputs &&
+			this->m_output == a_metric.m_output &&
+			this->m_epochs == a_metric.m_epochs &&
+			this->m_error == a_metric.m_error;
 		}
-		virtual bool operator==(FunctionMetric b){
-			return false;
-		}
-		virtual bool operator!=(FunctionMetric b){
-			return false;
+
+		virtual bool operator!=(const FunctionMetric<T>>& a_metric){
+			this->m_random != a_metric.m_random &&
+			this->m_inputs != a_metric.m_inputs &&
+			this->m_output != a_metric.m_output &&
+			this->m_epochs != a_metric.m_epochs &&
+			this->m_error != a_metric.m_error;
 		}
 		
 	protected:
-		Random* m_random = nullptr;
-		LinkedList<type> m_inputs;
-		type m_output;
+		Random m_random;
+		PrimitiveList<T> m_inputs;
+		T m_output;
 		long m_epochs = 100;
-		type m_error;
+		T m_error;
 };
 
 }

@@ -1,5 +1,4 @@
 
-
 #ifndef WIFISerialServer_hpp
 #define WIFISerialServer_hpp
 #define WIFISerialServer_AVAILABLE 
@@ -53,39 +52,46 @@ namespace ame{
 class WIFISerialServer : public SerialServer{	
     public:
     WIFISerialServer():server(80){
-		WIFISerialServerLog(ame_Log_Statement, "Contructor",  "println", "server(80)");
+		WIFISerialServerLog(ame_Log_StartMethod, "Contructor",  "println", "server(80)");
 		server.begin();
+		WIFISerialServerLog(ame_Log_EndMethod, "Contructor",  "println", "");
     }
     WIFISerialServer(int port):server(port){
-		WIFISerialServerLog(ame_Log_Statement, "Contructor",  "println", "server(port)");
+		WIFISerialServerLog(ame_Log_StartMethod, "Contructor",  "println", "server(port)");
 		server.begin();
+		WIFISerialServerLog(ame_Log_EndMethod, "Contructor",  "println", "");
     }
 	
 	virtual ~WIFISerialServer(){
-		WIFISerialServerLog(ame_Log_Statement, "Destructor",  "println", "");
+		WIFISerialServerLog(ame_Log_StartMethod, "Destructor",  "println", "");
+		WIFISerialServerLog(ame_Log_EndMethod, "Destructor",  "println", "");
 	}
 	
 	SerialPort* accept(){
-		// WIFISerialServerLog(ame_Log_Statement, "accept",  "println", "");
+		WIFISerialServerLog(ame_Log_StartMethod, "accept",  "println", "");
 		#if defined(ame_GENERIC_ESP32)
+		WIFISerialServerLog(ame_Log_Statement, "accept",  "println", "ame_GENERIC_ESP32");
 		WiFiClient client = server.accept();   // Listen for incoming clients
 		#elif defined(ame_GENERIC_ESP8266)
+		WIFISerialServerLog(ame_Log_Statement, "accept",  "println", "ame_GENERIC_ESP8266");
 		WiFiClient client = server.available();
 		#endif 
 		if(client){
-			WIFISerialServerLog(ame_Log_Statement, "accept",  "println", "if(client)");
+			WIFISerialServerLog(ame_Log_EndMethod, "accept",  "println", "if(client)");
 			return new WIFISerialPort(client,"ethernet");
 		}
+		WIFISerialServerLog(ame_Log_EndMethod, "accept",  "println", "return nullptr");
 		return nullptr;
 	} 
 	
 	SerialPort* available(){
-		// WIFISerialServerLog(ame_Log_Statement, "available",  "println", "");
+		WIFISerialServerLog(ame_Log_StartMethod, "available",  "println", "");
 		WiFiClient client = server.available();   // Listen for incoming clients
 		if(client){
-			WIFISerialServerLog(ame_Log_Statement, "available",  "println", "if(client)");
+			WIFISerialServerLog(ame_Log_EndMethod, "available",  "println", "if(client)");
 			return new WIFISerialPort(client,"ethernet");
 		}
+		WIFISerialServerLog(ame_Log_EndMethod, "accept",  "println", "return nullptr");
 		return nullptr;
 	}
 	

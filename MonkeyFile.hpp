@@ -80,7 +80,7 @@ class MonkeyFile IMPLEMENTATION_cppObject {
 		template<class... Args>
 		void setRootPathFile(Args... a_paths){
 			MonkeyFileLog(ame_Log_Statement, "setRootPathFile",  "println", filepath);
-			this->m_rootPath = this->m_root_hdd.addNote(this->fixPath(a_paths...));
+			this->m_rootPath = addNote(this->m_root_hdd, this->fixPath(a_paths...));
 			this->createPath(a_paths...);
 		}
 		Note getRootPathFile(){
@@ -292,7 +292,7 @@ Note MonkeyFile::fixRootPath(Note p){
 	if(this->m_rootPath[sizeRP - 1] == '/' && p[0] == '/'){
 		MonkeyFileLog(ame_Log_Statement, "fixRootPath",  "println", Note("this->m_rootPath[sizeRP - 1] == '/' && p[0] == '/'"));
 		MonkeyFileLog(ame_Log_EndMethod, "fixRootPath",  "println", "");
-		return this->m_rootPath + p.getArrayPart(1);
+		return this->m_rootPath + getNotePart(p, 1);
 	}
 	if(this->m_rootPath[sizeRP - 1] != '/' && p[0] == '/'){
 		MonkeyFileLog(ame_Log_Statement, "fixRootPath",  "println", Note("this->m_rootPath[sizeRP - 1] != '/' && p[0] == '/'"));
@@ -359,7 +359,7 @@ Note MonkeyFile::fixPath(Note a_path_1, Note a_path_2){
 	if(a_path_1[sizeRP - 1] == '/' && a_path_2[0] == '/'){
 		MonkeyFileLog(ame_Log_Statement, "fixPath",  "println", "a_path_1[sizeRP - 1] == '/' && a_path_2[0] == '/'");
 		MonkeyFileLog(ame_Log_EndMethod, "fixPath",  "println", "");
-		return a_path_1 + a_path_2.getArrayPart(1);
+		return a_path_1 + getNotePart(a_path_2, 1);
 	}
 	if(a_path_1[sizeRP - 1] != '/' && a_path_2[0] == '/'){
 		MonkeyFileLog(ame_Log_Statement, "fixPath",  "println", "a_path_1[sizeRP - 1] != '/' && a_path_2[0] == '/'");

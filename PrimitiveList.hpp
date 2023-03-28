@@ -53,9 +53,7 @@ class PrimitiveList : public PrimitiveRawList<T>, public List<T>{
 			}
 		}
 		
-		PrimitiveList(int c_size) : PrimitiveRawList<T>(c_size){}
-		
-		PrimitiveList(int c_size, bool c_own, int c_reordering) : PrimitiveRawList<T>(c_size, c_own, c_reordering){}
+		PrimitiveList(int c_size, bool c_own, bool c_reordering) : PrimitiveRawList<T>(c_size, c_own, c_reordering){}
 		
 		virtual ~PrimitiveList(){}
 		

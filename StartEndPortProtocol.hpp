@@ -1,29 +1,12 @@
 
-#include "ame_Enviroment.hpp"
-
-#if defined(DISABLE_StartEndPortProtocol) || defined(ame_upToLevel_1)
-	#define StartEndPortProtocol_hpp
-#endif
-
 #ifndef StartEndPortProtocol_hpp
 #define StartEndPortProtocol_hpp
 #define StartEndPortProtocol_AVAILABLE
 
-#ifndef ame_Enviroment_Defined
-
-#endif
-
-#ifdef ame_Windows
-
-#endif
-
-#ifdef ame_ArduinoIDE
-	#include "Arduino.h"
-#endif
-
 #include "PortProtocol.hpp"
 #include "SerialPort.hpp"
 #include "Note.hpp"
+#include "NoteHelper.hpp"
 
 #ifdef StartEndPortProtocol_LogApp
 	#include "ame_Logger_config.hpp"
@@ -58,28 +41,44 @@ class StartEndPortProtocol : public PortProtocol{
 		}
 		virtual ~StartEndPortProtocol(){}
 		
-		virtual void InstantBroadcastMessage(SerialPort* port, Note mns){
+		virtual void InstantBroadcastMessage(SerialPort* port, Note a_mns){
 			StartEndPortProtocolLog(ame_Log_Statement, "InstantBroadcastMessage",  "println", port->getName());
-			StartEndPortProtocolLog(ame_Log_Statement, "InstantBroadcastMessage",  "println", mns);
-			port->print(Note(m_start) + mns + Note(m_end));
+			StartEndPortProtocolLog(ame_Log_Statement, "InstantBroadcastMessage",  "println", a_mns);
+			Note i_send;
+			addLocalValue(i_send, m_start);
+			addLocalNote(i_send, a_mns);
+			addLocalValue(i_send, m_end);
+			port->print(i_send);
 		}
 		
-		virtual void InstantPrivateMessage(SerialPort* port, Note mns){
+		virtual void InstantPrivateMessage(SerialPort* port, Note a_mns){
 			StartEndPortProtocolLog(ame_Log_Statement, "InstantPrivateMessage",  "println", port->getName());
-			StartEndPortProtocolLog(ame_Log_Statement, "InstantPrivateMessage",  "println", mns);
-			port->print(Note(m_start) + mns + Note(m_end));
+			StartEndPortProtocolLog(ame_Log_Statement, "InstantPrivateMessage",  "println", a_mns);
+			Note i_send;
+			addLocalValue(i_send, m_start);
+			addLocalNote(i_send, a_mns);
+			addLocalValue(i_send, m_end);
+			port->print(i_send);
 		}
 		
-		virtual void BroadcastMessage(SerialPort* port, Note mns){
+		virtual void BroadcastMessage(SerialPort* port, Note a_mns){
 			StartEndPortProtocolLog(ame_Log_Statement, "BroadcastMessage",  "println", port->getName());
-			StartEndPortProtocolLog(ame_Log_Statement, "BroadcastMessage",  "println", mns);
-			port->print(Note(m_start) + mns + Note(m_end));
+			StartEndPortProtocolLog(ame_Log_Statement, "BroadcastMessage",  "println", a_mns);
+			Note i_send;
+			addLocalValue(i_send, m_start);
+			addLocalNote(i_send, a_mns);
+			addLocalValue(i_send, m_end);
+			port->print(i_send);
 		}
 		
-		virtual void PrivateMessage(SerialPort* port, Note mns){
+		virtual void PrivateMessage(SerialPort* port, Note a_mns){
 			StartEndPortProtocolLog(ame_Log_Statement, "PrivateMessage",  "println", port->getName());
-			StartEndPortProtocolLog(ame_Log_Statement, "PrivateMessage",  "println", mns);
-			port->print(Note(m_start) + mns + Note(m_end));
+			StartEndPortProtocolLog(ame_Log_Statement, "PrivateMessage",  "println", a_mns);
+			Note i_send;
+			addLocalValue(i_send, m_start);
+			addLocalNote(i_send, a_mns);
+			addLocalValue(i_send, m_end);
+			port->print(i_send);
 		}
 		
 		virtual void GlobalDisconect(SerialPort* port){
@@ -121,7 +120,7 @@ class StartEndPortProtocol : public PortProtocol{
 			}
 			if(m_read){
 				StartEndPortProtocolLog(ame_Log_Statement, "StartEndRead",  "println", Note("adding char to messageText: ") + Note(m));
-				messageText.concat(m);
+				addLocalValue(messageText, m);
 			}
 			return "";
 		}

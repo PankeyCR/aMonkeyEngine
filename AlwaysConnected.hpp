@@ -6,25 +6,12 @@
 
 	#if defined(DISABLE_AlwaysConnected)
 		#define AlwaysConnected_hpp
-
-		#define IMPLEMENTATION_AlwaysConnected
-		#define IMPLEMENTING_AlwaysConnected
-	#else
-		#if defined(DISABLE_IMPLEMENTATION_AlwaysConnected)
-			#define IMPLEMENTATION_AlwaysConnected
-			#define IMPLEMENTING_AlwaysConnected
-		#endif
 	#endif
 #endif
 
 #ifndef AlwaysConnected_hpp
 #define AlwaysConnected_hpp
 #define AlwaysConnected_AVAILABLE
-
-#ifndef DISABLE_IMPLEMENTATION_AlwaysConnected
-	#define IMPLEMENTATION_AlwaysConnected IMPLEMENTATION(public AlwaysConnected)
-	#define IMPLEMENTING_AlwaysConnected IMPLEMENTING(public AlwaysConnected)
-#endif
 
 #ifdef ame_ArduinoIDE
 	#include "Arduino.h"
@@ -98,7 +85,9 @@ class AlwaysConnected IMPLEMENTATION_BaseAppState {
 			AlwaysConnectedLog(ame_Log_EndMethod, "initializeState",  "println", "");
 			AlwaysConnectedLog(ame_Log_Statement, "initializeState",  "println", "");
 			app = a_app;
-			serialState = (SerialState*)app->getStateManager()->get(Class<SerialState>::classType);
+			#if defined(cppObject_AVAILABLE) && defined(cppObjectClass_AVAILABLE) && defined(Class_AVAILABLE)
+			serialState = (SerialState*)app->getStateManager()->get(Class<SerialState>::getClass());
+			#endif
 			AlwaysConnectedLog(ame_Log_EndMethod, "initializeState",  "println", "");
 		}
 		#endif
@@ -107,7 +96,9 @@ class AlwaysConnected IMPLEMENTATION_BaseAppState {
 			AlwaysConnectedLog(ame_Log_EndMethod, "updateState",  "println", "");
 			#if defined(Application_AVAILABLE)
 			if(serialState == nullptr){
+				#if defined(cppObject_AVAILABLE) && defined(cppObjectClass_AVAILABLE) && defined(Class_AVAILABLE)
 				serialState = (SerialState*)app->getStateManager()->get(Class<SerialState>::classType);
+				#endif
 				return;
 			}
 			#endif

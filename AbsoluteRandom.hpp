@@ -3,8 +3,7 @@
 #define AbsoluteRandom_hpp
 #define AbsoluteRandom_AVAILABLE
 
-#include "Note.hpp"
-#include "Random.hpp"
+#include "Function.hpp"
 #include "RealRandom.hpp"
 
 #ifdef AbsoluteRandom_LogApp
@@ -12,72 +11,47 @@
 	#include "ame_Logger.hpp"
 
 	#define AbsoluteRandomLog(location,method,type,mns) ame_Log(this,location,"AbsoluteRandom",method,type,mns)
-	#define const_AbsoluteRandomLog(location,method,type,mns)
 #else
 	#ifdef AbsoluteRandom_LogDebugApp
 		#include "ame_Logger_config.hpp"
 		#include "ame_Logger.hpp"
 
 		#define AbsoluteRandomLog(location,method,type,mns) ame_LogDebug(this,location,"AbsoluteRandom",method,type)
-		#define const_AbsoluteRandomLog(location,method,type,mns)
 	#else
 		#define AbsoluteRandomLog(location,method,type,mns)
-		#define const_AbsoluteRandomLog(location,method,type,mns)
 	#endif
 #endif
 
 namespace ame{
 
 //seed from 0 - 1000
-class AbsoluteRandom : public Random{
+class AbsoluteRandom : public Function<float>{
 	protected:
-		RealRandom *realRandom = nullptr;
-		float limitMax;
+		RealRandom *m_realRandom = nullptr;
 		
     public:
 		AbsoluteRandom(){
-			this->realRandom = new RealRandom();
-			this->realRandom->setSeed(78545l);
-			this->realRandom->setMax(78545l);
-			setMax(100);
-			setMin(0);
-			limitMax = ((float)2147483646/1000000.0f);
-		}
-		AbsoluteRandom(const AbsoluteRandom& r){
-			this->realRandom = new RealRandom();
-			this->realRandom->setSeed(r.getSeed());
-			this->realRandom->setMax(78545l);
-			setMax(100);
-			setMin(0);
-			limitMax = ((float)2147483646/1000000.0f);
-		}
-		AbsoluteRandom(float seed){
-			this->realRandom = new RealRandom();
-			this->realRandom->setSeed(seed);
-			this->realRandom->setMax(seed);
-			setMax(100);
-			setMin(0);
-			limitMax = ((float)2147483646/1000000.0f);
-		}
-		AbsoluteRandom(float max, float min, float seed){
-			this->realRandom = new RealRandom();
-			this->realRandom->setSeed(seed);
-			this->realRandom->setMax(seed);
-			setMax(max);
-			setMin(min);
-			limitMax = ((float)2147483646/1000000.0f);
+			this->m_realRandom = new RealRandom();
+			float limitMax = ((float)2147483646/1000000.0f);
+			this->initializeConstantes(3,0);
+			this->setConstante(0,limitMax);
+			this->setConstante(1,100000.0f);
+			this->setConstante(2,0.0f);
 		}
 		virtual ~AbsoluteRandom(){
-			delete this->realRandom;
+			delete this->m_realRandom;
 		}
-		virtual float getRandom(){
-			float eseed = this->realRandom->getRandom();
-			if(eseed!=0){
-				this->seed = eseed;
+		virtual float function(const PrimitiveList<float>& a_variables){
+			if(a_variables.getPosition() < 3){
+				return 0;
 			}
+			float i_max = a_variables[0];
+			float i_min = a_variables[1];
+			float i_seed_1 = a_variables[2];
+			float i_seed_2 = this->m_realRandom->f(this->getConstante(1), this->getConstante(2), i_seed_1);
 			float time = ((float)micros()/1000000.0f);
-			float d = getMax()-getMin();
-			float dx = (limitMax/(this->seed*10.0f));
+			float d = i_max - i_min;
+			float dx = (this->getConstante(0)/(i_seed_2));
 			float tdx = ((float)(time/dx));
 			float tx = (((float)(tdx))-((long)(tdx)));
 			float x = d*tx;
@@ -90,8 +64,17 @@ class AbsoluteRandom : public Random{
 			AbsoluteRandomLog(ame_Log_Statement, "getRandom", "print","tx ");AbsoluteRandomLog(ame_Log_Statement, "getRandom", "println",Note(tx));
 			AbsoluteRandomLog(ame_Log_Statement, "getRandom", "print","x ");AbsoluteRandomLog(ame_Log_Statement, "getRandom", "println",Note(x));
 			AbsoluteRandomLog(ame_Log_Statement, "getRandom", "println","");
-			return x+getMin();
+			return x + i_min;
 		}
+
+		virtual Function<T>* clone(){
+			return new AbsoluteRandom();
+		}
+
+		#if defined(cppObject_AVAILABLE) && defined(cppObjectClass_AVAILABLE) && defined(Class_AVAILABLE)
+		virtual cppObjectClass* getClass(){return Class<AbsoluteRandom>::getClass();}
+		virtual bool instanceof(cppObjectClass* cls){return cls == Class<AbsoluteRandom>::getClass() || Random::instanceof(cls);}
+		#endif
 		
 };
 

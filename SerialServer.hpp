@@ -6,14 +6,6 @@
 
 	#if defined(DISABLE_SerialServer)
 		#define SerialServer_hpp
-
-		#define IMPLEMENTATION_SerialServer
-		#define IMPLEMENTING_SerialServer
-	#else
-		#if defined(DISABLE_IMPLEMENTATION_SerialServer)
-			#define IMPLEMENTATION_SerialServer
-			#define IMPLEMENTING_SerialServer
-		#endif
 	#endif
 #endif
 
@@ -21,12 +13,8 @@
 #define SerialServer_hpp
 #define SerialServer_AVAILABLE
 
-#ifndef DISABLE_IMPLEMENTATION_SerialServer
-	#define IMPLEMENTATION_SerialServer IMPLEMENTATION(public SerialServer)
-	#define IMPLEMENTING_SerialServer IMPLEMENTING(public SerialServer)
-#endif
-
 #include "cppObject.hpp"
+#include "SerialPort.hpp"
 
 #ifdef ame_Windows
 

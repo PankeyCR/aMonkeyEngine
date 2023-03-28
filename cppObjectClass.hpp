@@ -43,9 +43,11 @@ class cppObjectClass{
 			return -1;
 		}
 		
+		#if defined(cppObject_AVAILABLE)
 		virtual cppObject* newInstance(){
 			return nullptr;
 		}
+		#endif
 		
 		virtual void* newPointer(){
 			return nullptr;

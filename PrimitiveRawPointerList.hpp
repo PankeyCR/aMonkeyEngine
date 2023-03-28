@@ -43,13 +43,7 @@ class PrimitiveRawPointerList : virtual public RawPointerList<T>{
 			PrimitiveRawPointerListLog(ame_Log_EndMethod, "Constructor", "println", "");
 		}
 		
-		PrimitiveRawPointerList(int c_size){
-			PrimitiveRawPointerListLog(ame_Log_StartMethod, "Constructor", "println", "");
-			this->expandLocal(c_size);
-			PrimitiveRawPointerListLog(ame_Log_EndMethod, "Constructor", "println", "");
-		}
-		
-		PrimitiveRawPointerList(int c_size, bool c_own, int c_reordering){
+		PrimitiveRawPointerList(int c_size, bool c_own, bool c_reordering){
 			PrimitiveRawPointerListLog(ame_Log_StartMethod, "Constructor", "println", "");
 			this->m_owner = c_own;
 			this->m_reorder = c_reordering;
@@ -388,7 +382,7 @@ class PrimitiveRawPointerList : virtual public RawPointerList<T>{
 		virtual PrimitiveRawPointerList<T>* expand(int a_size){
 			PrimitiveRawPointerListLog(ame_Log_StartMethod, "expand", "println", "");
 			int i_size = this->getSize() + a_size;
-			PrimitiveRawPointerList<T> *i_list = new PrimitiveRawPointerList<T>(i_size);	
+			PrimitiveRawPointerList<T> *i_list = new PrimitiveRawPointerList<T>(i_size, true, true);	
 			for(int x = 0; x < this->getPosition(); x++){
 				T* f_value = this->getByPosition(x);
 				i_list->addPointer(f_value);

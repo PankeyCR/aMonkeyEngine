@@ -2,7 +2,7 @@
 #ifndef DISABLE_ClassMethodList_hpp
 #define DISABLE_ClassMethodList_hpp
 
-	#if defined(DISABLE_Method) || defined(DISABLE_ClassMethodList)
+	#if defined(DISABLE_Method) || defined(DISABLE_ClassMethodList) || defined(DISABLE_cppObject) || defined(DISABLE_cppObjectClass) || defined(DISABLE_Method)
 		#define ClassMethodList_hpp
 	#endif
 #endif
@@ -24,6 +24,7 @@
 #endif
 
 #include "cppObjectClass.hpp"
+#include "Method.hpp"
 #include "MethodType.hpp"
 #include "PrimitiveRawList.hpp"
 

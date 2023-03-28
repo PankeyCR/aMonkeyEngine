@@ -13,7 +13,7 @@ void setup() {
   Serial.println("Listener example 1");
   
   app = new DefaultApplication();
-  listener = app->setListener(new Listener());
+  listener = app->getStateManager()->addState(new Listener());
   
   listener->createInput<1>(2);//pin
   listener->createInput<2>(3, true);//pin,inverted

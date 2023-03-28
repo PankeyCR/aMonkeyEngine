@@ -13,7 +13,7 @@ void setup() {
   Serial.println("Listener example 4");
   
   app = new DefaultApplication();
-  listener = app->setListener(new Listener());
+  listener = app->getStateManager()->addState(new Listener());
   
   listener->createDebounceInterruptEvent<1>(10, 2);//debounce time, pin
   listener->createDebounceInterruptEvent<2>(10, 3, true);//debounce time, pin, inverted

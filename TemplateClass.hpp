@@ -2,7 +2,7 @@
 #ifndef DISABLE_TemplateClass_hpp
 #define DISABLE_TemplateClass_hpp
 
-	#if defined(DISABLE_cppObjectClass) || defined(DISABLE_TemplateClass)
+	#if defined(DISABLE_cppObjectClass) || defined(DISABLE_TemplateClass) || defined(DISABLE_cppObjectClass)
 		#define TemplateClass_hpp
 	#endif
 #endif
@@ -29,9 +29,11 @@ class TemplateClass : public cppObjectClass{
 			return ClassCount<T>::get();
 		}
 		
+		#if defined(cppObject_AVAILABLE)
 		virtual cppObject* newInstance(){
 			return new T();
 		}
+		#endif
 		
 		virtual void* newPointer(){
 			return nullptr;

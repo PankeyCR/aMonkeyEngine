@@ -4,8 +4,9 @@
 #define SystemCommands_AVAILABLE
 
 #include "Note.hpp"
-#include "SerialState.hpp"
 #include "NoteHelper.hpp"
+#include "PrimitiveList.hpp"
+#include "System.hpp"
 #include "MemoryRam.hpp"
 
 #ifdef SystemCommands_LogApp
@@ -26,27 +27,9 @@
 
 namespace ame{
 
-Application* g_app = nullptr;
-
-void setApplication(Application* a_app){
-	g_app = a_app;
-}
-
-Application* getApplication(){
-	return g_app;
-}
-
-void SystemCommands(Note* message){
-	if (message == nullptr || g_app == nullptr) {
-		System::console.println("message == nullptr || g_app == nullptr");
-		return;
-	}
-	System::console.println("SystemCommands");
-	
-	PrimitiveList<Note> commands = splitNote(*message, ' ');
-
-	if(commands.getPosition() == 1){
-		Note command_0 = commands[0];
+void SystemCommands(const PrimitiveList<Note>& a_commands){
+	if(a_commands.getPosition() == 1){
+		Note command_0 = a_commands[0];
 		
 		if (command_0 == "ram") {
 			System::console.print("ram: ");
@@ -54,9 +37,9 @@ void SystemCommands(Note* message){
 		}
 	}
 
-	if(commands.getPosition() == 2){
-		Note command_0 = commands[0];
-		Note command_1 = commands[1];
+	if(a_commands.getPosition() == 2){
+		Note command_0 = a_commands[0];
+		Note command_1 = a_commands[1];
 		
 		if (command_0 == "broadcastSystem") {
 			System::console.println(command_1);

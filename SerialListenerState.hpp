@@ -6,14 +6,6 @@
 
 	#if defined(DISABLE_SerialListenerState)
 		#define SerialListenerState_hpp
-
-		#define IMPLEMENTATION_SerialListenerState
-		#define IMPLEMENTING_SerialListenerState
-	#else
-		#if defined(DISABLE_IMPLEMENTATION_SerialListenerState)
-			#define IMPLEMENTATION_SerialListenerState
-			#define IMPLEMENTING_SerialListenerState
-		#endif
 	#endif
 #endif
 
@@ -21,50 +13,25 @@
 #define SerialListenerState_hpp
 #define SerialListenerState_AVAILABLE
 
-#ifndef DISABLE_IMPLEMENTATION_SerialListenerState
-	#define IMPLEMENTATION_SerialListenerState IMPLEMENTATION(public SerialListenerState)
-	#define IMPLEMENTING_SerialListenerState IMPLEMENTING(public SerialListenerState)
-#endif
-
 #include "BaseAppState.hpp"
 #include "Application.hpp"
 #include "PrimitiveMap.hpp"
 #include "PrimitiveList.hpp"
 #include "Command.hpp"
 
-#ifndef ame_Enviroment_Defined
-
-#endif
-
-#ifdef ame_Windows
-
-#endif
-
-#ifdef ame_ArduinoIDE
-	#include "Arduino.h"
-#endif
-
 #ifdef SerialListenerState_LogApp
 	#include "ame_Logger_config.hpp"
 	#include "ame_Logger.hpp"
-	#include "MemoryRam.hpp"
 	
 	#define SerialListenerStateLog(location,method,type,mns) ame_Log(this,location,"SerialListenerState",method,type,mns)
-	#define const_SerialListenerStateLog(location,method,type,mns) 
-	#define StaticSerialListenerStateLog(pointer,location,method,type,mns) ame_Log(pointer,location,"SerialListenerState",method,type,mns)
 #else
 	#ifdef SerialListenerState_LogDebugApp
 		#include "ame_Logger_config.hpp"
 		#include "ame_Logger.hpp"
-		#include "MemoryRam.hpp"
 		
 		#define SerialListenerStateLog(location,method,type,mns) ame_LogDebug(this,location,"SerialListenerState",method,type)
-		#define const_SerialListenerStateLog(location,method,type,mns) 
-		#define StaticSerialListenerStateLog(pointer,location,method,type,mns) ame_LogDebug(pointer,location,"SerialListenerState",method,type)
 	#else
 		#define SerialListenerStateLog(location,method,type,mns) 
-		#define const_SerialListenerStateLog(location,method,type,mns) 
-		#define StaticSerialListenerStateLog(pointer,location,method,type,mns) 
 	#endif
 #endif
 
@@ -77,7 +44,7 @@ namespace ame{
 template<class T>
 class SerialListenerState IMPLEMENTATION_BaseAppState {	
     public:
-		using ListenerMethod = void (*)(T*);
+		using ListenerMethod = void (*)(const T&);
 		
 		SerialListenerState(){
 			SerialListenerStateLog(ame_Log_StartMethod, "Constructor", "println", "");
@@ -139,8 +106,8 @@ class SerialListenerState IMPLEMENTATION_BaseAppState {
 			SerialListenerStateLog(ame_Log_EndMethod, "removeAllMethodListener", "println", "");
 		}
 		
-		virtual void addMail(T* a_mail){
-			m_receivedMessage.addPointer(a_mail);
+		virtual void addInput(const T& a_mail){
+			m_receivedMessage.addPointer(new T(a_mail));
 		}
 		
 		virtual PrimitiveList<T> getMail(){
@@ -165,13 +132,11 @@ class SerialListenerState IMPLEMENTATION_BaseAppState {
 			return nullptr;
 		}
 		
-		#if defined(Class_AVAILABLE)
 		virtual cppObjectClass* getClass(){return Class<SerialListenerState<T>>::getClass();}
 		
 		virtual bool instanceof(cppObjectClass* cls){
 			return cls == Class<SerialListenerState<T>>::getClass() || AppState::instanceof(cls);
 		}
-		#endif
 		#endif
 		
 		virtual void updateState(float tpc){
@@ -182,13 +147,16 @@ class SerialListenerState IMPLEMENTATION_BaseAppState {
 			for(int x = 0; x < m_receivedMessage.getPosition(); x++){
 				SerialListenerStateLog(ame_Log_Statement, "update",  "println", ame_String("receivedMessage index: ") + ame_String(x));
 				T* f_message = m_receivedMessage.getByPosition(x);
+				if(f_message == nullptr){
+					continue;
+				}
 				for(int y = 0; y < m_methodListener.getPosition(); y++){
 					ListenerMethod  event = *m_methodListener.getByPosition(y);
-					event(f_message);
+					event(*f_message);
 				}
 				for(int y = 0; y < m_listener.getPosition(); y++){
 					Command<T>*  event = m_listener.getByPosition(y);
-					event->execute(f_message);
+					event->execute(*f_message);
 				}
 			}
 			SerialListenerStateLog(ame_Log_EndMethod, "update",  "println", "deleting list");

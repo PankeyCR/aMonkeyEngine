@@ -1,75 +1,54 @@
 
-#include "ame_Enviroment.hpp"
-
-#if defined(DISABLE_FunctionConfiguration)
-	#define FunctionConfiguration_hpp
-#endif
-
 #ifndef FunctionConfiguration_hpp
 #define FunctionConfiguration_hpp
 #define FunctionConfiguration_AVAILABLE
 
-#ifndef ame_Enviroment_Defined
-
-#endif
-
-#ifdef ame_Windows
-
-#endif
-
-#ifdef ame_ArduinoIDE
-	#include "Arduino.h"
-#endif
-
 #include "GameBuilder.hpp"
 #include "Function.hpp"
-#include "FunctionProtocol.hpp"
 #include "FunctionMetric.hpp"
-#include "LinkedList.hpp"
-
-#ifdef FunctionConfigurationLogApp
-	#include "Logger.hpp"
-	#define FunctionConfigurationLog(name,method,type,mns) Log(name,method,type,mns)
-#else
-	#define FunctionConfigurationLog(name,method,type,mns)
-#endif
+#include "FunctionTrainer.hpp"
+#include "PrimitiveList.hpp"
 
 namespace ame{
 
 template<class T,class... args>
-class FunctionConfiguration{
+class FunctionConfiguration IMPLEMENTATION_cppObject {
 	public:
-	FunctionConfiguration(){}
-	virtual ~FunctionConfiguration(){}
-	
-	virtual void add(FunctionMetric<T,args...>* metric, FunctionProtocol<T,args...>* protocol){
-		metrics.addPointer(metric);
-		protocols.addPointer(protocol);
-	}
-	
-	virtual Function<T,args...>* build(args... a){
-		Function<T,args...>* fx = nullptr;
-		for(int x = 0; x < protocols.getPosition(); x++){
-			FunctionMetric<T,args...>* metric = metrics.getByPosition(x);
-			FunctionProtocol<T,args...>* protocol = protocols.getByPosition(x);
-			fx = protocol->createFunction(metric);
-			protocol->initializeFunction(fx, metric);
-			protocol->fit(fx, metric, a...);
-			if(protocol->evaluate(fx, metric, a...)){
-				break;
-			}else{
-				if(fx != nullptr){
-					delete fx;
-					fx = nullptr;
+		FunctionConfiguration(){}
+		virtual ~FunctionConfiguration(){}
+		
+		virtual void add(const FunctionMetric<T,args...>& a_metric, const FunctionTrainer<T,args...>& a_trainer){
+			m_metrics.add(a_metric);
+			m_trainer.add(a_trainer);
+		}
+		
+		virtual Function<T,args...>* build(FunctionTrainer<T,args...>& a_trainer){
+			Function<T,args...>* i_fx = f_trainer.createFunction();
+			for(int x = 0; x < m_metrics.getPosition(); x++){
+				FunctionMetric<T,args...>* f_metric = m_metrics.getByPosition(x);
+				if(f_metric == nullptr){
+					continue;
+				}
+				f_trainer.fit(*f_metric, i_fx);
+				if(!f_trainer.evaluate(*f_metric, i_fx)){
+					if(i_fx != nullptr){
+						delete i_fx;
+						i_fx = nullptr;
+					}
+					break;
 				}
 			}
-		}
-		return fx;
-	}  
+			return i_fx;
+		}  
+
+		#if defined(cppObject_AVAILABLE) && defined(cppObjectClass_AVAILABLE) && defined(Class_AVAILABLE)
+		virtual cppObjectClass* getClass(){return Class<FunctionConfiguration<T,Args...>>::getClass();}
+		virtual bool instanceof(cppObjectClass* cls){return cls == Class<FunctionConfiguration<T,Args...>>::getClass();}
+		#endif
 		
 	protected:
-	LinkedList<FunctionMetric<T,args...>> metrics;
-	LinkedList<FunctionProtocol<T,args...>> protocols;
+		PrimitiveList<FunctionMetric<T,args...>> m_metrics;
+		PrimitiveList<FunctionTrainer<T,args...>> m_trainer;
 };
 
 }

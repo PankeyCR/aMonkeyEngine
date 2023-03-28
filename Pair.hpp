@@ -40,6 +40,9 @@ class Pair{
 				delete x2;
 			}
 		}
+		virtual bool hasNull(){
+			return x1 == nullptr || x2 == nullptr;
+		}
 		virtual void operator=(Pair b){
 			x1 = b.x1;
 			x2 = b.x2;

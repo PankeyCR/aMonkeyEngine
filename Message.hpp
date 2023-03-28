@@ -6,9 +6,19 @@
 #include "Note.hpp"
 #include "ByteArray.hpp"
 
+#ifdef ame_Windows
+	#include "ame_Printable.hpp"
+	#include "ame_Print.hpp"
+#endif
+
+#ifdef ame_ArduinoIDE
+	#include "Arduino.h"
+	#include "Printable.h"
+#endif
+
 namespace ame{
 
-class Message{
+class Message : public Printable{
 public:
 Message(){}
 Message(const Message& b){
@@ -80,19 +90,19 @@ Message(int i, Note mname, Note mType,ByteArray b){
 // }
 virtual ~Message(){}
 
-virtual int id(){
+virtual int id()const{
 	return m_id;
 }
-virtual Note name(){
+virtual Note name()const{
 	return m_name;
 }
-virtual Note text(){
+virtual Note text()const{
 	return m_text;
 }
-virtual Note type(){
+virtual Note type()const{
 	return m_type;
 }
-virtual ByteArray array(){
+virtual ByteArray array()const{
 	return m_array;
 }
 // virtual Note textNote(){
@@ -140,6 +150,21 @@ virtual bool operator==(const Message& b){
 }
 virtual bool operator!=(const Message& b){
 	return m_id != b.m_id && m_name != b.m_name && m_text != b.m_text && m_type != b.m_type;
+}
+
+virtual size_t printTo(Print& p) const{
+	size_t i_size = 0;
+	i_size += p.print("Message: <");
+	i_size += p.print("id: ");
+	i_size += p.print(m_id);
+	i_size += p.print("name: ");
+	i_size += p.print(m_name);
+	i_size += p.print("type: ");
+	i_size += p.print(m_type);
+	i_size += p.print("text: ");
+	i_size += p.print(m_text);
+	i_size += p.print(">");
+	return i_size;
 }
 protected:
 int m_id = -1;

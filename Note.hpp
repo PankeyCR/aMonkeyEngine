@@ -1015,7 +1015,7 @@ class Note : public Array<char>, public Printable{
 			return a_char == 46;
 		}
 
-		bool toBool(){
+		bool toBool()const{
 			NoteLog(ame_Log_StartMethod, "toBool", "println", "");
 			if(this->m_pos == 1){
 				if(this->get(0) == '1'){
@@ -1031,7 +1031,7 @@ class Note : public Array<char>, public Printable{
 			return false;
 		}
 
-		int toInt(){
+		int toInt()const{
 			NoteLog(ame_Log_StartMethod, "toInt", "println", "");
 			if(this->isEmpty()){
 				NoteLog(ame_Log_EndMethod, "toInt", "println", "this->isEmpty()");
@@ -1080,7 +1080,7 @@ class Note : public Array<char>, public Printable{
 			return output;
 		}
 		
-		long toLong(){
+		long toLong()const{
 			NoteLog(ame_Log_StartMethod, "toLong", "println", "");
 			if(this->isEmpty()){
 				NoteLog(ame_Log_EndMethod, "toLong", "println", "this->isEmpty()");
@@ -1132,7 +1132,7 @@ class Note : public Array<char>, public Printable{
 			return output;
 		}
 		
-		float toFloat(){
+		float toFloat()const{
 			NoteLog(ame_Log_StartMethod, "toFloat", "println", "");
 			if(this->isEmpty()){
 				NoteLog(ame_Log_EndMethod, "toFloat", "println", "this->isEmpty()");
@@ -1349,7 +1349,7 @@ class Note : public Array<char>, public Printable{
 			return -1;
 		}
 
-		int getSplitSize(char a_split){
+		int getSplitSize(char a_split) const{
 			NoteLog(ame_Log_StartMethod, "getSplitSize", "println", "");
 			NoteLog(ame_Log_Statement, "getSplitSize", "println", "~Note");
 			if(this->isEmpty()){
@@ -1812,7 +1812,7 @@ class Note : public Array<char>, public Printable{
 			return *this;
 		}
 
-		virtual bool operator==(const Note& a_note){
+		virtual bool operator==(const Note& a_note) const{
 			if(a_note.getPosition() != this->getPosition()){
 				return false;
 			}

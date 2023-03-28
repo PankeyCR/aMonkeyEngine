@@ -13,7 +13,7 @@ void setup() {
   Serial.println("Listener example 8");
   
   app = new DefaultApplication();
-  listener = app->setListener(new Listener());
+  listener = app->getStateManager()->addState(new Listener());
   
   listener->createDebounceMultiInterrupt<1,3,2>(10, 2);
   listener->createDebounceMultiInterrupt<2,3,1>(10, 3);

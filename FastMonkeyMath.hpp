@@ -1,25 +1,7 @@
 
-#include "ame_Enviroment.hpp"
-
-#if defined(DISABLE_FastMonkeyMath)
-	#define FastMonkeyMath_hpp
-#endif
-
 #ifndef FastMonkeyMath_hpp
 #define FastMonkeyMath_hpp
 #define FastMonkeyMath_AVAILABLE
-
-#ifndef ame_Enviroment_Defined
-
-#endif
-
-#ifdef ame_Windows
-
-#endif
-
-#ifdef ame_ArduinoIDE
-	#include "Arduino.h"
-#endif
 
 #include "Vector3f.hpp"
 #include "Vector2f.hpp"

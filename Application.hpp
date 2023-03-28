@@ -56,6 +56,7 @@ namespace ame{
 #include "AppSettings.hpp"
 #include "TimeControl.hpp"
 #include "AbstractClass.hpp"
+#include "System.hpp"
 
 namespace ame{
 
@@ -172,7 +173,20 @@ class Application IMPLEMENTATION_cppObject {
 
 		virtual void initialize(){}
 
-		virtual void update()=0;
+		virtual float update()=0;
+		
+		virtual float tpc(){
+			return m_tpc;
+		}
+
+		virtual float generateTpc(){
+			this->m_now = System::microSeconds();
+
+			this->m_tpc = (float)(this->m_now - this->m_prev)/1000000;
+			this->m_prev = this->m_now;
+
+			return this->m_tpc;
+		}
 
 		#if defined(cppObject_AVAILABLE) && defined(cppObjectClass_AVAILABLE) && defined(AbstractClass_AVAILABLE)
 		virtual cppObjectClass* getClass(){
@@ -204,6 +218,10 @@ class Application IMPLEMENTATION_cppObject {
 		#if defined(MemoryPool_AVAILABLE)
 		MemoryPool* m_memory = nullptr;
 		#endif
+
+		long m_now = 0;
+		long m_prev = 0;
+		float m_tpc = 0;
 };
 
 }

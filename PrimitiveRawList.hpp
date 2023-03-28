@@ -46,12 +46,7 @@ class PrimitiveRawList : public PrimitiveRawPointerList<T>, virtual public RawLi
 			PrimitiveRawListLog(ame_Log_EndMethod, "Constructor", "println", "");
 		}
 		
-		PrimitiveRawList(int c_size) : PrimitiveRawPointerList<T>(c_size){
-			PrimitiveRawListLog(ame_Log_StartMethod, "Constructor", "println", "");
-			PrimitiveRawListLog(ame_Log_EndMethod, "Constructor", "println", "");
-		}
-		
-		PrimitiveRawList(int c_size, bool c_own, int c_reordering) : PrimitiveRawPointerList<T>(c_size, c_own, c_reordering){
+		PrimitiveRawList(int c_size, bool c_own, bool c_reordering) : PrimitiveRawPointerList<T>(c_size, c_own, c_reordering){
 			PrimitiveRawListLog(ame_Log_StartMethod, "Constructor", "println", "");
 			PrimitiveRawListLog(ame_Log_EndMethod, "Constructor", "println", "");
 		}

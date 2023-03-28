@@ -15,6 +15,7 @@
 
 #include "Note.hpp"
 #include "NoteHelper.hpp"
+#include "PrimitiveList.hpp"
 
 #ifndef ame_Enviroment_Defined
 
@@ -101,6 +102,10 @@ void printWIFI(Stream* port){
 	}
 	port->print("WIFI ip: ");
 	port->println(WiFi.localIP());
+}
+
+void WIFICommands(const PrimitiveList<Note>& a_commands){
+
 }
 #endif
 

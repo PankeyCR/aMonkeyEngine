@@ -14,7 +14,7 @@
 #ifndef DISABLE_Method_hpp
 #define DISABLE_Method_hpp
 
-	#if defined(DISABLE_Method)
+	#if defined(DISABLE_Method) || defined(DISABLE_cppObject) || defined(DISABLE_cppObjectClass)
 		#define Method_hpp
 	#endif
 #endif

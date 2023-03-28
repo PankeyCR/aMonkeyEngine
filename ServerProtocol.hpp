@@ -6,14 +6,6 @@
 
 	#if defined(DISABLE_ServerProtocol)
 		#define ServerProtocol_hpp
-
-		#define IMPLEMENTATION_ServerProtocol
-		#define IMPLEMENTING_ServerProtocol
-	#else
-		#if defined(DISABLE_IMPLEMENTATION_ServerProtocol)
-			#define IMPLEMENTATION_ServerProtocol
-			#define IMPLEMENTING_ServerProtocol
-		#endif
 	#endif
 #endif
 
@@ -21,13 +13,8 @@
 #define ServerProtocol_hpp
 #define ServerProtocol_AVAILABLE
 
-#ifndef DISABLE_IMPLEMENTATION_ServerProtocol
-	#define IMPLEMENTATION_ServerProtocol IMPLEMENTATION(public ServerProtocol)
-	#define IMPLEMENTING_ServerProtocol IMPLEMENTING(public ServerProtocol)
-#endif
-
 #include "cppObject.hpp"
-#include "Application.hpp"
+#include "SerialNetwork.hpp"
 
 namespace ame{
 
@@ -41,11 +28,11 @@ class ServerProtocol IMPLEMENTATION_cppObject {
 		
 		virtual ~ServerProtocol(){}
 		
-		virtual void initialize(SerialNetwork* state){
+		virtual void initialize(SerialStateController* state){
 			this->serialState = state;
 		}
 
-		virtual SerialNetwork* getSerialNetwork(){
+		virtual SerialStateController* getSerialStateController(){
 			return this->serialState;
 		}
 		
@@ -69,7 +56,7 @@ class ServerProtocol IMPLEMENTATION_cppObject {
 		virtual void NetworkMessage(SerialServer* a_server, Note a_mns){}
 		
 	protected:
-		SerialNetwork* serialState = nullptr;
+		SerialStateController* serialState = nullptr;
 };
 
 }

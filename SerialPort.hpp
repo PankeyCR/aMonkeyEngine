@@ -6,25 +6,12 @@
 
 	#if defined(DISABLE_SerialPort)
 		#define SerialPort_hpp
-
-		#define IMPLEMENTATION_SerialPort
-		#define IMPLEMENTING_SerialPort
-	#else
-		#if defined(DISABLE_IMPLEMENTATION_SerialPort)
-			#define IMPLEMENTATION_SerialPort
-			#define IMPLEMENTING_SerialPort
-		#endif
 	#endif
 #endif
 
 #ifndef SerialPort_hpp
 #define SerialPort_hpp
 #define SerialPort_AVAILABLE
-
-#ifndef DISABLE_IMPLEMENTATION_SerialPort
-	#define IMPLEMENTATION_SerialPort IMPLEMENTATION(public SerialPort)
-	#define IMPLEMENTING_SerialPort IMPLEMENTING(public SerialPort)
-#endif
 
 #include "cppObject.hpp"
 #include "Note.hpp"

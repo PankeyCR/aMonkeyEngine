@@ -6,25 +6,12 @@
 
 	#if defined(DISABLE_ElementId)
 		#define ElementId_hpp
-
-		#define IMPLEMENTATION_ElementId
-		#define IMPLEMENTING_ElementId
-	#else
-		#if defined(DISABLE_IMPLEMENTATION_ElementId)
-			#define IMPLEMENTATION_ElementId
-			#define IMPLEMENTING_ElementId
-		#endif
 	#endif
 #endif
 
 #ifndef ElementId_hpp
 #define ElementId_hpp
 #define ElementId_AVAILABLE
-
-#ifndef DISABLE_IMPLEMENTATION_ElementId
-	#define IMPLEMENTATION_ElementId IMPLEMENTATION(public ElementId)
-	#define IMPLEMENTING_ElementId IMPLEMENTING(public ElementId)
-#endif
 
 #ifdef ame_ArduinoIDE
 	#include "Arduino.h"
@@ -33,6 +20,7 @@
 
 #include "cppObject.hpp"
 #include "Note.hpp"
+#include "NoteHelper.hpp"
 #include "Class.hpp"
 
 #ifdef ElementId_LogApp
@@ -95,7 +83,7 @@ class ElementId : public Printable IMPLEMENTING_cppObject {
 		
 		ElementId child(const char* childId){
 			ElementIdLog(ame_Log_StartMethod, "child",  "println", Note(childId));
-			if(id == ""){
+			if(isNoteEmpty(id)){
 				return ElementId(childId);
 			}
 			return ElementId(id + m_delimiter + Note(childId));
@@ -103,7 +91,7 @@ class ElementId : public Printable IMPLEMENTING_cppObject {
 		
 		ElementId child(const Note& childId){
 			ElementIdLog(ame_Log_StartMethod, "child",  "println", Note(childId));
-			if(id == ""){
+			if(isNoteEmpty(id)){
 				return ElementId(childId);
 			}
 			return ElementId(id + m_delimiter + childId);
@@ -111,7 +99,7 @@ class ElementId : public Printable IMPLEMENTING_cppObject {
 
 		ElementId child(const ElementId& childId) {
 			ElementIdLog(ame_Log_StartMethod, "child",  "println", childId.getId());
-			if(id == ""){
+			if(isNoteEmpty(id)){
 				return ElementId(childId.getId());
 			}
 			return ElementId(id + m_delimiter + childId.getId());
@@ -135,8 +123,8 @@ class ElementId : public Printable IMPLEMENTING_cppObject {
 			bool startConcat = false;
 			const_ElementIdLog(ame_Log_StartMethod, "getPart",  "println", Note("id.length() ") + Note(id.length()));
 			for(int i=0; i < id.length(); i++){
-				char c = id.get(i);
-				char c2 = m_delimiter.get(delimiterEqual);
+				char c = getChar(id, i);
+				char c2 = getChar(m_delimiter, delimiterEqual);
 				const_ElementIdLog(ame_Log_StartMethod, "getPart",  "println", Note("iteration ") + Note(i));
 				const_ElementIdLog(ame_Log_StartMethod, "getPart",  "println", Note("char ") + Note(c));
 				const_ElementIdLog(ame_Log_StartMethod, "getPart",  "println", Note("char delimiter ") + Note(c2));
@@ -155,7 +143,7 @@ class ElementId : public Printable IMPLEMENTING_cppObject {
 				}
 				if((x == delimiter)){
 					const_ElementIdLog(ame_Log_StartMethod, "getPart",  "println", "x == delimiter");
-					part.addLocalValue(c);
+					part += c;
 					startConcat = true;
 				}
 				if((x != delimiter) && startConcat){
@@ -171,8 +159,8 @@ class ElementId : public Printable IMPLEMENTING_cppObject {
 			int delimiterSize = m_delimiter.length();
 			int delimiterEqual = 0;
 			for(int i=0; i < id.length(); i++){
-				char c = id.get(i);
-				if(c == m_delimiter.get(delimiterEqual)){                   
+				char c = getChar(id, i);
+				if(c == getChar(m_delimiter, delimiterEqual)){                   
 					delimiterEqual++;
 					if(delimiterEqual == delimiterSize){
 						delimiter++;
@@ -234,7 +222,7 @@ class ElementId : public Printable IMPLEMENTING_cppObject {
 			for(int x = 0; x < sizeOriginal; x++){
 				Note partE = getPart(x);
 				if(s != partE){
-					if(newId == ""){
+					if(isNoteEmpty(newId)){
 						newId = partE;
 						continue;
 					}
@@ -279,7 +267,7 @@ class ElementId : public Printable IMPLEMENTING_cppObject {
 			int sizeOriginal = getSize();
 			for(int x = 1; x < sizeOriginal; x++){
 				Note partE = getPart(x);
-				if(newId == ""){
+				if(isNoteEmpty(newId)){
 					newId = partE;
 					continue;
 				}
@@ -305,7 +293,7 @@ class ElementId : public Printable IMPLEMENTING_cppObject {
 			int sizeOriginal = getSize();
 			for(int x = 0; x < sizeOriginal; x++){
 				Note partE = getPart(x);
-				if(newId == ""){
+				if(isNoteEmpty(newId)){
 					newId = partE;
 				}else{
 					newId += n_delimiter + partE;
@@ -326,7 +314,7 @@ class ElementId : public Printable IMPLEMENTING_cppObject {
 			int sizeNew = b.getSize();
 			for(int x = 1; x < sizeNew; x++){
 				Note partE = b.getPart(x);
-				if(id == ""){
+				if(isNoteEmpty(id)){
 					id = partE;
 					continue;
 				}
@@ -336,7 +324,7 @@ class ElementId : public Printable IMPLEMENTING_cppObject {
 		
 		virtual void operator+=(Note b){
 			ElementIdLog(ame_Log_StartMethod, "operator+=",  "println", "");
-			if(id == ""){
+			if(isNoteEmpty(id)){
 				id = b;
 				return;
 			}

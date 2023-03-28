@@ -6,14 +6,6 @@
 
 	#if defined(DISABLE_PortProtocol)
 		#define PortProtocol_hpp
-
-		#define IMPLEMENTATION_PortProtocol
-		#define IMPLEMENTING_PortProtocol
-	#else
-		#if defined(DISABLE_IMPLEMENTATION_PortProtocol)
-			#define IMPLEMENTATION_PortProtocol
-			#define IMPLEMENTING_PortProtocol
-		#endif
 	#endif
 #endif
 
@@ -21,12 +13,8 @@
 #define PortProtocol_hpp
 #define PortProtocol_AVAILABLE
 
-#ifndef DISABLE_IMPLEMENTATION_PortProtocol
-	#define IMPLEMENTATION_PortProtocol IMPLEMENTATION(public PortProtocol)
-	#define IMPLEMENTING_PortProtocol IMPLEMENTING(public PortProtocol)
-#endif
-
 #include "cppObject.hpp"
+#include "Message.hpp"
 #include "Note.hpp"
 #include "ByteArray.hpp"
 
@@ -44,12 +32,12 @@ class PortProtocol IMPLEMENTATION_cppObject {
 		PortProtocol(){}
 		virtual ~PortProtocol(){}
 		
-		virtual void initialize(SerialNetwork* state){
-			this->serialState = state;
+		virtual void initialize(SerialStateController* state){
+			this->m_serialState = state;
 		}
 
-		virtual SerialNetwork* getSerialNetwork(){
-			return this->serialState;
+		virtual SerialStateController* getSerialStateController(){
+			return this->m_serialState;
 		}
 		
 		//this method has control of the sending of the message, so remember sending it
@@ -86,13 +74,19 @@ class PortProtocol IMPLEMENTATION_cppObject {
 			return m_delivery;
 		}
 		
-		virtual bool DeliverMessage(Note* a_mns){
+		virtual bool DeliverMessage(const Message& a_mns){
 			if(m_delivery == nullptr){
 				return false;
 			}
 			return m_delivery->DeliverMessage(a_mns);
 		}
-		virtual bool DeliverMessage(ByteArray* a_mns){
+		virtual bool DeliverMessage(const Note& a_mns){
+			if(m_delivery == nullptr){
+				return false;
+			}
+			return m_delivery->DeliverMessage(a_mns);
+		}
+		virtual bool DeliverMessage(const ByteArray& a_mns){
 			if(m_delivery == nullptr){
 				return false;
 			}
@@ -122,7 +116,7 @@ class PortProtocol IMPLEMENTATION_cppObject {
 		
 	protected:
 		bool safeDelete = true;
-		SerialNetwork* serialState = nullptr;
+		SerialStateController* m_serialState = nullptr;
 		MessageDelivery* m_delivery = nullptr;
 };
 

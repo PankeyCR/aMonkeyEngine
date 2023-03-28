@@ -410,6 +410,30 @@ class Array IMPLEMENTATION_cppObject {
 			ArrayLog(ame_Log_EndMethod, "clear", "println", "");
 		}
 
+		virtual void copyToExternPointer(T* a_array, T a_value, int a_size){
+			ArrayLog(ame_Log_StartMethod, "copyPointer", "println", "");
+			if(a_array == nullptr || m_t_value == nullptr){
+				return;
+			}
+			for(int x = 0; x < a_size; x++){
+				a_array[x] = a_value;
+			}
+			int i_full_size = a_size;
+			if(this->hasEndValue()){
+				i_full_size--;
+			}
+			if(this->getPosition() < a_size){
+				i_full_size = this->getPosition();
+			}
+			for(int x = 0; x < i_full_size; x++){
+				a_array[x] = m_t_value[x];
+			}
+			if(this->hasEndValue()){
+				a_array[i_full_size] = this->endValue();
+			}
+			ArrayLog(ame_Log_EndMethod, "copyPointer", "println", "");
+		}
+
 		virtual void copyExternPointer(T* a_array, const T* a_copy, int a_size){
 			ArrayLog(ame_Log_StartMethod, "copyPointer", "println", "");
 			if(a_array == nullptr || a_copy == nullptr ){
@@ -884,7 +908,21 @@ class Array IMPLEMENTATION_cppObject {
 			return this->insertLocalArrayPointer(this->getPosition(), a_pointer);
 		}
 
+		virtual Array<T> addLocalArrayPointer(const T* a_pointer, int a_size){
+			ArrayLog(ame_Log_StartMethod, "addLocalArrayPointer", "println", "const char* a_pointer");
+			ArrayLog(ame_Log_Statement, "addLocalArrayPointer", "println", "Pointer Array:");
+			//ArrayLog(ame_Log_Statement, "addLocalArrayPointer", "println", a_pointer);
+			ArrayLog(ame_Log_EndMethod, "addLocalArrayPointer", "println", "");
+			return this->insertLocalArrayPointer(this->getPosition(), a_pointer, a_size);
+		}
+
 		virtual Array<T> insertLocalArrayPointer(int a_position, const T* a_pointer){
+			ArrayLog(ame_Log_StartMethod, "insertLocalArrayPointer", "println", "const char* a_pointer");
+			ArrayLog(ame_Log_EndMethod, "insertLocalArrayPointer", "println", "");
+			return this->insertLocalArrayPointer(a_position, a_pointer, this->arrayLength(a_pointer));
+		}
+
+		virtual Array<T> insertLocalArrayPointer(int a_position, const T* a_pointer, int a_size){
 			ArrayLog(ame_Log_StartMethod, "insertLocalArrayPointer", "println", "const char* a_pointer");
 			ArrayLog(ame_Log_Statement, "insertLocalArrayPointer", "println", "Pointer Array:");
 			//ArrayLog(ame_Log_Statement, "insertLocalArrayPointer", "println", a_pointer);
@@ -892,6 +930,9 @@ class Array IMPLEMENTATION_cppObject {
 				return *this;
 			}
 			int i_array_length = this->arrayLength(a_pointer);
+			if(i_array_length > a_size){
+				i_array_length = a_size;
+			}
 			ArrayLog(ame_Log_Statement, "insertLocalArrayPointer", "println", "Array Length:");
 			ArrayLog(ame_Log_Statement, "insertLocalArrayPointer", "println", i_array_length);
 			ArrayLog(ame_Log_Statement, "insertLocalArrayPointer", "println", "Array Position:");
