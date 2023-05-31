@@ -481,6 +481,10 @@ class Lexer IMPLEMENTATION_cppObject {
 				LexerLog(ame_Log_EndMethod, "captureDelimiter",  "println", "this->m_delimiter_checker.isEmpty()");
 				return;
 			}
+			if(this->m_capture_note.getPosition() == 0){
+				LexerLog(ame_Log_EndMethod, "captureDelimiter",  "println", "this->m_capture_note.getPosition() == 0");
+				return;
+			}
 
 			for(int x = 0; x < this->m_delimiter_checker.getPosition(); x++){
 				DelimiterCapture* f_capture = this->m_delimiter_checker.getByPosition(x);

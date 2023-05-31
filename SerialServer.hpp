@@ -65,7 +65,7 @@ class SerialServer IMPLEMENTATION_cppObject{
 
 		virtual void on(Note txt, Method method){}
 
-		virtual void send(int t, Note txt, Note webpage){}
+		virtual void send(int t, Note txt, Note a_message){}
 
 		virtual void send(Note a_message){}
 

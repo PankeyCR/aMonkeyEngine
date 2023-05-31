@@ -1,0 +1,11 @@
+{
+  "additionalFiles": "..\\..\\..,..\\..\\..",
+  "builtInToolsFolders": "",
+  "compiler.optimization_flags": "",
+  "customBuildProperties": "",
+  "fqbn": "esp32:esp32:esp32:PSRAM=disabled,PartitionScheme=default,CPUFreq=240,FlashMode=qio,FlashFreq=80,FlashSize=4M,UploadSpeed=921600,DebugLevel=none",
+  "hardwareFolders": "C:\\Users\\ManuelSánchezBadilla\\AppData\\Local\\Arduino15\\packages",
+  "otherLibrariesFolders": "C:\\Users\\ManuelSánchezBadilla\\Documents\\Arduino\\libraries",
+  "runtime.ide.version": "10607",
+  "sketchLocation": "C:\\Users\\ManuelSánchezBadilla\\Documents\\Arduino\\libraries\\aMonkeyEngine\\examples\\Arduino_class_examples\\MemoryStorage_examples\\MemoryStorage_example_2"
+}

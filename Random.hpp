@@ -9,66 +9,87 @@
 
 namespace ame{
 
+template<class T>
 class Random IMPLEMENTATION_cppObject {
 	protected:
-		float m_max = 1;
-		float m_min = 0;
-		float m_seed = 1.0f;
-		Function<float>* m_sequence = nullptr;
+		T m_max;
+		T m_min;
+		T m_seed;
+		Function<T>* m_sequence = nullptr;
 	
     public:
-		Random(){
-			m_sequence = new RealRandom();
-		}
-		Random(Function<float>* c_random){
+		Random(){}
+
+		Random(Function<T>* c_random){
 			m_sequence = c_random;
 		}
-		Random(const Random& c_random){
+
+		Random(T c_max, T c_min, T c_seed){
+			m_max = c_max;
+			m_min = c_min;
+			m_seed = c_seed;
+		}
+
+		Random(T c_max, T c_min, T c_seed, Function<T>* c_random){
+			m_max = c_max;
+			m_min = c_min;
+			m_seed = c_seed;
+			m_sequence = c_random;
+		}
+
+		Random(const Random<T>& c_random){
 			m_max = c_random.m_max;
 			m_min = c_random.m_min;
 			m_seed = c_random.m_seed;
-			if(c_random.m_sequence == nullptr){
-				m_sequence = new RealRandom();
-			}else{
-				Function<float,float,float,float>* i_sequence = c_random.m_sequence->clone();
-				if(i_sequence == nullptr){
-					m_sequence = new RealRandom();
-				}else{
-					m_sequence = i_sequence;
-				}
+			if(c_random.m_sequence != nullptr){
+				m_sequence = c_random.m_sequence->clone();
 			}
 		}
+
 		virtual ~Random(){
 			if(m_sequence != nullptr){
 				delete m_sequence;
 			}
 		}
 		
-		virtual void setMax(float a_max){
+		virtual void setFunction(Function<T>* a_function)){
+			if(m_sequence != nullptr){
+				delete m_sequence;
+			}
+			m_sequence = a_function;
+		}
+
+		virtual void set(T a_max, T a_min, T a_seed){
 			m_max = a_max;
-		}
-		
-		virtual void setMin(float a_min){
 			m_min = a_min;
-		}
-		
-		virtual float getMax() const{
-			return m_max;
-		}
-		
-		virtual float getMin() const{
-			return m_min;
-		}
-		
-		virtual void setSeed(float a_seed){
 			m_seed = a_seed;
 		}
 		
-		virtual float getSeed() const{
+		virtual void setMax(T a_max){
+			m_max = a_max;
+		}
+		
+		virtual void setMin(T a_min){
+			m_min = a_min;
+		}
+		
+		virtual T getMax() const{
+			return m_max;
+		}
+		
+		virtual T getMin() const{
+			return m_min;
+		}
+		
+		virtual void setSeed(T a_seed){
+			m_seed = a_seed;
+		}
+		
+		virtual T getSeed() const{
 			return m_seed;
 		}
 		
-		virtual float getRandom(){
+		virtual T getRandom(){
 			if(m_sequence == nullptr){
 				return 0;
 			}
@@ -88,15 +109,8 @@ class Random IMPLEMENTATION_cppObject {
 			if(m_sequence != nullptr){
 				delete m_sequence;
 			}
-			if(a_random.m_sequence == nullptr){
-				m_sequence = new RealRandom();
-			}else{
-				Function<float,float,float,float>* i_sequence = a_random.m_sequence->clone();
-				if(i_sequence == nullptr){
-					m_sequence = new RealRandom();
-				}else{
-					m_sequence = i_sequence;
-				}
+			if(a_random.m_sequence != nullptr){
+				m_sequence = a_random.m_sequence->clone();
 			}
 		}
 		virtual bool operator==(const Random& a_random){

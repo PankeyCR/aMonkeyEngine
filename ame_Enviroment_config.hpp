@@ -48,6 +48,7 @@
 *	
 *	
 *	char* enviroment_name = ame_Enviroment_Name;
+*	char* hardware_name = ame_Hardware_Name;
 *	
 *	
 *	

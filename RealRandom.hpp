@@ -30,6 +30,11 @@ class RealRandom : public Function<float>{
 			this->initializeConstantes(1,limitMax);
 			RealRandomLog(ame_Log_StartMethod, "Contructor", "println",limitMax);
 		}
+		RealRandom(const RealRandom& a_random){
+			float limitMax = ((float)2147483646/1000000.0f);
+			this->initializeConstantes(1,limitMax);
+			RealRandomLog(ame_Log_StartMethod, "Contructor", "println",limitMax);
+		}
 		
 		virtual ~RealRandom(){}
 		
@@ -64,7 +69,7 @@ class RealRandom : public Function<float>{
 
 		#if defined(cppObject_AVAILABLE) && defined(cppObjectClass_AVAILABLE) && defined(Class_AVAILABLE)
 		virtual cppObjectClass* getClass(){return Class<RealRandom>::getClass();}
-		virtual bool instanceof(cppObjectClass* cls){return cls == Class<RealRandom>::getClass() || Random::instanceof(cls);}
+		virtual bool instanceof(cppObjectClass* cls){return cls == Class<RealRandom>::getClass() || Function<float>::instanceof(cls);}
 		#endif
 };
 

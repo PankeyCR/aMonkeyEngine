@@ -92,8 +92,8 @@ class cppObject{
 			return memory_managed;
 		}
 		
-		virtual bool readyToDelete(){
-			return contained_on_list == 0;
+		virtual bool isReferenced(){
+			return contained_on_list > 0;
 		}
 		
 	protected:

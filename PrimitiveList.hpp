@@ -72,7 +72,7 @@ class PrimitiveList : public PrimitiveRawList<T>, public List<T>{
 		}
 
 		virtual PrimitiveList<T>* clone(){
-			PrimitiveList<T>* list = new PrimitiveList<T>(this->m_size);
+			PrimitiveList<T>* list = new PrimitiveList<T>(this->m_size, this->isOwner(), this->isInOrder());
 			for(int xl = 0; xl < this->getPosition(); xl++){
 				list->addLValue(*this->m_values[xl]);
 			}

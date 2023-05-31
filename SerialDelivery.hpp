@@ -60,15 +60,15 @@ class SerialDelivery : public MessageDelivery{
 		#if defined(cppObject_AVAILABLE) && defined(cppObjectClass_AVAILABLE) && defined(Class_AVAILABLE)
 		virtual void initialize(SerialNetwork* a_state){
 			SerialDeliveryLog(ame_Log_StartMethod, "initialize", "println", "Default Constructor");
-			this->serialState = a_state;
+			this->serialNetwork = a_state;
 			if(this->m_listener_message_state == nullptr){
-				this->m_listener_message_state = this->serialState->getApplication()->getStateManager()->getState<SerialListenerState<Message>>();
+				this->m_listener_message_state = this->serialNetwork->getApplication()->getStateManager()->getState<SerialListenerState<Message>>();
 			}
 			if(this->m_listener_note_state == nullptr){
-				this->m_listener_note_state = this->serialState->getApplication()->getStateManager()->getState<SerialListenerState<Note>>();
+				this->m_listener_note_state = this->serialNetwork->getApplication()->getStateManager()->getState<SerialListenerState<Note>>();
 			}
 			if(this->m_listener_byte_state == nullptr){
-				this->m_listener_byte_state = this->serialState->getApplication()->getStateManager()->getState<SerialListenerState<ByteArray>>();
+				this->m_listener_byte_state = this->serialNetwork->getApplication()->getStateManager()->getState<SerialListenerState<ByteArray>>();
 			}
 			SerialDeliveryLog(ame_Log_EndMethod, "initialize", "println", "");
 		}
@@ -79,9 +79,9 @@ class SerialDelivery : public MessageDelivery{
 			SerialDeliveryLog(ame_Log_Statement, "DeliverMessage", "println", "Message:");
 			SerialDeliveryLog(ame_Log_Statement, "DeliverMessage", "println", a_mns);
 			#if defined(cppObject_AVAILABLE) && defined(cppObjectClass_AVAILABLE) && defined(Class_AVAILABLE)
-			if(this->m_listener_message_state == nullptr && this->serialState != nullptr){
-				SerialDeliveryLog(ame_Log_Statement, "DeliverMessage", "println", "this->m_listener_note_state == nullptr && this->serialState != nullptr");
-				this->m_listener_message_state = this->serialState->getApplication()->getStateManager()->getState<SerialListenerState<Note>>();
+			if(this->m_listener_message_state == nullptr && this->serialNetwork != nullptr){
+				SerialDeliveryLog(ame_Log_Statement, "DeliverMessage", "println", "this->m_listener_note_state == nullptr && this->serialNetwork != nullptr");
+				this->m_listener_message_state = this->serialNetwork->getApplication()->getStateManager()->getState<SerialListenerState<Message>>();
 			}
 			#endif
 			if(this->m_listener_message_state == nullptr){
@@ -99,9 +99,9 @@ class SerialDelivery : public MessageDelivery{
 			SerialDeliveryLog(ame_Log_Statement, "DeliverMessage", "println", "Message:");
 			SerialDeliveryLog(ame_Log_Statement, "DeliverMessage", "println", a_mns);
 			#if defined(cppObject_AVAILABLE) && defined(cppObjectClass_AVAILABLE) && defined(Class_AVAILABLE)
-			if(this->m_listener_note_state == nullptr && this->serialState != nullptr){
-				SerialDeliveryLog(ame_Log_Statement, "DeliverMessage", "println", "this->m_listener_note_state == nullptr && this->serialState != nullptr");
-				this->m_listener_note_state = this->serialState->getApplication()->getStateManager()->getState<SerialListenerState<Note>>();
+			if(this->m_listener_note_state == nullptr && this->serialNetwork != nullptr){
+				SerialDeliveryLog(ame_Log_Statement, "DeliverMessage", "println", "this->m_listener_note_state == nullptr && this->serialNetwork != nullptr");
+				this->m_listener_note_state = this->serialNetwork->getApplication()->getStateManager()->getState<SerialListenerState<Note>>();
 			}
 			#endif
 			if(this->m_listener_note_state == nullptr){

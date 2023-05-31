@@ -38,6 +38,14 @@ class AbsoluteRandom : public Function<float>{
 			this->setConstante(1,100000.0f);
 			this->setConstante(2,0.0f);
 		}
+		AbsoluteRandom(const AbsoluteRandom& a_random){
+			this->m_realRandom = new RealRandom();
+			float limitMax = ((float)2147483646/1000000.0f);
+			this->initializeConstantes(3,0);
+			this->setConstante(0,limitMax);
+			this->setConstante(1,100000.0f);
+			this->setConstante(2,0.0f);
+		}
 		virtual ~AbsoluteRandom(){
 			delete this->m_realRandom;
 		}
@@ -73,7 +81,7 @@ class AbsoluteRandom : public Function<float>{
 
 		#if defined(cppObject_AVAILABLE) && defined(cppObjectClass_AVAILABLE) && defined(Class_AVAILABLE)
 		virtual cppObjectClass* getClass(){return Class<AbsoluteRandom>::getClass();}
-		virtual bool instanceof(cppObjectClass* cls){return cls == Class<AbsoluteRandom>::getClass() || Random::instanceof(cls);}
+		virtual bool instanceof(cppObjectClass* cls){return cls == Class<AbsoluteRandom>::getClass() || Function<float>::instanceof(cls);}
 		#endif
 		
 };

@@ -60,12 +60,12 @@ class AlwaysConnected IMPLEMENTATION_BaseAppState {
 		}
 		AlwaysConnected(Note s){
 			AlwaysConnectedLog(ame_Log_EndMethod, "Contructor",  "println", "");
-			myName = s;
+			m_myName = s;
 			AlwaysConnectedLog(ame_Log_EndMethod, "Contructor",  "println", "");
 		}
 		AlwaysConnected(SerialState* c_serial_state){
 			AlwaysConnectedLog(ame_Log_EndMethod, "Contructor",  "println", "");
-			serialState = c_serial_state;
+			m_serialState = c_serial_state;
 			AlwaysConnectedLog(ame_Log_EndMethod, "Contructor",  "println", "");
 		}
 		virtual ~AlwaysConnected(){
@@ -84,9 +84,9 @@ class AlwaysConnected IMPLEMENTATION_BaseAppState {
 		virtual void initializeState(Application* a_app){
 			AlwaysConnectedLog(ame_Log_EndMethod, "initializeState",  "println", "");
 			AlwaysConnectedLog(ame_Log_Statement, "initializeState",  "println", "");
-			app = a_app;
+			m_app = a_app;
 			#if defined(cppObject_AVAILABLE) && defined(cppObjectClass_AVAILABLE) && defined(Class_AVAILABLE)
-			serialState = (SerialState*)app->getStateManager()->get(Class<SerialState>::getClass());
+			m_serialState = (SerialState*)m_app->getStateManager()->get(Class<SerialState>::getClass());
 			#endif
 			AlwaysConnectedLog(ame_Log_EndMethod, "initializeState",  "println", "");
 		}
@@ -95,36 +95,36 @@ class AlwaysConnected IMPLEMENTATION_BaseAppState {
 		virtual void updateState(float tpc){
 			AlwaysConnectedLog(ame_Log_EndMethod, "updateState",  "println", "");
 			#if defined(Application_AVAILABLE)
-			if(serialState == nullptr){
+			if(m_serialState == nullptr){
 				#if defined(cppObject_AVAILABLE) && defined(cppObjectClass_AVAILABLE) && defined(Class_AVAILABLE)
-				serialState = (SerialState*)app->getStateManager()->get(Class<SerialState>::classType);
+				m_serialState = (SerialState*)m_app->getStateManager()->get(Class<SerialState>::classType);
 				#endif
 				return;
 			}
 			#endif
-			time += tpc;
-			if(time < time_limite){
+			m_time += tpc;
+			if(m_time < m_time_limite){
 				return;
 			}
-			time = 0.0f;
-			for(int x = 0; x < serialports.getPosition(); x++){
-				SerialPort* serialport = serialports.getByPosition(x);
-				if(serialport == nullptr){
+			m_time = 0.0f;
+			for(int x = 0; x < m_serialports.getPosition(); x++){
+				SerialPort* i_serialport = m_serialports.getByPosition(x);
+				if(i_serialport == nullptr){
 					continue;
 				}
-				Note name = serialport->getName();
-				IPAddress ip = *ips.getByPosition(x);
-				int port = *ports.getByPosition(x);
-				PortProtocol* portprotocol = portprotocols.getByPosition(x);
-				if(serialport->connected()){
+				Note i_name = i_serialport->getName();
+				IPAddress i_ip = *m_ips.getByPosition(x);
+				int i_port = *m_ports.getByPosition(x);
+				PortProtocol* i_portprotocol = m_portprotocols.getByPosition(x);
+				if(i_serialport->connected()){
 					continue;
 				}
 				AlwaysConnectedLog(ame_Log_Statement, "updateState",  "println", "");
 				AlwaysConnectedLog(ame_Log_Statement, "updateState",  "println", Note("iteration ")+Note(x));
-				if(serialport->connect(ip,port) && serialState != nullptr){
-					serialState->addSerialPort(serialport,portprotocol);
-					if(myName != ""){
-						serialState->send(serialport, Note("MyNameIs ") + myName);
+				if(i_serialport->connect(i_ip, i_port) && m_serialState != nullptr){
+					m_serialState->addSerialPort(i_serialport, i_portprotocol);
+					if(m_myName != ""){
+						m_serialState->send(i_serialport, Note("MyNameIs ") + m_myName);
 					}
 				}
 			}
@@ -134,10 +134,10 @@ class AlwaysConnected IMPLEMENTATION_BaseAppState {
 		virtual void add(Note a_name, IPAddress a_ip, int a_port, SerialPort* a_serial_port, PortProtocol* a_port_protocol){
 			AlwaysConnectedLog(ame_Log_EndMethod, "add",  "println", "");
 			a_serial_port->setName(a_name);
-			ips.addLValue(a_ip);
-			ports.addLValue(a_port);
-			serialports.addPointer(a_serial_port);
-			portprotocols.addPointer(a_port_protocol);
+			m_ips.addLValue(a_ip);
+			m_ports.addLValue(a_port);
+			m_serialports.addPointer(a_serial_port);
+			m_portprotocols.addPointer(a_port_protocol);
 			a_port_protocol->setSafeDelete(false);
 			AlwaysConnectedLog(ame_Log_EndMethod, "add",  "println", "");
 		}
@@ -151,8 +151,8 @@ class AlwaysConnected IMPLEMENTATION_BaseAppState {
 		virtual void remove(Note n){
 			AlwaysConnectedLog(ame_Log_EndMethod, "remove",  "println", "");
 			int x=-1;
-			for(int t = 0; t < serialports.getPosition(); t++){
-				if(serialports.getByPosition(t)->getName() == n){
+			for(int t = 0; t < m_serialports.getPosition(); t++){
+				if(m_serialports.getByPosition(t)->getName() == n){
 					x = t;
 					break;
 				}
@@ -160,24 +160,24 @@ class AlwaysConnected IMPLEMENTATION_BaseAppState {
 			if(x == -1){
 				return;
 			}
-			ips.removeDeleteByPosition(x);
-			ports.removeDeleteByPosition(x);
-			serialports.removeDeleteByPosition(x);
-			portprotocols.removeDeleteByPosition(x);
+			m_ips.removeDeleteByPosition(x);
+			m_ports.removeDeleteByPosition(x);
+			m_serialports.removeDeleteByPosition(x);
+			m_portprotocols.removeDeleteByPosition(x);
 			AlwaysConnectedLog(ame_Log_EndMethod, "remove",  "println", "");
 		}
 	protected:
 		#if defined(Application_AVAILABLE)
-		Application* app = nullptr;
+		Application* m_app = nullptr;
 		#endif
-		SerialState* serialState = nullptr;
-		PrimitiveList<IPAddress> ips;
-		PrimitiveList<int> ports;
-		PrimitiveList<SerialPort> serialports;
-		PrimitiveList<PortProtocol> portprotocols;
-		float time = 0;
-		float time_limite = 5.5f;
-		Note myName = "micro";
+		SerialState* m_serialState = nullptr;
+		PrimitiveList<IPAddress> m_ips;
+		PrimitiveList<int> m_ports;
+		PrimitiveList<SerialPort> m_serialports;
+		PrimitiveList<PortProtocol> m_portprotocols;
+		float m_time = 0;
+		float m_time_limite = 5.5f;
+		Note m_myName = "micro";
 };
 
 }

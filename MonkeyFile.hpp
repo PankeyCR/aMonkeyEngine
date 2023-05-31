@@ -33,6 +33,7 @@
 #endif
 
 #include "Note.hpp"
+#include "NoteHelper.hpp"
 #include "ByteArray.hpp"
 #include "PrimitiveList.hpp"
 #include "PrimitiveMap.hpp"
@@ -66,9 +67,6 @@ namespace ame{
 class MonkeyFile IMPLEMENTATION_cppObject {
     public:
 		MonkeyFile(){}
-		MonkeyFile(const Note& a_root_hdd){
-			this->m_root_hdd = a_root_hdd;
-		}
 		virtual ~MonkeyFile(){}
 
 		virtual void initialize(){}
@@ -78,10 +76,13 @@ class MonkeyFile IMPLEMENTATION_cppObject {
 		}
 
 		template<class... Args>
-		void setRootPathFile(Args... a_paths){
-			MonkeyFileLog(ame_Log_Statement, "setRootPathFile",  "println", filepath);
-			this->m_rootPath = addNote(this->m_root_hdd, this->fixPath(a_paths...));
-			this->createPath(a_paths...);
+		void setRootPathFile(const Note& a_root_hdd, Args... a_paths){
+			MonkeyFileLog(ame_Log_StartMethod, "setRootPathFile",  "println", a_root_hdd);
+			this->m_root_hdd = a_root_hdd;
+			this->m_rootPath = this->fixFullPaths(this->m_root_hdd, a_paths...);
+			this->createPath(this->m_root_hdd, a_paths...);
+			m_open = this->exist(this->m_rootPath);
+			MonkeyFileLog(ame_Log_EndMethod, "setRootPathFile",  "println", "");
 		}
 		Note getRootPathFile(){
 			return this->m_rootPath;
@@ -95,20 +96,32 @@ class MonkeyFile IMPLEMENTATION_cppObject {
 		virtual bool deleteRootDir(Note a_path){return false;}
 
 		template<class... Args>
-		bool createPath(Args... a_paths){
+		bool createPath(const Note& a_root_hdd, Args... a_paths){
+			MonkeyFileLog(ame_Log_StartMethod, "createPath",  "println", a_root_hdd);
+			Note i_path = a_root_hdd;
+			this->createDir(i_path);
+			if(!this->exist(i_path)){
+				MonkeyFileLog(ame_Log_Statement, "createPath",  "println", "!this->createDir(i_path)");
+				MonkeyFileLog(ame_Log_EndMethod, "createPath",  "println", "false");
+				return false;
+			}
 			PrimitiveList<Note> i_list;
 			i_list.addPack(a_paths...);
-			Note i_path;
 			for(int x = 0; x < i_list.getPosition(); x++){
 				Note* f_path = i_list.getByPosition(x);
 				if(f_path == nullptr){
 					continue;
 				}
-				i_path = this->fixPath(i_path, *f_path);
-				if(!this->createDir(i_path)){
+				i_path = this->mixRootPath(i_path, *f_path);
+				MonkeyFileLog(ame_Log_Statement, "createPath",  "println", i_path);
+				this->createDir(i_path);
+				if(!this->exist(i_path)){
+					MonkeyFileLog(ame_Log_Statement, "createPath",  "println", "!this->createDir(i_path)");
+					MonkeyFileLog(ame_Log_EndMethod, "createPath",  "println", "false");
 					return false;
 				}
 			}
+			MonkeyFileLog(ame_Log_EndMethod, "createPath",  "println", "true");
 			return true;
 		}
 
@@ -116,13 +129,13 @@ class MonkeyFile IMPLEMENTATION_cppObject {
 		bool createRootPath(Args... a_paths){
 			PrimitiveList<Note> i_list;
 			i_list.addPack(a_paths...);
-			Note i_path = this->fixPath(this->m_rootPath);
+			Note i_path = this->m_rootPath;
 			for(int x = 0; x < i_list.getPosition(); x++){
 				Note* f_path = i_list.getByPosition(x);
 				if(f_path == nullptr){
 					continue;
 				}
-				i_path = this->fixPath(i_path, *f_path);
+				i_path = this->mixRootPath(i_path, *f_path);
 				if(!this->createDir(i_path)){
 					return false;
 				}
@@ -131,8 +144,8 @@ class MonkeyFile IMPLEMENTATION_cppObject {
 		}
 
 		template<class... Args>
-		bool deletePath(Args... a_paths){
-			Note i_path = this->fixPaths(a_paths...);
+		bool deletePath(const Note& a_root_hdd, Args... a_paths){
+			Note i_path = this->fixFullPaths(a_root_hdd, a_paths...);
 			return this->deleteDir(i_path);
 		}
 		
@@ -170,8 +183,63 @@ class MonkeyFile IMPLEMENTATION_cppObject {
 		}
 
 		virtual bool fastInsertLine(int a_line, Note a_text, Note a_file){return this->insertLine(a_line, a_text, a_file);}
-		virtual bool insertLine(int a_line, Note a_text, Note a_file){return false;}
-		virtual bool insertRootLine(int a_line, Note a_text, Note a_file){return false;}
+		virtual bool insertLine(int a_line, Note a_text, Note a_file){
+			MonkeyFileLog(ame_Log_StartMethod, "insertLine",  "println", "");
+			Note i_text = this->readText(a_file);
+			MonkeyFileLog(ame_Log_Statement, "insertLine",  "println", "i_text: ");
+			MonkeyFileLog(ame_Log_Statement, "insertLine",  "println", i_text);
+			if(i_text.isEmpty() || a_line < 0){
+				MonkeyFileLog(ame_Log_Statement, "insertLine",  "println", "false");
+				return false;
+			}
+			int i_index = 0;
+			if(a_line == 0){
+				Note i_new_text = i_text.addValue('\n');
+				i_text.insertLocalNote(0, i_new_text);
+				MonkeyFileLog(ame_Log_Statement, "insertLine",  "println", "i_new_text: ");
+				MonkeyFileLog(ame_Log_Statement, "insertLine",  "println", i_new_text);
+				MonkeyFileLog(ame_Log_Statement, "insertLine",  "println", "i_text: ");
+				MonkeyFileLog(ame_Log_Statement, "insertLine",  "println", i_text);
+				this->clearFile(a_file);
+				this->writeText(i_text, a_file);
+				MonkeyFileLog(ame_Log_EndMethod, "insertLine",  "println", "true");
+				return true;
+			}
+			i_index = i_text.getIndex(a_line - 1, "\n");
+			MonkeyFileLog(ame_Log_Statement, "insertLine",  "println", "i_index: ");
+			MonkeyFileLog(ame_Log_Statement, "insertLine",  "println", i_index);
+			if(i_index == -1){
+				MonkeyFileLog(ame_Log_Statement, "insertLine",  "println", "false");
+				return false;
+			}
+			Note i_new_text = i_text.addValue('\n');
+			i_text.insertLocalNote(i_index + 1, i_new_text);
+			MonkeyFileLog(ame_Log_Statement, "insertLine",  "println", "i_new_text: ");
+			MonkeyFileLog(ame_Log_Statement, "insertLine",  "println", i_new_text);
+			MonkeyFileLog(ame_Log_Statement, "insertLine",  "println", "i_text: ");
+			MonkeyFileLog(ame_Log_Statement, "insertLine",  "println", i_text);
+			this->clearFile(a_file);
+			this->writeText(i_text, a_file);
+			MonkeyFileLog(ame_Log_EndMethod, "insertLine",  "println", "true");
+			return true;
+		}
+
+		virtual bool insertRootLine(int a_line, Note a_text, Note a_file){
+			Note i_file = this->fixRootPath(a_file);
+			Note i_text = this->readText(i_file);
+			if(i_text.isEmpty()){
+				return false;
+			}
+			int i_index = i_text.getIndex(a_line, "\n");
+			if(i_index == -1){
+				return false;
+			}
+			Note i_new_text = i_text.addValue('\n');
+			i_text.insertLocalNote(i_index + 1, i_new_text);
+			this->clearFile(i_file);
+			this->writeText(i_text, i_file);
+			return true;
+		}
 
 		virtual Note fastReadText(Note a_file){return this->readText(a_file);}
 		virtual Note readText(Note a_file){return "";}
@@ -203,8 +271,8 @@ class MonkeyFile IMPLEMENTATION_cppObject {
 		virtual bool existRoot(Note a_file){return false;}
 
 		template<class... Args>
-		bool existPath(Args... a_paths){
-			Note i_path = this->fixPaths(a_paths...);
+		bool existPath(const Note& a_root_hdd, Args... a_paths){
+			Note i_path = this->fixFullPaths(a_root_hdd, a_paths...);
 			return this->exist(i_path);
 		}
 		
@@ -216,6 +284,7 @@ class MonkeyFile IMPLEMENTATION_cppObject {
 		
 		template<class... Args>
 		Note fixPaths(Args... a_paths){
+			MonkeyFileLog(ame_Log_StartMethod, "fixPaths",  "println", "");
 			PrimitiveList<Note> i_list;
 			i_list.addPack(a_paths...);
 			Note i_path;
@@ -224,8 +293,30 @@ class MonkeyFile IMPLEMENTATION_cppObject {
 				if(f_path == nullptr){
 					continue;
 				}
-				i_path = this->fixPath(i_path, *f_path);
+				i_path = this->mixPath(i_path, *f_path);
+				MonkeyFileLog(ame_Log_Statement, "fixPaths",  "println", "i_path: ");
+				MonkeyFileLog(ame_Log_Statement, "fixPaths",  "println", i_path);
 			}
+			MonkeyFileLog(ame_Log_EndMethod, "fixPaths",  "println", "");
+			return i_path;
+		}
+		
+		template<class... Args>
+		Note fixFullPaths(const Note& a_root_hdd, Args... a_paths){
+			MonkeyFileLog(ame_Log_StartMethod, "fixFullPaths",  "println", "");
+			PrimitiveList<Note> i_list;
+			i_list.addPack(a_paths...);
+			Note i_path = a_root_hdd;
+			for(int x = 0; x < i_list.getPosition(); x++){
+				Note* f_path = i_list.getByPosition(x);
+				if(f_path == nullptr){
+					continue;
+				}
+				i_path = this->mixRootPath(i_path, *f_path);
+				MonkeyFileLog(ame_Log_Statement, "fixFullPaths",  "println", "i_path: ");
+				MonkeyFileLog(ame_Log_Statement, "fixFullPaths",  "println", i_path);
+			}
+			MonkeyFileLog(ame_Log_EndMethod, "fixFullPaths",  "println", "");
 			return i_path;
 		}
 
@@ -233,21 +324,22 @@ class MonkeyFile IMPLEMENTATION_cppObject {
 		Note fixRootPaths(Args... a_paths){
 			PrimitiveList<Note> i_list;
 			i_list.addPack(a_paths...);
-			Note i_path = this->fixPath(this->m_rootPath);
+			Note i_path = this->m_rootPath;
 			for(int x = 0; x < i_list.getPosition(); x++){
 				Note* f_path = i_list.getByPosition(x);
 				if(f_path == nullptr){
 					continue;
 				}
-				i_path = this->fixPath(i_path, *f_path);
+				i_path = this->mixRootPath(i_path, *f_path);
 			}
 			return i_path;
 		}
 		
 		virtual Note fixPath(Note a_path);
-		virtual Note fixPath(Note a_path_1, Note a_path_2);
+		virtual Note mixPath(Note a_path_1, Note a_path_2);
 
 		virtual Note fixRootPath(Note a_path);
+		virtual Note mixRootPath(Note a_path_1, Note a_path_2);
 
 		virtual int getFileSize(Note path){return 0;}
 		virtual int getDirectoriesSize(Note path){return 0;}
@@ -272,47 +364,6 @@ class MonkeyFile IMPLEMENTATION_cppObject {
 		bool m_open = false;
 };
 
-Note MonkeyFile::fixRootPath(Note p){
-	MonkeyFileLog(ame_Log_StartMethod, "fixRootPath",  "println", "");
-	if(this->m_rootPath.length() == 0){
-		if(p.length() == 0){
-			MonkeyFileLog(ame_Log_EndMethod, "fixRootPath",  "println", "");
-			return "";
-		}
-		if(p[0] == '/'){
-			MonkeyFileLog(ame_Log_EndMethod, "fixRootPath",  "println", "");
-			return p;
-		}
-	}
-	if(this->m_rootPath[0] != '/'){
-		MonkeyFileLog(ame_Log_Statement, "fixRootPath",  "println", Note("this->m_rootPath[0] != '/'"));
-		this->m_rootPath = Note("/") + this->m_rootPath;
-	}
-	int sizeRP = this->m_rootPath.length();
-	if(this->m_rootPath[sizeRP - 1] == '/' && p[0] == '/'){
-		MonkeyFileLog(ame_Log_Statement, "fixRootPath",  "println", Note("this->m_rootPath[sizeRP - 1] == '/' && p[0] == '/'"));
-		MonkeyFileLog(ame_Log_EndMethod, "fixRootPath",  "println", "");
-		return this->m_rootPath + getNotePart(p, 1);
-	}
-	if(this->m_rootPath[sizeRP - 1] != '/' && p[0] == '/'){
-		MonkeyFileLog(ame_Log_Statement, "fixRootPath",  "println", Note("this->m_rootPath[sizeRP - 1] != '/' && p[0] == '/'"));
-		MonkeyFileLog(ame_Log_EndMethod, "fixRootPath",  "println", "");
-		return this->m_rootPath + p;
-	}
-	if(this->m_rootPath[sizeRP - 1] == '/' && p[0] != '/'){
-		MonkeyFileLog(ame_Log_Statement, "fixRootPath",  "println", Note("this->m_rootPath[sizeRP - 1] == '/' && p[0] != '/'"));
-		MonkeyFileLog(ame_Log_EndMethod, "fixRootPath",  "println", "");
-		return this->m_rootPath + p;
-	}
-	if(this->m_rootPath[sizeRP - 1] != '/' && p[0] != '/'){
-		MonkeyFileLog(ame_Log_Statement, "fixRootPath",  "println", Note("this->m_rootPath[sizeRP - 1] != '/' && p[0] != '/'"));
-		MonkeyFileLog(ame_Log_EndMethod, "fixRootPath",  "println", "");
-		return this->m_rootPath + Note('/') + p;
-	}
-	MonkeyFileLog(ame_Log_EndMethod, "fixRootPath",  "println", "");
-	return this->m_rootPath + p;
-}
-
 Note MonkeyFile::fixPath(Note a_path){
 	MonkeyFileLog(ame_Log_StartMethod, "fixPath",  "println", "");
 	if(a_path.length() == 0){
@@ -327,56 +378,79 @@ Note MonkeyFile::fixPath(Note a_path){
 	return Note("/") + a_path;
 }
 
-Note MonkeyFile::fixPath(Note a_path_1, Note a_path_2){
-	MonkeyFileLog(ame_Log_StartMethod, "fixPath",  "println", "");
+Note MonkeyFile::mixPath(Note a_path_1, Note a_path_2){
+	MonkeyFileLog(ame_Log_StartMethod, "mixPath",  "println", "");
 	if(a_path_1.length() == 0){
-		if(a_path_2.length() == 0){
-			MonkeyFileLog(ame_Log_EndMethod, "fixPath",  "println", "");
-			return "";
-		}
-		if(a_path_2[0] == '/'){
-			MonkeyFileLog(ame_Log_EndMethod, "fixPath",  "println", "");
-			return a_path_2;
-		}else{
-			MonkeyFileLog(ame_Log_EndMethod, "fixPath",  "println", "");
-			return Note("/") + a_path_2;
-		}
+		MonkeyFileLog(ame_Log_EndMethod, "mixPath",  "println", "");
+		return this->fixPath(a_path_2);
 	}
 	if(a_path_2.length() == 0){
-		if(a_path_1[0] == '/'){
-			MonkeyFileLog(ame_Log_EndMethod, "fixPath",  "println", "");
-			return a_path_1;
-		}else{
-			MonkeyFileLog(ame_Log_EndMethod, "fixPath",  "println", "");
-			return Note("/") + a_path_1;
-		}
+		MonkeyFileLog(ame_Log_EndMethod, "mixPath",  "println", "");
+		return this->fixPath(a_path_1);
 	}
 	if(a_path_1[0] != '/'){
-		MonkeyFileLog(ame_Log_Statement, "fixPath",  "println", Note("a_path_1[0] != '/'"));
+		MonkeyFileLog(ame_Log_Statement, "mixPath",  "println", Note("a_path_1[0] != '/'"));
 		a_path_1 = Note("/") + a_path_1;
 	}
 	int sizeRP = a_path_1.length();
 	if(a_path_1[sizeRP - 1] == '/' && a_path_2[0] == '/'){
-		MonkeyFileLog(ame_Log_Statement, "fixPath",  "println", "a_path_1[sizeRP - 1] == '/' && a_path_2[0] == '/'");
-		MonkeyFileLog(ame_Log_EndMethod, "fixPath",  "println", "");
+		MonkeyFileLog(ame_Log_Statement, "mixPath",  "println", "a_path_1[sizeRP - 1] == '/' && a_path_2[0] == '/'");
+		MonkeyFileLog(ame_Log_EndMethod, "mixPath",  "println", "");
 		return a_path_1 + getNotePart(a_path_2, 1);
 	}
 	if(a_path_1[sizeRP - 1] != '/' && a_path_2[0] == '/'){
-		MonkeyFileLog(ame_Log_Statement, "fixPath",  "println", "a_path_1[sizeRP - 1] != '/' && a_path_2[0] == '/'");
-		MonkeyFileLog(ame_Log_EndMethod, "fixPath",  "println", "");
+		MonkeyFileLog(ame_Log_Statement, "mixPath",  "println", "a_path_1[sizeRP - 1] != '/' && a_path_2[0] == '/'");
+		MonkeyFileLog(ame_Log_EndMethod, "mixPath",  "println", "");
 		return a_path_1 + a_path_2;
 	}
 	if(a_path_1[sizeRP - 1] == '/' && a_path_2[0] != '/'){
-		MonkeyFileLog(ame_Log_Statement, "fixPath",  "println", "a_path_1[sizeRP - 1] == '/' && a_path_2[0] != '/'");
-		MonkeyFileLog(ame_Log_EndMethod, "fixPath",  "println", "");
+		MonkeyFileLog(ame_Log_Statement, "mixPath",  "println", "a_path_1[sizeRP - 1] == '/' && a_path_2[0] != '/'");
+		MonkeyFileLog(ame_Log_EndMethod, "mixPath",  "println", "");
 		return a_path_1 + a_path_2;
 	}
 	if(a_path_1[sizeRP - 1] != '/' && a_path_2[0] != '/'){
-		MonkeyFileLog(ame_Log_Statement, "fixPath",  "println", "a_path_1[sizeRP - 1] != '/' && a_path_2[0] != '/'");
-		MonkeyFileLog(ame_Log_EndMethod, "fixPath",  "println", "");
+		MonkeyFileLog(ame_Log_Statement, "mixPath",  "println", "a_path_1[sizeRP - 1] != '/' && a_path_2[0] != '/'");
+		MonkeyFileLog(ame_Log_EndMethod, "mixPath",  "println", "");
 		return a_path_1 + Note('/') + a_path_2;
 	}
-	MonkeyFileLog(ame_Log_EndMethod, "fixPath",  "println", "");
+	MonkeyFileLog(ame_Log_EndMethod, "mixPath",  "println", "");
+	return a_path_1 + a_path_2;
+}
+
+Note MonkeyFile::fixRootPath(Note a_path){
+	MonkeyFileLog(ame_Log_StartMethod, "fixRootPath",  "println", "");
+	MonkeyFileLog(ame_Log_EndMethod, "fixRootPath",  "println", "");
+	return this->mixRootPath( this->m_rootPath, a_path );
+}
+
+Note MonkeyFile::mixRootPath(Note a_path_1, Note a_path_2){
+	MonkeyFileLog(ame_Log_StartMethod, "mixRootPath",  "println", "");
+	if(a_path_1.length() == 0 || a_path_2.length() == 0){
+		MonkeyFileLog(ame_Log_EndMethod, "mixRootPath",  "println", "");
+		return "";
+	}
+	int sizeRP = a_path_1.length();
+	if(a_path_1[sizeRP - 1] == '/' && a_path_2[0] == '/'){
+		MonkeyFileLog(ame_Log_Statement, "mixRootPath",  "println", "a_path_1[sizeRP - 1] == '/' && a_path_2[0] == '/'");
+		MonkeyFileLog(ame_Log_EndMethod, "mixRootPath",  "println", "");
+		return a_path_1 + getNotePart(a_path_2, 1);
+	}
+	if(a_path_1[sizeRP - 1] != '/' && a_path_2[0] == '/'){
+		MonkeyFileLog(ame_Log_Statement, "mixRootPath",  "println", "a_path_1[sizeRP - 1] != '/' && a_path_2[0] == '/'");
+		MonkeyFileLog(ame_Log_EndMethod, "mixRootPath",  "println", "");
+		return a_path_1 + a_path_2;
+	}
+	if(a_path_1[sizeRP - 1] == '/' && a_path_2[0] != '/'){
+		MonkeyFileLog(ame_Log_Statement, "mixRootPath",  "println", "a_path_1[sizeRP - 1] == '/' && a_path_2[0] != '/'");
+		MonkeyFileLog(ame_Log_EndMethod, "mixRootPath",  "println", "");
+		return a_path_1 + a_path_2;
+	}
+	if(a_path_1[sizeRP - 1] != '/' && a_path_2[0] != '/'){
+		MonkeyFileLog(ame_Log_Statement, "mixRootPath",  "println", "a_path_1[sizeRP - 1] != '/' && a_path_2[0] != '/'");
+		MonkeyFileLog(ame_Log_EndMethod, "mixRootPath",  "println", "");
+		return a_path_1 + Note('/') + a_path_2;
+	}
+	MonkeyFileLog(ame_Log_EndMethod, "mixRootPath",  "println", "");
 	return a_path_1 + a_path_2;
 }
 

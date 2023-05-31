@@ -30,6 +30,12 @@
 					// method != "getKeyIndexByLValue" /*&& method != "setMapEntry"*/){
 				// 	return;
 				// }
+				// if(	method != "insertLine" && 
+				// 	method != "getIndex" && 
+				// 	method != "insertLocalArrayPointer"/* && 
+				// 	method != "getKeyIndexByLValue" /*&& method != "setMapEntry"*/){
+				// 	return;
+				// }
 				#ifdef ame_SystemFullLog
 				   System::console.print("Loggin class: ");
 				   System::console.print(name);

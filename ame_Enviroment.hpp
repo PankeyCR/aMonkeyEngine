@@ -25,5 +25,7 @@
 
 #include "ame_Logger.hpp"
 
+#include "ame_Context.hpp"
+
 
 #endif

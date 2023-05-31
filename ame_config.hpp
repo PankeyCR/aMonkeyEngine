@@ -58,6 +58,14 @@
 #define ame_SystemFullLog
 //#define ame_Arduino_Log
 
+// #define FreeSerialNetwork_LogApp
+
+// #define PointerArrayStorage_LogApp
+// #define ReferenceCount_LogApp
+
+// #define RawPointer_LogApp
+// #define RawPointerManager_LogApp
+
 // #define GameManager_LogApp
 
 // #define GameSystem_LogApp
@@ -102,6 +110,8 @@
 // #define Note_LogApp
 // #define ByteArray_LogApp
 
+// #define MonkeyFile_LogApp
+// #define WindowsFile_LogApp
 // #define DefaultMonkeyFile_LogApp
 
 // #define ElementId_LogApp
@@ -158,14 +168,14 @@
 #define DISABLE_MemoryChunk
 #define DISABLE_Chunk
 
-#define DISABLE_cppObjectClass
-#define DISABLE_Annotation
-#define DISABLE_Method
+// #define DISABLE_cppObjectClass
+// #define DISABLE_Annotation
+// #define DISABLE_Method
 
-#define DISABLE_cppObject
+// #define DISABLE_cppObject
 
-#define DISABLE_AbstractClass
-#define DISABLE_Class
+// #define DISABLE_AbstractClass
+// #define DISABLE_Class
 
 // #define DISABLE_Application
 // #define DISABLE_DefaultApplication

@@ -32,11 +32,11 @@ class PortProtocol IMPLEMENTATION_cppObject {
 		PortProtocol(){}
 		virtual ~PortProtocol(){}
 		
-		virtual void initialize(SerialStateController* state){
+		virtual void initialize(SerialState* state){
 			this->m_serialState = state;
 		}
 
-		virtual SerialStateController* getSerialStateController(){
+		virtual SerialState* getSerialState(){
 			return this->m_serialState;
 		}
 		
@@ -116,7 +116,7 @@ class PortProtocol IMPLEMENTATION_cppObject {
 		
 	protected:
 		bool safeDelete = true;
-		SerialStateController* m_serialState = nullptr;
+		SerialState* m_serialState = nullptr;
 		MessageDelivery* m_delivery = nullptr;
 };
 

@@ -1,0 +1,22 @@
+[
+  {
+    "Sourcefile": null,
+    "Include": "",
+    "Includepath": "C:\\Users\\ManuelSánchezBadilla\\AppData\\Local\\Arduino15\\packages\\esp32\\hardware\\esp32\\1.0.6\\cores\\esp32"
+  },
+  {
+    "Sourcefile": null,
+    "Include": "",
+    "Includepath": "C:\\Users\\ManuelSánchezBadilla\\AppData\\Local\\Arduino15\\packages\\esp32\\hardware\\esp32\\1.0.6\\variants\\esp32"
+  },
+  {
+    "Sourcefile": "C:\\Users\\ManuelSánchezBadilla\\Documents\\Arduino\\libraries\\aMonkeyEngine\\examples\\Arduino_class_examples\\MemoryStorage_examples\\MemoryStorage_example_1\\build\\sketch\\MemoryStorage_example_1.ino.cpp",
+    "Include": "ame_Enviroment.hpp",
+    "Includepath": "C:\\Users\\ManuelSánchezBadilla\\Documents\\Arduino\\libraries\\aMonkeyEngine"
+  },
+  {
+    "Sourcefile": "C:\\Users\\ManuelSánchezBadilla\\Documents\\Arduino\\libraries\\aMonkeyEngine\\examples\\Arduino_class_examples\\MemoryStorage_examples\\MemoryStorage_example_1\\build\\sketch\\MemoryStorage_example_1.ino.cpp",
+    "Include": "",
+    "Includepath": null
+  }
+]

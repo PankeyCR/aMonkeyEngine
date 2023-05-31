@@ -28,11 +28,11 @@ class ServerProtocol IMPLEMENTATION_cppObject {
 		
 		virtual ~ServerProtocol(){}
 		
-		virtual void initialize(SerialStateController* state){
+		virtual void initialize(SerialState* state){
 			this->serialState = state;
 		}
 
-		virtual SerialStateController* getSerialStateController(){
+		virtual SerialState* getSerialState(){
 			return this->serialState;
 		}
 		
@@ -41,6 +41,8 @@ class ServerProtocol IMPLEMENTATION_cppObject {
 		virtual void UpdateSerialPort(SerialPort* port){}
 		
 		virtual void update(SerialServer* server, float tpc){}
+		
+		virtual void NetworkMessage(SerialServer* a_server, Note a_mns){}
 		
 		virtual void operator=(ServerProtocol b){}
 		virtual bool operator==(ServerProtocol b){return true;}
@@ -53,10 +55,8 @@ class ServerProtocol IMPLEMENTATION_cppObject {
 		}
 		#endif
 		
-		virtual void NetworkMessage(SerialServer* a_server, Note a_mns){}
-		
 	protected:
-		SerialStateController* serialState = nullptr;
+		SerialState* serialState = nullptr;
 };
 
 }

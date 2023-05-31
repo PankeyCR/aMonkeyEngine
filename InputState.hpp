@@ -44,9 +44,9 @@ namespace ame{
 
 	class Input IMPLEMENTATION_cppObject {
 		public:
-		int pin;
-		bool inverted;
-		bool state;
+		int pin = 0;
+		bool inverted = false;
+		bool state = false;
 
 		public:
 
@@ -87,24 +87,53 @@ namespace ame{
 	};
 
 	template<class t_Input = Input>
-	using InputActionMethod = bool (*)(int a_interrupt, long a_milli, t_Input* a_input);
+	using InputActionMethod = bool (*)(int a_interrupt, long a_milli, t_Input& a_input);
 
 	template<class t_Input = Input>
-	class InputEvent{
+	class InputEvent IMPLEMENTATION_cppObject {
 		public:
-		t_Input* input = nullptr;
-		InputActionMethod<t_Input>* action = nullptr;
+		t_Input input;
+		InputActionMethod<t_Input> action;
 		PrimitiveList<InputEventMethod> events;
 
 		public:
 		InputEvent(){}
+
+		InputEvent(const InputEvent& c_input_event){
+			input = c_input_event.input;
+			action = c_input_event.action;
+			events = c_input_event.events;
+		}
 		virtual ~InputEvent(){}
 
-		void operator=(const InputEvent& o_i_events){}
-		bool operator==(const InputEvent& o_i_events){return false;}
-		bool operator!=(const InputEvent& o_i_events){return true;}
-	};
+		virtual void operator=(const InputEvent& o_i_events){
+			input = o_i_events.input;
+			action = o_i_events.action;
+			events = o_i_events.events;
+		}
+		virtual bool operator==(const InputEvent& o_i_events){
+			return input == o_i_events.input && action == o_i_events.action;
+		}
 
+		virtual bool operator!=(const InputEvent& o_i_events){
+			return input != o_i_events.input || action != o_i_events.action;
+		}
+
+		#if defined(cppObject_AVAILABLE) && defined(cppObjectClass_AVAILABLE) && defined(Class_AVAILABLE)
+		virtual cppObjectClass* getClass(){return Class<InputEvent>::getClass();}
+		virtual bool instanceof(cppObjectClass* cls){return cls == Class<InputEvent>::getClass();}
+		#endif
+
+		virtual void runEvents(int a_interrupt, long a_millis){
+			if(action(a_interrupt, a_millis, input)){
+				for(int x = 0; x < events.getPosition(); x++){
+					InputEventMethod* ff_event_method = events.getByPosition(x);
+					(**ff_event_method)(a_interrupt, a_millis, input.getState());
+				}
+			}
+		}
+	};
+	/*
 	template<int Input_Interrupt, class t_Input>
 	struct Input_List{
 		static PrimitiveList<InputEvent<t_Input>> m_Inputs;
@@ -122,14 +151,11 @@ namespace ame{
 			if(f_i_event == nullptr){
 				continue;
 			}
-			t_Input* f_input = f_i_event->input;
-			InputActionMethod<t_Input>* f_action = f_i_event->action;
-			if(f_input == nullptr || f_action == nullptr){
-				continue;
-			}
+			t_Input& f_input = f_i_event->input;
+			InputActionMethod<t_Input>& f_action = f_i_event->action;
 			PrimitiveList<InputEventMethod>& f_events = f_i_event->events;
 			
-			if((**f_action)(Input_Interrupt, i_millis, f_input)){
+			if((*f_action)(Input_Interrupt, i_millis, f_input)){
 				for(int y = 0; y < f_events.getPosition(); y++){
 					InputEventMethod* ff_event_method = f_events.getByPosition(y);
 					(**ff_event_method)(Input_Interrupt, i_millis, f_input->state);
@@ -140,17 +166,17 @@ namespace ame{
 	}
 	
 	template<int Input_Interrupt, class t_Input = Input>
-	InputEvent<t_Input>* createInputEvent(){
+	InputEvent<t_Input>& createInputEvent(){
 		PrimitiveList<InputEvent<t_Input>>& i_Inputs = Input_List<Input_Interrupt,t_Input>::m_Inputs;
-		return i_Inputs.addPointer(new InputEvent<t_Input>());
+		return *i_Inputs.addPointer(new InputEvent<t_Input>());
 	}
 	
 	template<int Input_Interrupt, class t_Input = Input>
-	InputEvent<t_Input>* createInputEvent(t_Input* a_input, InputActionMethod<t_Input> a_action){
+	InputEvent<t_Input>* createInputEvent(t_Input a_input, InputActionMethod<t_Input> a_action){
 		PrimitiveList<InputEvent<t_Input>>& i_Inputs = Input_List<Input_Interrupt,t_Input>::m_Inputs;
 		InputEvent<t_Input>* i_event = new InputEvent<t_Input>();
 		i_event->input = a_input;
-		i_event->action = new InputActionMethod<t_Input>(a_action);
+		i_event->action = a_action;
 		return i_Inputs.addPointer(i_event);
 	}
 	
@@ -163,7 +189,7 @@ namespace ame{
 	template<int Input_Interrupt>
 	void attachInputEvent(int a_pin){
 		pinMode(a_pin,INPUT);
-	}
+	}*/
 /*
 class InputState IMPLEMENTATION_BaseAppState {
     public:

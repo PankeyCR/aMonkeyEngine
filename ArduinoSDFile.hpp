@@ -12,25 +12,12 @@
 
 	#if defined(DISABLE_ArduinoSDFile)
 		#define ArduinoSDFile_hpp
-
-		#define IMPLEMENTATION_ArduinoSDFile
-		#define IMPLEMENTING_ArduinoSDFile
-	#else
-		#if defined(DISABLE_IMPLEMENTATION_ArduinoSDFile)
-			#define IMPLEMENTATION_ArduinoSDFile
-			#define IMPLEMENTING_ArduinoSDFile
-		#endif
 	#endif
 #endif
 
 #ifndef ArduinoSDFile_hpp
 #define ArduinoSDFile_hpp
 #define ArduinoSDFile_AVAILABLE
-
-#ifndef DISABLE_IMPLEMENTATION_ArduinoSDFile
-	#define IMPLEMENTATION_ArduinoSDFile IMPLEMENTATION(public ArduinoSDFile)
-	#define IMPLEMENTING_ArduinoSDFile IMPLEMENTING(public ArduinoSDFile)
-#endif
 
 #ifdef ame_Windows
 

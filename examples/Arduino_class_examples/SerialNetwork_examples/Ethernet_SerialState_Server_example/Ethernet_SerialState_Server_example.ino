@@ -1,6 +1,6 @@
 
 #define ETHERNET_IP "192.168.5.140"
-#define ETHERNET_MAC { 0x10, 15, 0x2C, 0x80, 0, 2 }
+#define ETHERNET_MAC { 0x10, 15, 0x2C, 0x80, 2, 2 }
 
 #include "DefaultApplication.hpp"
 
@@ -63,11 +63,10 @@ void loop() {
   ame_Debuging(ame_Log_EndLoop, "loop");
 }
 
-void SerialMessage(Note* message) {
-  Note mns = *message;
+void SerialMessage(const Note& message) {
   Serial.println("SerialMessage");
-  Serial.println(mns);
-  if (mns == "hola") {
+  Serial.println(message);
+  if (message == "hola") {
     Serial.println("broadcast ethernet");
     serialState->instantSend("Mensaje recivido");
   }

@@ -4,7 +4,7 @@
 
 #include "DefaultApplication.hpp"
 
-#include "SerialState.hpp"
+#include "FreeSerialNetwork.hpp"
 
 #include "WIFISerialServer.hpp"
 
@@ -14,22 +14,23 @@
 #include "DefaultServerProtocol.hpp"
 #include "DefaultPortProtocol.hpp"
 
-#include "LoRaNetwork.hpp"
 #include "SerialListenerState.hpp"
 #include "SerialDelivery.hpp"
+#include "ListDelivery.hpp"
+#include "MessageList.hpp"
 
 #include "ame_WIFI.hpp"
-#include "SerialStateCommands.hpp"
+#include "PrintableList.hpp"
+//#include "ApplicationCommands.hpp"
 
 using namespace ame;
 
-Application* app;
-SerialState* serialState;
-
-long prevNow = 0;
+DefaultApplication app;
 
 void setup() {
   Serial.begin(9600);
+  Serial.println(ame_Enviroment_Name);
+  Serial.println(ame_Hardware_Name);
 
   uint8_t mac[6] = WIFI_MAC;
 
@@ -38,46 +39,49 @@ void setup() {
                   "192.168.1.1" ,         //subnet
                   "255, 255, 255, 0" ,    //dns
                   mac ,                   //mac
-                  "Cristo" ,       //router name
-                  "Jesucristo#1");            //router password
+                  "MERCUSYS_6541" ,       //router name
+                  "57924106");            //router password
 
-                  //router name MERCUSYS_6541 - pokemon
-                  //router password 57924106 - tania1919
+                  //router name MERCUSYS_6541 - pokemon - Cristo
+                  //router password 57924106 - tania1919 - Jesucristo#1
 
   haltUntilWIFIConnection();
+  
+  auto manager = app.getStateManager();
 
-  app = new DefaultApplication();
+  auto serial = manager->addState(new FreeSerialNetwork());
 
-  serialState = app->getStateManager()->addState(new SerialState());
-  setSerialState(serialState);
+  auto list_listener = manager->addState(new SerialListenerState<MessageList>());
+  auto note_listener = manager->addState(new SerialListenerState<PrimitiveList<Note>>());
 
-  serialState->setIP(WIFI_IP);
-  serialState->addSerialServer(new WIFISerialServer(55), new DefaultServerProtocol<DefaultPortProtocol>());
-  serialState->addSerialPort(new DefaultSerialPort(&Serial, "usb"), new DefaultPortProtocol());
+  auto server = new WIFISerialServer(55);
+  auto usb = new DefaultSerialPort(&Serial, "usb");
 
-  auto listener = app->getStateManager()->addState(new SerialListenerState<PrimitiveList<Note>>());
-  listener->addListener(WIFICommands);
-  listener->addListener(SerialMessage);
-  listener->addListener(SerialStateCommands);
+  serial->addSerialServer(server, new DefaultServerProtocol<DefaultPortProtocol>());
+  serial->addSerialPort(usb, new DefaultPortProtocol());
+  
+  auto delivery = new ListDelivery(note_listener);// note_listener list_listener
 
-  SerialDelivery* delivery = new SerialDelivery(listener);
-
-  serialState->setDelivery(delivery);
+  serial->setDelivery(delivery);
+  
+  list_listener->addListener(SerialMessage);
+  note_listener->addListener(NoteToListListener);
 }
 
 void loop() {
   ame_Debuging(ame_Log_StartLoop, "loop");
-  app->update();
+  app.update();
   ame_Debuging(ame_Log_EndLoop, "loop");
 }
 
-void SerialMessage(const PrimitiveList<Note>& messages) {
+void NoteToListListener(const PrimitiveList<Note>& a_message){
+  Serial.println("NoteToListListener");
+  Serial.println(PrintableList<PrimitiveList<Note>,Note>(a_message));
+}
+
+void SerialMessage(const MessageList& a_message) {
   Serial.println("SerialMessage");
-  Serial.println(PrintableList<PrimitiveList<Note>,Note>(messages));
-  if(messages[0] == "hola") {
-    Serial.println("broadcast ethernet");
-    serialState->instantSend("Mensaje recivido");
-  }
+  Serial.println(PrintableList<PrimitiveList<Note>,Note>(a_message.list()));
 }
 
 

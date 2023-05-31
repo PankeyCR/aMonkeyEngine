@@ -314,7 +314,7 @@ class Array IMPLEMENTATION_cppObject {
 			ArrayLog(ame_Log_EndMethod, "erase", "println", "");
 		}
 
-		virtual T* create(int a_size){
+		virtual T* create(int a_size)const{
 			ArrayLog(ame_Log_StartMethod, "create", "println", "");
 			ArrayLog(ame_Log_EndMethod, "create", "println", "");
 			return new T[a_size];
@@ -375,7 +375,7 @@ class Array IMPLEMENTATION_cppObject {
 			return this->m_t_value;
 		}
 
-		virtual T* createArrayClone(int a_size){
+		virtual T* createArrayClone(int a_size)const{
 			ArrayLog(ame_Log_StartMethod, "createArrayClone", "println", "");
 			int i_pos = a_size;
 			int i_size = this->getAvailableSize(i_pos);
@@ -540,13 +540,13 @@ class Array IMPLEMENTATION_cppObject {
 			ArrayLog(ame_Log_Statement, "copyValue", "println", this->getPosition());
 			ArrayLog(ame_Log_Statement, "copyValue", "println", "Size: ");
 			ArrayLog(ame_Log_Statement, "copyValue", "println", this->getSize());
-			ArrayLog(ame_Log_Statement, "copyValue", "println", "value copied");
-			ArrayLog(ame_Log_Statement, "copyValue", "println", this->m_t_value[this->m_pos]);
+			// ArrayLog(ame_Log_Statement, "copyValue", "println", "value copied");
+			// ArrayLog(ame_Log_Statement, "copyValue", "println", this->m_t_value[this->m_pos]);
 
 			ArrayLog(ame_Log_EndMethod, "copyValue", "println", "");
 		}
 
-		virtual int getAvailableSize(int a_pos){
+		virtual int getAvailableSize(int a_pos)const{
 			ArrayLog(ame_Log_StartMethod, "getAvailableSize", "println", "");
 			ArrayLog(ame_Log_EndMethod, "getAvailableSize", "println", "");
 			return a_pos;
@@ -658,7 +658,7 @@ class Array IMPLEMENTATION_cppObject {
 			return nullptr;
 		}
 
-		Array<T> getArrayPart(int start){
+		Array<T> getArrayPart(int start)const{
 			ArrayLog(ame_Log_StartMethod, "getArrayPart", "println", "");
 			
 			if(this->isEmpty()){
@@ -778,7 +778,7 @@ class Array IMPLEMENTATION_cppObject {
 			return T();
 		}
 
-		virtual Array<T> addValue(T a_value){
+		virtual Array<T> addValue(T a_value)const{
 			ArrayLog(ame_Log_StartMethod, "addValue", "println", "const T& a_value");
 			Array<T> i_array = *this;
 			ArrayLog(ame_Log_EndMethod, "addValue", "println", "");

@@ -374,7 +374,7 @@ class Note : public Array<char>, public Printable{
 			return i_length;
 		}
 
-		virtual int getAvailableSize(int a_pos){
+		virtual int getAvailableSize(int a_pos)const{
 			NoteLog(ame_Log_StartMethod, "getAvailableSize", "println", "");
 			NoteLog(ame_Log_EndMethod, "getAvailableSize", "println", "");
 			return a_pos + 1;
@@ -450,12 +450,12 @@ class Note : public Array<char>, public Printable{
 
 		virtual bool isBool() const{
 			NoteLog(ame_Log_StartMethod, "isBool", "println", "");
-			if(this->getPosition() != 1){
+			if(this->getPosition() != 4 || this->getPosition() != 5){
 				NoteLog(ame_Log_EndMethod, "isBool", "println", "Not a bool");
 				return false;
 			}
 			NoteLog(ame_Log_EndMethod, "isBool", "println", "Is a bool");
-			return this->get(0) == '0' || this->get(0) == '1';
+			return (*this) == "true" || (*this) == "false" || (*this) == "TRUE" || (*this) == "FALSE";
 		}
 
 		virtual int intCharSize(int a_value)const{
@@ -879,7 +879,7 @@ class Note : public Array<char>, public Printable{
 			}
 		}
 
-		virtual Note addNote(const Note& a_note){
+		virtual Note addNote(const Note& a_note)const{
 			NoteLog(ame_Log_StartMethod, "addNote", "println", "const Note& a_note");
 			Note i_note = *this;
 			NoteLog(ame_Log_EndMethod, "addNote", "println", "");
@@ -1620,6 +1620,44 @@ class Note : public Array<char>, public Printable{
 				}
 				if(a_search == i_note){
 					NoteLog(ame_Log_StartMethod, "getIndex", "println", "a_search == i_note");
+					return i_index;
+				}
+			}
+			NoteLog(ame_Log_EndMethod, "getIndex", "println", "-1");
+			return -1;
+		}
+		
+		virtual int getIndex(int a_repetitions, Note a_search){
+			NoteLog(ame_Log_StartMethod, "getIndex", "println", "");
+			Note i_note;
+			int i_index = 0;
+			int i_note_count = 0;
+			int i_repite_count = 0;
+			for(int x = 0; x < this->getPosition(); x++){
+				char f_char = this->get(x);
+				NoteLog(ame_Log_StartMethod, "getIndex", "println", "f_char");
+				NoteLog(ame_Log_StartMethod, "getIndex", "println", f_char);
+				i_note.addLocalValue(f_char);
+				char f_char_search = a_search.get(i_note_count);
+				char f_char_record = i_note.get(i_note_count);
+				if(f_char_search == f_char_record){
+					NoteLog(ame_Log_StartMethod, "getIndex", "println", "f_char_search == f_char_record");
+					if(i_note_count == 0){
+						i_index = x;
+					}
+					i_note_count++;
+				}else{
+					i_note_count = 0;
+					i_note.clear();
+					continue;
+				}
+				if(a_search == i_note){
+					NoteLog(ame_Log_StartMethod, "getIndex", "println", "a_search == i_note");
+					if(i_repite_count != a_repetitions){
+						NoteLog(ame_Log_StartMethod, "getIndex", "println", "i_repite_count != a_repetitions");
+						i_repite_count++;
+						continue;
+					}
 					return i_index;
 				}
 			}

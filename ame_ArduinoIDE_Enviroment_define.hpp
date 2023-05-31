@@ -20,6 +20,9 @@
 			#define ame_Enviroment_Defined
 			#define ame_Enviroment_Name "ArduinoIDE"
 		#endif
+		#ifndef ame_Hardware_Name
+			#define ame_Hardware_Name "__AVR_ATmega2560__"
+		#endif
 	#endif
 
 	#if defined(ARDUINO_ARCH_AVR)
@@ -37,6 +40,9 @@
 			#define ame_ArduinoIDE
 			#define ame_Enviroment_Defined
 			#define ame_Enviroment_Name "ArduinoIDE"
+		#endif
+		#ifndef ame_Hardware_Name
+			#define ame_Hardware_Name "ARDUINO_ARCH_AVR"
 		#endif
 	#endif
 
@@ -56,6 +62,9 @@
 			#define ame_Enviroment_Defined
 			#define ame_Enviroment_Name "ArduinoIDE"
 		#endif
+		#ifndef ame_Hardware_Name
+			#define ame_Hardware_Name "ARDUINO_ARCH_ESP8266"
+		#endif
 	#endif
 
 	#if defined(ARDUINO_ESP32S3_DEV)
@@ -73,6 +82,9 @@
 			#define ame_ArduinoIDE
 			#define ame_Enviroment_Defined
 			#define ame_Enviroment_Name "ArduinoIDE"
+		#endif
+		#ifndef ame_Hardware_Name
+			#define ame_Hardware_Name "ARDUINO_ESP32S3_DEV"
 		#endif
 	#endif
 
@@ -95,6 +107,9 @@
 			#define ame_Enviroment_Defined
 			#define ame_Enviroment_Name "ArduinoIDE"
 		#endif
+		#ifndef ame_Hardware_Name
+			#define ame_Hardware_Name "ARDUINO_ESP32_DEV"
+		#endif
 	#endif
 
 	#if defined(ARDUINO_ARCH_ESP32)
@@ -112,6 +127,9 @@
 			#define ame_ArduinoIDE
 			#define ame_Enviroment_Defined
 			#define ame_Enviroment_Name "ArduinoIDE"
+		#endif
+		#ifndef ame_Hardware_Name
+			#define ame_Hardware_Name "ARDUINO_ARCH_ESP32"
 		#endif
 	#endif
 
@@ -134,6 +152,9 @@
 			#define ame_Enviroment_Defined
 			#define ame_Enviroment_Name "ArduinoIDE"
 		#endif
+		#ifndef ame_Hardware_Name
+			#define ame_Hardware_Name "ARDUINO_TTGO_T7_V14_Mini32"
+		#endif
 	#endif
 
 	#if defined(ARDUINO_SAMD_ZERO)//feather
@@ -154,6 +175,9 @@
 			#define ame_ArduinoIDE
 			#define ame_Enviroment_Defined
 			#define ame_Enviroment_Name "ArduinoIDE"
+		#endif
+		#ifndef ame_Hardware_Name
+			#define ame_Hardware_Name "ARDUINO_SAMD_ZERO"
 		#endif
 	#endif
 	
