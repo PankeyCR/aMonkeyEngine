@@ -16,12 +16,8 @@
 
 #include "SerialListenerState.hpp"
 #include "SerialDelivery.hpp"
-#include "ListDelivery.hpp"
-#include "MessageList.hpp"
 
 #include "ame_WIFI.hpp"
-#include "PrintableList.hpp"
-//#include "ApplicationCommands.hpp"
 
 using namespace ame;
 
@@ -29,6 +25,9 @@ DefaultApplication app;
 
 void setup() {
   Serial.begin(9600);
+
+  delay(4000);
+  
   Serial.println(ame_Enviroment_Name);
   Serial.println(ame_Hardware_Name);
 
@@ -51,8 +50,7 @@ void setup() {
 
   auto serial = manager->addState(new FreeSerialNetwork());
 
-  auto list_listener = manager->addState(new SerialListenerState<MessageList>());
-  auto note_listener = manager->addState(new SerialListenerState<PrimitiveList<Note>>());
+  auto note_listener = manager->addState(new SerialListenerState<Note>());
 
   auto server = new WIFISerialServer(55);
   auto usb = new DefaultSerialPort(&Serial, "usb");
@@ -60,12 +58,11 @@ void setup() {
   serial->addSerialServer(server, new DefaultServerProtocol<DefaultPortProtocol>());
   serial->addSerialPort(usb, new DefaultPortProtocol());
   
-  auto delivery = new ListDelivery(note_listener);// note_listener list_listener
+  auto delivery = new SerialDelivery(note_listener);
 
   serial->setDelivery(delivery);
   
-  list_listener->addListener(SerialMessage);
-  note_listener->addListener(NoteToListListener);
+  note_listener->addListener(SerialMessage);
 }
 
 void loop() {
@@ -74,14 +71,8 @@ void loop() {
   ame_Debuging(ame_Log_EndLoop, "loop");
 }
 
-void NoteToListListener(const PrimitiveList<Note>& a_message){
-  Serial.println("NoteToListListener");
-  Serial.println(PrintableList<PrimitiveList<Note>,Note>(a_message));
-}
-
-void SerialMessage(const MessageList& a_message) {
-  Serial.println("SerialMessage");
-  Serial.println(PrintableList<PrimitiveList<Note>,Note>(a_message.list()));
+void SerialMessage(const Note& a_message){
+  Serial.println(a_message);
 }
 
 

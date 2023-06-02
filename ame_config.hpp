@@ -53,9 +53,9 @@
 
 //logger
 
-#define ame_LogApp
-#define ame_LogPrint
-#define ame_SystemFullLog
+// #define ame_LogApp
+// #define ame_LogPrint
+// #define ame_SystemFullLog
 //#define ame_Arduino_Log
 
 // #define FreeSerialNetwork_LogApp
@@ -122,9 +122,9 @@
 // #define SerialNetwork_LogApp
 // #define SerialState_LogApp
 // #define SerialStateController_LogApp
-#define SerialDelivery_LogApp
+// #define SerialDelivery_LogApp
 
-#define UDPNetwork_LogApp
+// #define UDPNetwork_LogApp
 
 // #define DefaultSerialPort_LogApp
 // #define DefaultPortProtocol_LogApp
@@ -172,7 +172,7 @@
 // #define DISABLE_Annotation
 // #define DISABLE_Method
 
-// #define DISABLE_cppObject
+#define DISABLE_cppObject
 
 // #define DISABLE_AbstractClass
 // #define DISABLE_Class

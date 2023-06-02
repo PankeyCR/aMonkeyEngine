@@ -4,7 +4,7 @@
 
 #include "DefaultApplication.hpp"
 
-#include "SerialState.hpp"
+#include "FreeSerialNetwork.hpp"
 
 #include "EthernetSerialServer.hpp"
 
@@ -22,14 +22,17 @@
 
 using namespace ame;
 
-Application* app;
-SerialState* serialState;
-SerialListenerState<Note>* listener;
+DefaultApplication app;
 
 long prevNow = 0;
 
 void setup() {
   Serial.begin(9600);
+
+  delay(4000);
+  
+  Serial.println(ame_Enviroment_Name);
+  Serial.println(ame_Hardware_Name);
 
   uint8_t mac[6] = ETHERNET_MAC;
 
@@ -38,38 +41,34 @@ void setup() {
                       "255.255.255.0",  //subnet
                       10,               //CS pin
                       mac);             //mac address
-
-  app = new DefaultApplication();
   
-  serialState = app->getStateManager()->addState(new SerialState());
-  setSerialState(serialState);
+  auto manager = app.getStateManager();
 
-  serialState->setIP(ETHERNET_IP);
-  serialState->addSerialServer(new EthernetSerialServer(55), new DefaultServerProtocol<DefaultPortProtocol>());
-  serialState->addSerialPort(new DefaultSerialPort(&Serial, "usb"), new DefaultPortProtocol());
+  auto serial = manager->addState(new FreeSerialNetwork());
 
-  listener = app->getStateManager()->addState(new SerialListenerState<Note>());
-  listener->addListener(SerialMessage);
-  listener->addListener(SerialStateCommands);
+  auto note_listener = manager->addState(new SerialListenerState<Note>());
 
-  SerialDelivery* delivery = new SerialDelivery(listener);
+  auto server = new EthernetSerialServer(55);
+  auto usb = new DefaultSerialPort(&Serial, "usb");
 
-  serialState->setDelivery(delivery);
+  serial->addSerialServer(server, new DefaultServerProtocol<DefaultPortProtocol>());
+  serial->addSerialPort(usb, new DefaultPortProtocol());
+  
+  auto delivery = new SerialDelivery(note_listener);
+
+  serial->setDelivery(delivery);
+  
+  note_listener->addListener(SerialMessage);
 }
 
 void loop() {
   ame_Debuging(ame_Log_StartLoop, "loop");
-  app->update();
+  app.update();
   ame_Debuging(ame_Log_EndLoop, "loop");
 }
 
-void SerialMessage(const Note& message) {
-  Serial.println("SerialMessage");
-  Serial.println(message);
-  if (message == "hola") {
-    Serial.println("broadcast ethernet");
-    serialState->instantSend("Mensaje recivido");
-  }
+void SerialMessage(const Note& a_message){
+  Serial.println(a_message);
 }
 
 

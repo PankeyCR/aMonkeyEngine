@@ -48,13 +48,13 @@ class PortProtocol IMPLEMENTATION_cppObject {
 		
 		virtual void InstantPrivateByteArrayMessage(SerialPort* port, ByteArray array){}
 		
-		virtual void GlobalConect(SerialPort* port){}
-		virtual void Conect(SerialPort* port){}
-		virtual void UpdateConect(SerialPort* port){}
+		virtual bool GlobalConect(SerialPort* port){return false;}
+		virtual bool Conect(SerialPort* port){return false;}
+		virtual bool UpdateConect(SerialPort* port){return false;}
 		
-		virtual void GlobalDisconect(SerialPort* port){}
-		virtual void Disconect(SerialPort* port){}
-		virtual void UpdateDisconect(SerialPort* port){}
+		virtual bool GlobalDisconect(SerialPort* port){return false;}
+		virtual bool Disconect(SerialPort* port){return false;}
+		virtual bool UpdateDisconect(SerialPort* port){return false;}
 		
 		virtual void Read(int index, SerialPort* port){}
 		
