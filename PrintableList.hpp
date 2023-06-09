@@ -46,6 +46,7 @@ template <class TL, class V>
 class PrintableList : public Printable {	
 	public:
 	PrintableList(const TL& c_list) : m_list(c_list){}
+	PrintableList(const TL& c_list, bool c_println) : m_list(c_list){m_println = c_println;}
 	virtual ~PrintableList(){}
 
 	virtual size_t printTo(Print& p) const{
@@ -58,10 +59,14 @@ class PrintableList : public Printable {
 			if(f_value == nullptr){
 				continue;
 			}
-			if(x == this->m_list.getPosition() - 1){
-				i_size += p.print(*f_value);
+			if(m_println){
+				if(x == this->m_list.getPosition() - 1){
+					i_size += p.print(*f_value);
+				}else{
+					i_size += p.println(*f_value);
+				}
 			}else{
-				i_size += p.println(*f_value);
+				i_size += p.print(*f_value);
 			}
 		}
 		return i_size;
@@ -69,6 +74,7 @@ class PrintableList : public Printable {
 	
 	protected:
 		const TL& m_list;
+		bool m_println = true;
 };
 
 }

@@ -92,6 +92,22 @@
 	#endif
 #endif
 
+#ifdef PointerNote_LogApp
+	#include "ame_Logger_config.hpp"
+	#include "ame_Logger.hpp"
+
+	#define PointerNoteLog(location,method,type,mns) ame_Log((void*)this,location,"Note",method,type,mns)
+#else
+	#ifdef PointerNote_LogDebugApp
+		#include "ame_Logger_config.hpp"
+		#include "ame_Logger.hpp"
+
+		#define PointerNoteLog(location,method,type,mns) ame_LogDebug((void*)this,location,"Note",method,type)
+	#else
+		#define PointerNoteLog(location,method,type,mns)
+	#endif
+#endif
+
 
 namespace ame{
 
@@ -322,9 +338,9 @@ class Note : public Array<char>, public Printable{
 
 		virtual char* pointer()const{
 			NoteLog(ame_Log_StartMethod, "pointer", "println", "");
-			ArrayLog(ame_Log_Statement, "pointer", "println", "Pointer: ");
-			ArrayLog(ame_Log_Statement, "pointer", "println", this->m_t_value);
-			ArrayLog(ame_Log_EndMethod, "pointer", "println", "");
+			PointerNoteLog(ame_Log_Statement, "pointer", "println", "Pointer: ");
+			PointerNoteLog(ame_Log_Statement, "pointer", "println", this->m_t_value);
+			NoteLog(ame_Log_EndMethod, "pointer", "println", "");
 			return this->m_t_value;
 		}
 
@@ -336,6 +352,7 @@ class Note : public Array<char>, public Printable{
 
 		virtual char endValue()const{
 			const_NoteLog(ame_Log_StartMethod, "endValue", "println", "");
+			const_NoteLog(ame_Log_Statement, "endValue", "println", "note char void /0");
 			const_NoteLog(ame_Log_EndMethod, "endValue", "println", "");
             return '\0';
 		}

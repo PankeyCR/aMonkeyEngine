@@ -34,7 +34,7 @@ class Object : public cppObject{
 		virtual ~Object(){
 			if(m_pointer != nullptr){
 				m_pointer->removeObject();
-				if(!m_pointer->isManaged() && m_pointer->readyToDelete()){
+				if(!m_pointer->isManaged() && !m_pointer->isReferenced()){
 					delete m_pointer;
 				}
 			}

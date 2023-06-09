@@ -70,6 +70,10 @@ class PrimitiveMethodMap{
 			return m_method_map.getPosition();
 		}
 		
+		virtual K* getKeyByPosition(int x){
+			return m_method_map.getKeyByPosition(x);
+		}
+		
 		virtual K getKey(int x){
 			K* i_key = m_method_map.getKeyByPosition(x);
 			if(i_key == nullptr){

@@ -46,6 +46,22 @@
 	#endif
 #endif
 
+#ifdef PointerArray_LogApp
+	#include "ame_Logger_config.hpp"
+	#include "ame_Logger.hpp"
+
+	#define PointerArrayLog(location,method,type,mns) ame_Log((void*)this,location,"Array",method,type,mns)
+#else
+	#ifdef PointerArray_LogDebugApp
+		#include "ame_Logger_config.hpp"
+		#include "ame_Logger.hpp"
+
+		#define PointerArrayLog(location,method,type,mns) ame_LogDebug((void*)this,location,"Array",method,type)
+	#else
+		#define PointerArrayLog(location,method,type,mns)
+	#endif
+#endif
+
 
 namespace ame{
 
@@ -261,13 +277,15 @@ class Array IMPLEMENTATION_cppObject {
 		}
 
 		virtual void copyExternEndValue(T* a_arrray, int a_position)const{
-			ArrayLog(ame_Log_StartMethod, "copyEndValue", "println", "");
+			ArrayLog(ame_Log_StartMethod, "copyExternEndValue", "println", "");
+			ArrayLog(ame_Log_Statement, "copyExternEndValue", "println", "position ");
+			ArrayLog(ame_Log_Statement, "copyExternEndValue", "println", a_position);
 			if(a_arrray == nullptr || !this->hasEndValue()){
-				ArrayLog(ame_Log_EndMethod, "copyEndValue", "println", "");
+				ArrayLog(ame_Log_EndMethod, "copyExternEndValue", "println", "");
 				return;
 			}
 			a_arrray[a_position] = this->endValue();
-			ArrayLog(ame_Log_EndMethod, "copyEndValue", "println", "");
+			ArrayLog(ame_Log_EndMethod, "copyExternEndValue", "println", "");
 		}
 
 		virtual void expandLocal(int a_size){
@@ -327,6 +345,7 @@ class Array IMPLEMENTATION_cppObject {
 			this->m_pos = a_size;
 			this->m_size = this->getAvailableSize(this->m_pos);
 			this->m_t_value = this->create(this->m_size);
+			PointerArrayLog(ame_Log_EndMethod, "createFilledArray", "println", this->m_t_value);
 			ArrayLog(ame_Log_EndMethod, "createFilledArray", "println", "");
 			return this->m_t_value;
 		}
@@ -553,6 +572,7 @@ class Array IMPLEMENTATION_cppObject {
 		}
 
 		virtual T* pointer()const{
+			ArrayLog(ame_Log_StartMethod, "pointer", "println", "");
 			ArrayLog(ame_Log_EndMethod, "pointer", "println", "");
 			return this->m_t_value;
 		}
@@ -563,12 +583,20 @@ class Array IMPLEMENTATION_cppObject {
 				ArrayLog(ame_Log_EndMethod, "clonePointer", "println", "this->isEmpty()");
 				return nullptr;
 			}
+			PointerArrayLog(ame_Log_Statement, "clonePointer", "println", this->m_t_value);
 			int n_size = this->getPosition();
+			ArrayLog(ame_Log_Statement, "clonePointer", "println", "index position ");
 			ArrayLog(ame_Log_Statement, "clonePointer", "println", n_size);
 			int availableSize = this->getAvailableSize(n_size);
+			ArrayLog(ame_Log_Statement, "clonePointer", "println", "availableSize size ");
+			ArrayLog(ame_Log_Statement, "clonePointer", "println", availableSize);
+			ArrayLog(ame_Log_Statement, "clonePointer", "println", "array size ");
 			ArrayLog(ame_Log_Statement, "clonePointer", "println", this->m_size);
 			T* cloneArray = this->create(availableSize);
 			this->copyExternPointer(cloneArray, this->m_t_value, n_size);
+			this->copyExternEndValue(cloneArray, n_size);
+			PointerArrayLog(ame_Log_Statement, "clonePointer", "println", "new pointer");
+			PointerArrayLog(ame_Log_Statement, "clonePointer", "println", cloneArray);
 			ArrayLog(ame_Log_EndMethod, "clonePointer", "println", "");
 			return cloneArray;
 		}
@@ -948,6 +976,7 @@ class Array IMPLEMENTATION_cppObject {
 				ArrayLog(ame_Log_Statement, "insertLocalArrayPointer", "println", this->getPosition());
 				ArrayLog(ame_Log_Statement, "insertLocalArrayPointer", "println", "Array Size:");
 				ArrayLog(ame_Log_Statement, "insertLocalArrayPointer", "println", this->getSize());
+				PointerArrayLog(ame_Log_Statement, "insertLocalArrayPointer", "println", this->m_t_value);
 				ArrayLog(ame_Log_EndMethod, "insertLocalArrayPointer", "println", "");
 				return *this;
 			}

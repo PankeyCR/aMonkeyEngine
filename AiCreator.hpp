@@ -5,6 +5,7 @@
 
 #include "cppObject.hpp"
 #include "PrimitiveList.hpp"
+#include "Cast.hpp"
 
 namespace ame{
 
@@ -15,12 +16,12 @@ class AiCreator IMPLEMENTATION_cppObject {
 		AiCreator(){}
 		virtual ~AiCreator(){}
 		
-		virtual AI<DATA> create(const DATASET& a_data, TrainMethod a_trainer){
+		static AI<DATA>&& create(const DATASET& a_data, TrainMethod a_trainer){
 			AI<DATA> i_ai;
 			for(const DATA& f_data : a_data){
 				a_trainer(f_data, i_ai);
 			}
-			return i_ai;
+			return move(i_ai);
 		}  
 		
 		// virtual AI* create(const DATASET& a_data, const Trainer<DATASET,AI>& a_trainer){

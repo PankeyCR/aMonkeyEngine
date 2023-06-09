@@ -30,7 +30,7 @@
 #endif
 
 #ifdef ame_Windows
-	#include<windows.h>
+	#include <windows.h>
 
 	#define DIVMEM 1048576
 

@@ -2,15 +2,15 @@
 #ifndef ame_List_Logger_hpp
 #define ame_List_Logger_hpp
 
-#include "ame_Logger_config.hpp"
+#include "ame_Logger_position.hpp"
 #include "ame_String.hpp"
-#include "PrimitiveList.hpp"
+#include "PrimitiveRawList.hpp"
 #include "System.hpp"
 
 namespace ame{
 
-PrimitiveList<ame_String> g_log_class_list;
-PrimitiveList<ame_String> g_log_class_method_list;
+PrimitiveRawList<ame_String> g_log_class_list;
+PrimitiveRawList<ame_String> g_log_class_method_list;
 
 void addClassToLog(ame_String a_note){
 	g_log_class_list.add(a_note);
@@ -18,6 +18,10 @@ void addClassToLog(ame_String a_note){
 
 void addClassMethodToLog(ame_String a_note){
 	g_log_class_method_list.add(a_note);
+}
+void addClassMethodToLog(ame_String a_class, ame_String a_method){
+	g_log_class_list.add(a_class);
+	g_log_class_method_list.add(a_method);
 }
 	
 template<class T>
@@ -51,8 +55,6 @@ void List_LogPrint_(void* a_log_pointer, int location, const ame_String& name, c
 		Serial.console.print(" - Log: ");
 		Serial.console.println(mns);
 	#endif
-
-	ame_LogDebug(a_log_pointer, location, name, method, type);
 }
 	
 }

@@ -116,6 +116,7 @@ class RawList : virtual public RawPointerList<T>{
 			T* t = this->removeByLValue(a_value);
 			bool removed = t != nullptr;
 			if(removed && this->isOwner()){
+				RawListLog(ame_Log_Statement, "removeDeleteByLValue", "println", "deleting pointer");
 				delete t;
 			}
 			RawListLog(ame_Log_EndMethod, "removeDeleteByLValue", "println", "");

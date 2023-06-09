@@ -59,9 +59,74 @@ class Reflection : public cppObject{
 	template<class T, class R = bool, class... Args> 
 	using Class_NTMethod = void(T::*)(Args...);
 		
-		Reflection(){}
-		virtual ~Reflection(){}
+		Reflection(){
+			ReflectionLog(ame_Log_StartMethod, "Constructor",  "println", "");
+			ReflectionLog(ame_Log_EndMethod, "Constructor",  "println", "");
+		}
+		virtual ~Reflection(){
+			ReflectionLog(ame_Log_StartMethod, "Destructor",  "println", "");
+			ReflectionLog(ame_Log_EndMethod, "Destructor",  "println", "");
+		}
 		
+		template<class... Args>
+		void addFunction(Note a_name, R_Raw_NTMethod<Args...> a_method){
+			ReflectionLog(ame_Log_StartMethod, "addFunction",  "println", "");
+			
+			cppObjectClass* i_cls = new cppObjectClass();
+			char* i_name = a_name.clonePointer();
+			ReflectionLog(ame_Log_Statement, "addFunction",  "println", Note("Name: ") + a_name);
+			ReflectionLog(ame_Log_Statement, "addFunction",  "println", Note("Name: ") + i_name);
+			i_cls->setName(i_name);
+			
+			MethodMap<Args...>::add(i_cls, a_method);
+
+			ReflectionLog(ame_Log_EndMethod, "addFunction",  "println", "");
+		}
+	
+		template<class... Args>
+		cppObjectClass* getFunctionClass(Note a_name){
+			ReflectionLog(ame_Log_StartMethod, "getFunctionClass",  "println", "");
+			if(MethodMap<Args...>::m_method_map == nullptr){
+				ReflectionLog(ame_Log_EndMethod, "getFunctionClass",  "println", "");
+				return nullptr;
+			}
+			ReflectionLog(ame_Log_Statement, "getFunctionClass",  "println", Note("MethodMap Size: ") + MethodMap<Args...>::m_method_map->getPosition());
+			for(int x = 0; x < MethodMap<Args...>::m_method_map->getPosition(); x++){
+				cppObjectClass* f_cls = MethodMap<Args...>::m_method_map->getKeyByPosition(x);
+				if(f_cls == nullptr){
+					ReflectionLog(ame_Log_Statement, "getFunctionClass",  "println", "f_cls == nullptr");
+					continue;
+				}
+				char* f_name = f_cls->getName();
+				if(f_name == nullptr){
+					ReflectionLog(ame_Log_Statement, "getFunctionClass",  "println", "f_name == nullptr");
+					continue;
+				}
+				Note f_note = f_name;
+				ReflectionLog(ame_Log_Statement, "getFunctionClass",  "println", Note("Name: ") + f_note);
+				if(f_note == a_name){
+					ReflectionLog(ame_Log_EndMethod, "getFunctionClass",  "println", "");
+					return f_cls;
+				}
+			}
+			ReflectionLog(ame_Log_EndMethod, "getFunctionClass",  "println", "");
+			return nullptr;
+		}
+	
+		template<class... Args>
+		void invokeFunction(Note a_method_name, Args... a_invoke){
+			ReflectionLog(ame_Log_StartMethod, "invokeFunction",  "println", "");
+			ReflectionLog(ame_Log_Statement, "invokeFunction",  "println", Note("Name: ") + a_method_name);
+
+			cppObjectClass* i_cls = this->getFunctionClass<Args...>(a_method_name);
+			if(i_cls == nullptr){
+				ReflectionLog(ame_Log_EndMethod, "invokeFunction",  "println", "i_cls == nullptr");
+				return;
+			}
+			MethodMap<Args...>::invoke(i_cls, a_invoke...);
+
+			ReflectionLog(ame_Log_EndMethod, "invokeFunction",  "println", "");
+		}
 	
 		virtual void addClass(Note a_note){
 			this->addClass(a_note, nullptr);
@@ -277,6 +342,8 @@ class Reflection : public cppObject{
 			return cls == Class<Reflection>::getClass();
 		}
 	protected:
+		PrimitiveRawMap<Note,Method> m_functions;
+
 		PrimitiveRawMap<Note,cppObjectClass> m_classes;
 		PrimitiveRawMap<Note,PrimitiveRawList<Method>> m_classe_methods;
 };
