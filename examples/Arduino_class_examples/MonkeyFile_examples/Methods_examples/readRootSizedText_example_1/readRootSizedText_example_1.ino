@@ -1,7 +1,4 @@
 
-#define ame_ArduinoIDE
-#define ame_ESP32_POE_ETHERNET
-
 #include "MonkeyFile.hpp"
 #include "ArduinoSDFile.hpp"
 
@@ -17,17 +14,19 @@ void setup() {
   initializeEngine();
   
   file.initialize();
+
+  file.setRootPathFile("/monkey");
   
-  file.deleteFile("/memory.txt");
-  file.createFile("/memory.txt");
-  file.writeText("saving memory", "/memory.txt");
+  file.deleteRootFile("memory.txt");
+  file.createRootFile("memory.txt");
+  file.writeRootText("saving root memory", "memory.txt");
 }
 
 void loop() {
   ame_Debuging(ame_Log_StartLoop, "loop");
   
-  Note text = file.readText("/memory.txt");
-  Serial.println(text);
+  Note textRoot = file.readRootSizedText(6, "memory.txt");
+  Serial.println(textRoot);
   
   ame_Debuging(ame_Log_EndLoop, "loop");
 }

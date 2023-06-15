@@ -34,6 +34,7 @@ class PointerArrayStorage : public MemoryStorage<T>{
 		virtual ~PointerArrayStorage(){
 			PointerArrayStorageLog(ame_Log_StartMethod, "Destructor", "println", "");
 			if(this->m_values == nullptr){
+				PointerArrayStorageLog(ame_Log_EndMethod, "Destructor", "println", "");
 				return;
 			}
 			for(int x = 0; x < this->getSize(); x++){
@@ -63,8 +64,8 @@ class PointerArrayStorage : public MemoryStorage<T>{
 
 		virtual void set(int a_position, T* a_pointer){
 			PointerArrayStorageLog(ame_Log_StartMethod, "set", "println", "T* a_pointer");
-			PointerArrayStorageLog(ame_Log_StartMethod, "set", "println", "Position: ");
-			PointerArrayStorageLog(ame_Log_StartMethod, "set", "println", a_position);
+			PointerArrayStorageLog(ame_Log_Statement, "set", "println", "Position: ");
+			PointerArrayStorageLog(ame_Log_Statement, "set", "println", a_position);
 			if(this->isEmpty() && a_position >= this->getSize()){
 				PointerArrayStorageLog(ame_Log_EndMethod, "set", "println", "this->isEmpty()");
 				return;
@@ -88,6 +89,7 @@ class PointerArrayStorage : public MemoryStorage<T>{
 		virtual Pointer<T> get(int a_position)const{
 			PointerArrayStorageLog(ame_Log_StartMethod, "get", "println", "");
 			if(this->isEmpty() || a_position >= this->getSize()){
+				PointerArrayStorageLog(ame_Log_EndMethod, "get", "println", "");
 				return Pointer<T>(nullptr, this->m_manager);
 			}
 			PointerArrayStorageLog(ame_Log_EndMethod, "get", "println", "");
@@ -156,13 +158,14 @@ class PointerArrayStorage : public MemoryStorage<T>{
 		virtual bool removeByPointer(T* a_value){
 			PointerArrayStorageLog(ame_Log_StartMethod, "removeByPointer", "println", "");
 			int i_position = this->getIndex(a_value);
-			PointerArrayStorageLog(ame_Log_EndMethod, "removeByPointer", "println", "removed position: ");
-			PointerArrayStorageLog(ame_Log_EndMethod, "removeByPointer", "println", i_position);
+			PointerArrayStorageLog(ame_Log_Statement, "removeByPointer", "println", "removed position: ");
+			PointerArrayStorageLog(ame_Log_Statement, "removeByPointer", "println", i_position);
 			if(this->isEmpty() || i_position >= this->getSize() || i_position < 0){
+				PointerArrayStorageLog(ame_Log_EndMethod, "removeByPointer", "println", "");
 				return false;
 			}
-			PointerArrayStorageLog(ame_Log_EndMethod, "removeByPointer", "println", "");
 			this->removeByPosition(i_position);
+			PointerArrayStorageLog(ame_Log_EndMethod, "removeByPointer", "println", "");
 			return true;
 		}
 
@@ -175,6 +178,7 @@ class PointerArrayStorage : public MemoryStorage<T>{
 		virtual Pointer<T> removeByPosition(int a_position){
 			PointerArrayStorageLog(ame_Log_StartMethod, "removeByPosition", "println", "");
 			if(this->isEmpty() || a_position >= this->getSize() || a_position < 0){
+				PointerArrayStorageLog(ame_Log_EndMethod, "removeByPosition", "println", "");
 				return nullptr;
 			}
 			T* i_value = this->m_values[a_position];
@@ -188,11 +192,11 @@ class PointerArrayStorage : public MemoryStorage<T>{
 		virtual int reorder(){
 			PointerArrayStorageLog(ame_Log_StartMethod, "reorder", "println", "");
 			if(this->isNull()){
-				PointerArrayStorageLog(ame_Log_EndMethod, "clear", "println", "this->isNull()");
+				PointerArrayStorageLog(ame_Log_EndMethod, "reorder", "println", "this->isNull()");
 				return -1;
 			}
 			if(this->isEmpty()){
-				PointerArrayStorageLog(ame_Log_EndMethod, "clear", "println", "this->isEmpty()");
+				PointerArrayStorageLog(ame_Log_EndMethod, "reorder", "println", "this->isEmpty()");
 				return 0;
 			}
 			int i_offset = 0;

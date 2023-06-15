@@ -19,14 +19,20 @@ void setup() {
   
   file.deleteRootFile("memory.txt");
   file.createRootFile("memory.txt");
-  file.writeRootText("saving root memory", "memory.txt");
+
+  Note text = "Line 1\n";
+  text.addLocalNote("Line 2\n");
+  text.addLocalNote("Line 3\n");
+  text.addLocalNote("Line 4\n");
+  
+  file.writeRootText(text, "memory.txt");
 }
 
 void loop() {
   ame_Debuging(ame_Log_StartLoop, "loop");
   
-  Note textRoot = file.readRootText("memory.txt");
-  Serial.println(textRoot);
+  Note line = file.readRootLine(2, "memory.txt");
+  Serial.println(line);
   
   ame_Debuging(ame_Log_EndLoop, "loop");
 }

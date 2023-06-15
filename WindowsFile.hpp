@@ -152,6 +152,7 @@ class WindowsFile : public MonkeyFile{
 			WindowsFileLog(ame_Log_EndMethod, "deleteFile",  "println", "");
 			return DeleteFileA( a_path.pointer() );
 		}
+
 		virtual bool deleteRootFile(Note a_path){
 			WindowsFileLog(ame_Log_StartMethod, "deleteRootFile",  "println", "");
 			Note i_path = this->fixRootPath(a_path);
@@ -586,17 +587,17 @@ class WindowsFile : public MonkeyFile{
     		return handle != INVALID_HANDLE_VALUE;
 		}
 
-		virtual int getFileSize(Note path){
+		virtual int getFileSize(Note a_path){
 			WindowsFileLog(ame_Log_StartMethod, "getFileSize",  "println", "");
-			WindowsFileLog(ame_Log_Statement, "getFileSize",  "println", Note("path: ") + path);
+			WindowsFileLog(ame_Log_Statement, "getFileSize",  "println", Note("path: ") + a_path);
 
 			WindowsFileLog(ame_Log_EndMethod, "getFileSize",  "println", "");
 			return 0;
 		}
 
-		virtual int getDirectoriesSize(Note path){
+		virtual int getDirectoriesSize(Note a_path){
 			WindowsFileLog(ame_Log_StartMethod, "getDirectoriesSize",  "println", "");
-			WindowsFileLog(ame_Log_Statement, "getDirectoriesSize",  "println", Note("path: ") + path);
+			WindowsFileLog(ame_Log_Statement, "getDirectoriesSize",  "println", Note("path: ") + a_path);
 
 			WindowsFileLog(ame_Log_EndMethod, "getDirectoriesSize",  "println", "");
 			return 0;

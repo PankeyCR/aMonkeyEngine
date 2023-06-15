@@ -25,6 +25,8 @@ class MemoryStorage : public ManegedMemory{
 		virtual void setSize(int a_size){this->m_size = a_size;}
 		virtual int getSize() const {return this->m_size;}
 		
+		virtual void replace(int a_index_1, int a_index_2)=0;
+		
 		virtual void set(int a_position, T* a_value)=0;
 		virtual void set(int a_position, const Pointer<T>& a_value)=0;
 		

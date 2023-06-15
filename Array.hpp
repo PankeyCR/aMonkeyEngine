@@ -953,13 +953,18 @@ class Array IMPLEMENTATION_cppObject {
 		virtual Array<T> insertLocalArrayPointer(int a_position, const T* a_pointer, int a_size){
 			ArrayLog(ame_Log_StartMethod, "insertLocalArrayPointer", "println", "const char* a_pointer");
 			ArrayLog(ame_Log_Statement, "insertLocalArrayPointer", "println", "Pointer Array:");
-			//ArrayLog(ame_Log_Statement, "insertLocalArrayPointer", "println", a_pointer);
+			PointerArrayLog(ame_Log_Statement, "insertLocalArrayPointer", "println", a_pointer);
 			if(a_pointer == nullptr){
 				return *this;
 			}
 			int i_array_length = this->arrayLength(a_pointer);
 			if(i_array_length > a_size){
 				i_array_length = a_size;
+			}
+			if(i_array_length == 0){
+				ArrayLog(ame_Log_Statement, "insertLocalArrayPointer", "println", "i_array_length == 0");
+				ArrayLog(ame_Log_EndMethod, "insertLocalArrayPointer", "println", "");
+				return *this;
 			}
 			ArrayLog(ame_Log_Statement, "insertLocalArrayPointer", "println", "Array Length:");
 			ArrayLog(ame_Log_Statement, "insertLocalArrayPointer", "println", i_array_length);

@@ -29,11 +29,16 @@
 
 #include "ame_Context.hpp"
 
+#include "System.hpp"
+
 namespace ame{
 
 void initializeEngine(){
 	ameConfig();
 	ameLoggerConfig();
+	System::console.println(ame_Enviroment_Name);
+	System::console.println(ame_Hardware_Name);
+	System::console.println("Start Engine");
 }
 
 }

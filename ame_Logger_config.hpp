@@ -10,11 +10,11 @@
 #define ame_SystemFullLog
 //#define ame_Arduino_Log
 
-#define Reflection_LogApp
+// #define Reflection_LogApp
 
 // #define FreeSerialNetwork_LogApp
 
-#define PointerArrayStorage_LogApp
+// #define PointerArrayStorage_LogApp
 // #define ReferenceCount_LogApp
 
 // #define RawPointer_LogApp
@@ -60,10 +60,12 @@
 // #define PrimitiveMap_LogApp
 
 // #define ArrayIterator_LogApp
-#define PointerArray_LogApp
-#define Array_LogApp
-#define Note_LogApp
+// #define PointerArray_LogApp
+// #define Array_LogApp
+// #define Note_LogApp
 // #define ByteArray_LogApp
+
+// #define ArduinoSDFile_LogApp
 
 // #define MonkeyFile_LogApp
 // #define WindowsFile_LogApp
@@ -113,11 +115,11 @@
 //#define AlwaysConnected_LogDebugApp
 
 #ifndef ame_Log
-	// #include "ame_Simple_Logger.hpp"
-	// #define ame_Log_Module(pointer,location,name,method,type,mns) Simple_LogPrint_(pointer,location,name,method,type,mns)
+	#include "ame_Simple_Logger.hpp"
+	#define ame_Log_Module(pointer,location,name,method,type,mns) Simple_LogPrint_(pointer,location,name,method,type,mns)
 
-	#include "ame_Method_Stack_Logger.hpp"
-	#define ame_Log(pointer,location,name,method,type,mns) Stack_LogPrint_(pointer,location,name,method,type,mns)
+	// #include "ame_Method_Stack_Logger.hpp"
+	// #define ame_Log(pointer,location,name,method,type,mns) Stack_LogPrint_(pointer,location,name,method,type,mns)
 	
 	// #include "ame_List_Logger.hpp"
 	// #define ame_Log(pointer,location,name,method,type,mns) List_LogPrint_(pointer,location,name,method,type,mns)
@@ -152,9 +154,10 @@ void ameLoggerConfig(){
 	// addClassMethodToLog("endValue");
 	// addClassMethodToLog("insertLocalArrayPointer");
 
-    addStackChecker(stackName("Reflection", "addFunction"));
+    // addStackChecker(stackName("Reflection", "addFunction"));
     // addStackChecker(stackName("Array", "clonePointer"));
-    addStackChecker(stackName("Reflection", "addFunction"), stackName("Array", "clonePointer"));
+    // addStackChecker(stackName("Reflection", "addFunction"), stackName("Array", "clonePointer"));
+    // addStackChecker(stackName("Note", "Constructor"), stackName("Array", "insertLocalArrayPointer"));
 	
 }
 

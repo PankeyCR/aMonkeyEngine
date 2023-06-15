@@ -67,6 +67,17 @@ class Pointer : public ManegedMemory{
 		virtual bool isNull(){
 			return m_pointer == nullptr;
 		}
+		
+		virtual T cast(){
+			if(this->isNull()){
+				return T();
+			}
+			return *m_pointer;
+		}
+		
+		virtual T& getReference(){
+			return *m_pointer;
+		}
 
 		virtual void operator=(const Pointer& a_pointer){
 			PointerLog(ame_Log_StartMethod, "operator=", "println","");

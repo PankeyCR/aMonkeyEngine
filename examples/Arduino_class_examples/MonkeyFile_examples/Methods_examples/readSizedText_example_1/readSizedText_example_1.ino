@@ -26,7 +26,7 @@ void setup() {
 void loop() {
   ame_Debuging(ame_Log_StartLoop, "loop");
   
-  Note text = file.readText("/memory.txt");
+  Note text = file.readSizedText(6, "/memory.txt");
   Serial.println(text);
   
   ame_Debuging(ame_Log_EndLoop, "loop");

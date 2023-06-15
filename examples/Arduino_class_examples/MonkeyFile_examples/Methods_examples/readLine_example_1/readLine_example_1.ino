@@ -20,14 +20,20 @@ void setup() {
   
   file.deleteFile("/memory.txt");
   file.createFile("/memory.txt");
-  file.writeText("saving memory", "/memory.txt");
+
+  Note text = "Line 1\n";
+  text.addLocalNote("Line 2\n");
+  text.addLocalNote("Line 3\n");
+  text.addLocalNote("Line 4\n");
+  
+  file.writeText(text, "/memory.txt");
 }
 
 void loop() {
   ame_Debuging(ame_Log_StartLoop, "loop");
   
-  Note text = file.readText("/memory.txt");
-  Serial.println(text);
+  Note line = file.readLine(2, "/memory.txt");
+  Serial.println(line);
   
   ame_Debuging(ame_Log_EndLoop, "loop");
 }

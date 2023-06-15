@@ -77,9 +77,13 @@ class MonkeyFile IMPLEMENTATION_cppObject {
 
 		template<class... Args>
 		void setRootPathFile(const Note& a_root_hdd, Args... a_paths){
-			MonkeyFileLog(ame_Log_StartMethod, "setRootPathFile",  "println", a_root_hdd);
+			MonkeyFileLog(ame_Log_StartMethod, "setRootPathFile",  "println", "");
+			MonkeyFileLog(ame_Log_Statement, "setRootPathFile",  "println", "Main Folder: ");
+			MonkeyFileLog(ame_Log_Statement, "setRootPathFile",  "println", a_root_hdd);
 			this->m_root_hdd = a_root_hdd;
 			this->m_rootPath = this->fixFullPaths(this->m_root_hdd, a_paths...);
+			MonkeyFileLog(ame_Log_Statement, "setRootPathFile",  "println", "Root Path: ");
+			MonkeyFileLog(ame_Log_Statement, "setRootPathFile",  "println", this->m_rootPath);
 			this->createPath(this->m_root_hdd, a_paths...);
 			m_open = this->exist(this->m_rootPath);
 			MonkeyFileLog(ame_Log_EndMethod, "setRootPathFile",  "println", "");
@@ -364,6 +368,7 @@ class MonkeyFile IMPLEMENTATION_cppObject {
 		bool m_open = false;
 };
 
+//add a / before the text
 Note MonkeyFile::fixPath(Note a_path){
 	MonkeyFileLog(ame_Log_StartMethod, "fixPath",  "println", "");
 	if(a_path.length() == 0){
@@ -378,6 +383,7 @@ Note MonkeyFile::fixPath(Note a_path){
 	return Note("/") + a_path;
 }
 
+//add a / before the text and in between the 2 paths
 Note MonkeyFile::mixPath(Note a_path_1, Note a_path_2){
 	MonkeyFileLog(ame_Log_StartMethod, "mixPath",  "println", "");
 	if(a_path_1.length() == 0){
